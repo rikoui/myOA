@@ -1,0 +1,563 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>周报录入</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript">
+$(function() {
+	$("#submit").click(function() {
+		//审阅人
+		var authadmin = $("#authadmin").val();
+		console.log(authadmin);
+		var weeklystart = $("label#weeklystart").text();
+		var weeklyend = $("label#weeklyend").text();
+		var lastdesc = $("#lastdesc").val();
+		//日期
+		var dailytime="";
+		var dailytime1 = $("#dailytime1").val();
+		if(dailytime1 !=null & dailytime1 !=""){
+			dailytime= dailytime+dailytime1;
+		}
+		var dailytime2 = $("#dailytime2").val();
+		if(dailytime2!=null & dailytime2!=""){
+			dailytime= dailytime+","+dailytime2;
+		}
+		var dailytime3 = $("#dailytime3").val();
+		if(dailytime3!=null & dailytime3!=""){
+			dailytime= dailytime+","+dailytime3;
+		}
+		var dailytime4 = $("#dailytime4").val();
+		if(dailytime4!=null & dailytime4!=""){
+			dailytime= dailytime+","+dailytime4;
+		}
+		var dailytime5 = $("#dailytime5").val();
+		if(dailytime5!=null & dailytime5!=""){
+			dailytime= dailytime+","+dailytime5;
+		}
+		var dailytime6 = $("#dailytime6").val();
+		if(dailytime6!=null & dailytime6!=""){
+			dailytime= dailytime+","+dailytime6;
+		}
+		var dailytime7 = $("#dailytime7").val();
+		if(dailytime7!=null & dailytime7!=""){
+			dailytime= dailytime+","+dailytime7;
+		}
+		//参与者
+		var dailypart = "";
+		var dailypart1 = $("#dailypart1").val();
+		if(dailypart1!=null & dailypart1!=""){
+			dailypart = dailypart+dailypart1;
+		}
+		var dailypart2 = $("#dailypart2").val();
+		if(dailypart2!=null & dailypart2!=""){
+			dailypart = dailypart+"*"+dailypart2;
+		}
+		var dailypart3 = $("#dailypart3").val();
+		if(dailypart3!=null & dailypart3!=""){
+			dailypart = dailypart+"*"+dailypart3;
+		}
+		var dailypart4 = $("#dailypart4").val();
+		if(dailypart4!=null & dailypart4!=""){
+			dailypart = dailypart+"*"+dailypart4;
+		}
+		var dailypart5 = $("#dailypart5").val();
+		if(dailypart5!=null & dailypart5!=""){
+			dailypart = dailypart+"*"+dailypart5;
+		}
+		var dailypart6 = $("#dailypart6").val();
+		if(dailypart6!=null & dailypart6!=""){
+			dailypart = dailypart+"*"+dailypart6;
+		}
+		var dailypart7 = $("#dailypart7").val();
+		if(dailypart7!=null & dailypart7!=""){
+			dailypart = dailypart+"*"+dailypart7;
+		}
+		//工作内容
+		var dailycontent = "";
+		var dailycontent1 = $("#dailycontent1").val();
+		
+		if(dailycontent1!=null & dailycontent1!=""){
+			dailycontent = dailycontent+dailycontent1;
+		}
+		var dailycontent2 = $("#dailycontent2").val();
+		if(dailycontent2!=null & dailycontent2!=""){
+			dailycontent = dailycontent+"*"+dailycontent2;
+		}
+		var dailycontent3 = $("#dailycontent3").val();
+		if(dailycontent3!=null & dailycontent3!=""){
+			dailycontent = dailycontent+"*"+dailycontent3;
+		}
+		var dailycontent4 = $("#dailycontent4").val();
+		if(dailycontent4!=null & dailycontent4!=""){
+			dailycontent = dailycontent+"*"+dailycontent4;
+		}
+		var dailycontent5 = $("#dailycontent5").val();
+		if(dailycontent5!=null & dailycontent5!=""){
+			dailycontent = dailycontent+"*"+dailycontent5;
+		}
+		var dailycontent6 = $("#dailycontent6").val();
+		if(dailycontent6!=null & dailycontent6!=""){
+			dailycontent = dailycontent+"*"+dailycontent6;
+		}
+		var dailycontent7 = $("#dailycontent7").val();
+		if(dailycontent7!=null & dailycontent7!=""){
+			dailycontent = dailycontent+"*"+dailycontent7;
+		}
+		//存在问题
+		 var dailyquestion ="";
+		var dailyquestion1 = $("#dailyquestion1").val();
+		if(dailyquestion1!=null & dailyquestion1!=""){
+			dailyquestion = dailyquestion+dailyquestion1;
+		}
+		var dailyquestion2 = $("#dailyquestion2").val();
+		if(dailyquestion2!=null & dailyquestion2!=""){
+			dailyquestion = dailyquestion+"*"+dailyquestion2;
+		}
+		var dailyquestion3 = $("#dailyquestion3").val();
+		if(dailyquestion3!=null & dailyquestion3!=""){
+			dailyquestion = dailyquestion+"*"+dailyquestion3;
+		}
+		var dailyquestion4 = $("#dailyquestion4").val();
+		if(dailyquestion4!=null & dailyquestion4!=""){
+			dailyquestion = dailyquestion+"*"+dailyquestion4;
+		}
+		var dailyquestion5 = $("#dailyquestion5").val();
+		if(dailyquestion5!=null & dailyquestion5!=""){
+			dailyquestion = dailyquestion+"*"+dailyquestion5;
+		}
+		var dailyquestion6 = $("#dailyquestion6").val();
+		if(dailyquestion6!=null & dailyquestion6!=""){
+			dailyquestion = dailyquestion+"*"+dailyquestion6;
+		}
+		var dailyquestion7 = $("#dailyquestion7").val();
+		if(dailyquestion7!=null & dailyquestion7!=""){
+			dailyquestion = dailyquestion+"*"+dailyquestion7;
+		}
+		
+		//建议解决方案
+		var dailyanswer = "";
+		var dailyanswer1 = $("#dailyanswer1").val();
+		if(dailyanswer1!=null & dailyanswer1!=""){
+			dailyanswer = dailyanswer+dailyanswer1;
+		}
+		var dailyanswer2 = $("#dailyanswer2").val();
+		if(dailyanswer2!=null & dailyanswer2!=""){
+			dailyanswer = dailyanswer+"*"+dailyanswer2;
+		}
+		var dailyanswer3 = $("#dailyanswer3").val();
+		if(dailyanswer3!=null & dailyanswer3!=""){
+			dailyanswer = dailyanswer+"*"+dailyanswer3;
+		}
+		var dailyanswer4 = $("#dailyanswer4").val();
+		if(dailyanswer4!=null & dailyanswer4!=""){
+			dailyanswer = dailyanswer+"*"+dailyanswer4;
+		}
+		var dailyanswer5 = $("#dailyanswer5").val();
+		if(dailyanswer5!=null & dailyanswer5!=""){
+			dailyanswer = dailyanswer+"*"+dailyanswer5;
+		}
+		var dailyanswer6 = $("#dailyanswer6").val();
+		if(dailyanswer6!=null & dailyanswer6!=""){
+			dailyanswer = dailyanswer+"*"+dailyanswer6;
+		}
+		var dailyanswer7 = $("#dailyanswer7").val();
+		if(dailyanswer7!=null & dailyanswer7!=""){
+			dailyanswer = dailyanswer+"*"+dailyanswer7;
+		}
+		
+		//提交保存
+		$.ajax({
+			url : '../../weeklyController/saveWeekly.do',
+			dataType : 'json',
+			type : 'post',
+			//需要上传的其它参数
+			data : {
+				authadmin : authadmin,
+			  weeklystart : weeklystart,
+				weeklyend : weeklyend, 
+				 lastdesc : lastdesc, 
+				dailytime : dailytime,
+				dailypart : dailypart,
+			 dailycontent : dailycontent,
+			dailyquestion : dailyquestion,
+			  dailyanswer : dailyanswer,
+			      
+			},
+			//成功的回调方法
+			success : function(data) {
+				loadClose();
+				if (data.status == "0") {
+					$.messager.alert("系统提示", "周报提交成功", "info");
+				} else if (data.status == "1") {
+					$.messager.alert("系统提示", data.errorMsg, "info");
+				}
+
+			}
+		});
+		//}
+	});
+});
+
+
+	
+	
+	
+	var num = 0;
+	function addTable() {
+		var tableHtml = "";
+		tableHtml += '<tr id="tr">'
+				+ '<th align="left" style="width: 50px; height: 40px;"><input name="no" id="no" style="width: 50px; height: 20px;"></th>'
+				+ '<th align="left" style="width: 550px; height: 40px;"><input name="nextplanthing" id="nextplanthing" style="width: 550px; height: 20px;"></th>'
+				+ '<th align="left" style="width: 200px; height: 40px;"><input name="nextplanovertime" id="nextplanovertime" style="width: 200px; height: 20px;"></th>'
+				+ '<th align="left" style="width: 200px; height: 40px;"><input name="nextplanleading" id="nextplanleading" style="width: 200px; height: 20px;"></th>'
+				+ '<th align="left" style="width: 200px; height: 40px;"><input name="nextplanparting" id="nextplanparting" style="width: 200px; height: 20px;"></th>'
+				+ '<th><input type="button" value="删除" id="deleteTable" onclick="del_tr(this)"></th>'
+
+
+		var elements = $("#nextplan").children().length; //表示id为“nextplan”的标签下的子标签的个数
+
+		$("#nextplan").children().eq(elements - 1).after(tableHtml); //在表头之后添加空白行
+		num++;
+	}
+
+	$(function() {
+		//获取周报信息
+		DMTRequest({
+			url : '../../weeklyController/getWeekly.do',
+			validate : true,
+			success : function(data) {
+				var weekly = data.result;
+				$("#rolename").html(weekly.rolename);
+				$("#weeklyadmin").html(weekly.weeklyadmin);
+				$("#weeklystart").html(weekly.timeStart);
+				$("#weeklyend").html(weekly.timeEnd);
+				document.getElementById("authadmin").value =weekly.authAdmin;
+				$("#lastdesc").html(weekly.lastDesc);
+				var dailytime = weekly.dailyTime;
+				//alert(dailytime);
+				for (var i = 0; i < dailytime.length; i++) {
+					var content = "";
+					var a = "dailytime";
+					var j = i + 1;
+					var b = a + j;
+					content = dailytime[i];
+					//console.log(document.getElementById(b));
+					document.getElementById(b).value = content;
+				}
+
+				var dailypart = weekly.dailyPart;
+				for (var i = 0; i < dailypart.length; i++) {
+					var content = "";
+					var a = "dailypart";
+					var j = i + 1;
+					var b = a + j;
+					content = dailypart[i];
+					//console.log(content);
+
+					document.getElementById(b).value = content;
+				}
+
+				var dailycontent = weekly.dailyContent;
+				for (var i = 0; i < dailycontent.length; i++) {
+					var content = "";
+					var a = "dailycontent";
+					var j = i + 1;
+					var b = a + j;
+					content = dailycontent[i];
+					document.getElementById(b).innerHTML = content;
+				}
+				var dailyquestion = weekly.dailyQuestion;
+				//alert(dailyquestion);
+				for (var i = 0; i < dailyquestion.length; i++) {
+					var content = "";
+					var a = "dailyquestion";
+					var j = i + 1;
+					var b = a + j;
+					content = dailyquestion[i];
+					document.getElementById(b).innerHTML = content;
+				}
+				var dailyanswer = weekly.dailyAnswer;
+				//alert(dailyquestion);
+				for (var i = 0; i < dailyanswer.length; i++) {
+					var content = "";
+					var a = "dailyanswer";
+					var j = i + 1;
+					var b = a + j;
+					content = dailyanswer[i];
+					document.getElementById(b).innerHTML = content;
+				}
+				var no = weekly.no;
+				//alert(no);
+				 for(var i=0;i<no.length;i++){
+					 var j = i+1;
+					 $("#nextplan").append('<tr><th align="left" style="width: 50px; height: 40px;"><input name = "no" id="no'+j+'" style="width: 50px; height: 20px;"></th><th align="left" style="width: 550px; height: 40px;"><input name="nextplanthing" id="nextplanthing'+j+'" style="width: 550px; height: 20px;"></th><th align="left" style="width: 200px; height: 40px;"><input name="nextplanovertime" id="nextplanovertime'+j+'" style="width: 200px; height: 20px;"></th><th align="left" style="width: 200px; height: 40px;"><input name="nextplanleading" id="nextplanleading'+j+'" style="width: 200px; height: 20px;"></th><th align="left" style="width: 200px; height: 40px;"><input name="nextplanparting" id="nextplanparting'+j+'" style="width: 200px; height: 20px;"></th><th> <input type="button" value="删除" id="deleteTable'+j+'" onclick="del_tr(this)"></th></tr>');
+					 
+				 }
+				for (var i = 0; i < no.length; i++) {
+					var content = "";
+					var a = "no";
+					var j = i + 1;
+					var b = a + j;
+					content = no[i];
+					document.getElementById(b).value = content;
+				}
+				var nextplanthing = weekly.nextplanThing;
+				for (var i = 0; i < nextplanthing.length; i++) {
+					var content = "";
+					var a = "nextplanthing";
+					var j = i + 1;
+					var b = a + j;
+					content = nextplanthing[i];
+					document.getElementById(b).value = content;
+				}
+				var nextplanovertime =weekly.nextplanOvertime;
+				for (var i = 0; i < nextplanovertime.length; i++) {
+					var content = "";
+					var a = "nextplanovertime";
+					var j = i + 1;
+					var b = a + j;
+					content = nextplanovertime[i];
+					document.getElementById(b).value = content;
+				}
+				var nextplanleading =weekly.nextplanLeading;
+				for (var i = 0; i < nextplanleading.length; i++) {
+					var content = "";
+					var a = "nextplanleading";
+					var j = i + 1;
+					var b = a + j;
+					content = nextplanleading[i];
+					document.getElementById(b).value = content;
+				}
+				var nextplanpart =weekly.nextplanPart;
+				for (var i = 0; i < nextplanpart.length; i++) {
+					var content = "";
+					var a = "nextplanparting";
+					var j = i + 1;
+					var b = a + j;
+					content = nextplanpart[i];
+					document.getElementById(b).value = content;
+				}
+			}
+		});
+	});
+		function del_tr(obj) {
+			$(obj).parent().parent().remove();
+		}
+</script>
+
+</head>
+<body>
+	<div align="center">
+		<h1>工作周报</h1>
+		<hr class="dmt_hr" />
+	</div>
+	<div>
+		<form action="">
+			<table>
+				<tr>
+					<th align="left" style="width: 271px; height: 40px;">部门:<label
+						id="rolename"></label></th>
+					<th align="left" style="width: 270px; height: 40px;">报告填写人:<label
+						id="weeklyadmin"></label></th>
+					<th align="left" style="width: 270px; height: 40px;">审阅人: <input
+						id="authadmin" style="width: 100px; height: 20px;">
+					</th>
+					<th align="center" style="width: 120px; height: 40px;">时间:<label
+						id="weeklystart"></label></th>
+					<th align="left" style="width: 270px; height: 40px;">至&nbsp;&nbsp;&nbsp;<label
+						id="weeklyend"></label></th>
+				</tr>
+
+			</table>
+
+			<h1>上周总结:</h1>
+			<table border="1">
+				<tr>
+					<th><textarea id="lastdesc"
+							style="width: 1310px; height: 40px;"></textarea></th>
+				</tr>
+			</table>
+			<h1>本周工作记录:</h1>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime1"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						type="text" id="dailypart1" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent1" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion1" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer1" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime2"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						id="dailypart2" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent2" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion2" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer2" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime3"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						id="dailypart3" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent3" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion3" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer3" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime4"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						id="dailypart4" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent4" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion4" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer4" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime5"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						id="dailypart5" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent5" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion5" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer5" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime6"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						id="dailypart6" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent6" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion6" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer6" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<table border="1">
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">日期:<input
+						type="datetime" id="dailytime7"
+						onfocus="WdatePicker({dateFmt:'yyyy-MM-dd DD'})"
+						style="width: 200px; height: 20px;"></th>
+					<th align="left" style="width: 429px; height: 40px;">参与人:<input
+						id="dailypart7" style="width: 350px; height: 20px;"></th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;">工作内容:</th>
+					<th align="left" style="width: 429px; height: 40px;">存在问题:</th>
+					<th align="left" style="width: 429px; height: 40px;">建议解决方案:</th>
+				</tr>
+				<tr>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailycontent7" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyquestion7" style="width: 429px; height: 80px;"></textarea></th>
+					<th align="left" style="width: 429px; height: 40px;"><textarea
+							id="dailyanswer7" style="width: 429px; height: 80px;"></textarea></th>
+				</tr>
+			</table>
+			<h1>下周工作计划:</h1>
+			<input type="button" value="新增" onclick="addTable()">
+			<table border="1" id="nextplan">
+				<tr>
+					<th align="left" style="width: 65px; height: 40px;">编号:</th>
+					<th align="left" style="width: 550px; height: 40px;">下周事情:</th>
+					<th align="left" style="width: 200px; height: 40px;">计划完成时间:</th>
+					<th align="left" style="width: 200px; height: 40px;">负责人:</th>
+					<th align="left" style="width: 200px; height: 40px;">参与人:</th>
+					<th align="left" style="width: 100px; height: 40px;">操作:</th>
+				</tr>
+			</table>
+			<h1 align="center">
+				<input id="submit" type="button" value="提交周报">
+			</h1>
+		</form>
+	</div>
+</body>
+
+</html>

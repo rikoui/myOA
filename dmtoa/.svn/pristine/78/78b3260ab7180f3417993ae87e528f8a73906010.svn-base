@@ -1,0 +1,115 @@
+.dmt_condition{
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	margin-top: 30px;
+}
+
+.dmt_form{
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	margin-top: 30px;
+}
+
+.dmt_content{
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+}
+
+.dmt_condition_table{
+	width: 860px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.dmt_form_table{
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.dmt_td_name{
+	text-align: right;
+	height: 40px;
+	width: 270px;
+}
+
+.dmt_td_value{
+	text-align: left;
+	height: 40px;
+}
+
+.dmt_td_button{
+	text-align: center;
+	line-height: 50px;
+}
+
+.dmt_td_value input[type=text]{
+	border: 1px solid #9FCAF4;
+	width: 198px;
+	height: 26px;
+	line-height: 24px;
+}
+
+.dmt_td_value input[type=password]{
+	border: 1px solid #9FCAF4;
+	width: 198px;
+	height: 26px;
+	line-height: 24px;
+}
+
+.dmt_td_value input[type=datetime]{
+	border: 1px solid #9FCAF4;
+	width: 90px;
+	height: 26px;
+	line-height: 24px;
+}
+
+.dmt_td_value textarea{
+	border: 1px solid #9FCAF4;
+	width:194px;
+	height:100px;
+}
+
+.dmt_td_value select{
+	border: 1px solid #9FCAF4;
+	width: 200px;
+	height: 30px;
+	line-height: 28px;
+}
+
+.dmt_td_button input{
+	background-color: #098cca;
+	border: 1px solid #9FCAF4;
+	width: 80px;
+	height: 30px;
+	margin-right: 80px;
+	cursor: pointer;
+}
+
+.dmt_hr{
+	border: 1px dotted #098cca;
+	width: 100%;
+}
+
+.dmt_table{
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+}
+
+.dmt_star{
+	color: red;
+	vertical-align: middle;
+}
+
+body{
+	background-color: #b8e2fb;
+	font-family: ΢���ź�;
+}

@@ -1,0 +1,153 @@
+package com.bjdreamtech.entity;
+
+public class LeavePerson {
+    private String levaeId;
+
+    private String leaveAdminId;
+
+    private String leaveReason;
+
+    private String leaveStartTime;
+
+    private String leaveStatus;
+
+    private String leaveApprovalDesc;
+
+    private String leaveEndTime;
+
+    private String leaveApprovaler;
+
+    private String leaveApprovalTime;
+
+    private Integer leaveNum;
+
+    private String leaveCreatime;
+
+    private String leaveApprovalRes;
+
+    private String leaveType;
+
+    private String leavePass;
+
+    private String leavePic;
+
+    public String getLevaeId() {
+        return levaeId;
+    }
+
+    public void setLevaeId(String levaeId) {
+        this.levaeId = levaeId == null ? null : levaeId.trim();
+    }
+
+    public String getLeaveAdminId() {
+        return leaveAdminId;
+    }
+
+    public void setLeaveAdminId(String leaveAdminId) {
+        this.leaveAdminId = leaveAdminId == null ? null : leaveAdminId.trim();
+    }
+
+    public String getLeaveReason() {
+        return leaveReason;
+    }
+
+    public void setLeaveReason(String leaveReason) {
+        this.leaveReason = leaveReason == null ? null : leaveReason.trim();
+    }
+
+    public String getLeaveStartTime() {
+        return leaveStartTime;
+    }
+
+    public void setLeaveStartTime(String leaveStartTime) {
+        this.leaveStartTime = leaveStartTime == null ? null : leaveStartTime.trim();
+    }
+
+    public String getLeaveStatus() {
+        return leaveStatus;
+    }
+
+    public void setLeaveStatus(String leaveStatus) {
+        this.leaveStatus = leaveStatus == null ? null : leaveStatus.trim();
+    }
+
+    public String getLeaveApprovalDesc() {
+        return leaveApprovalDesc;
+    }
+
+    public void setLeaveApprovalDesc(String leaveApprovalDesc) {
+        this.leaveApprovalDesc = leaveApprovalDesc == null ? null : leaveApprovalDesc.trim();
+    }
+
+    public String getLeaveEndTime() {
+        return leaveEndTime;
+    }
+
+    public void setLeaveEndTime(String leaveEndTime) {
+        this.leaveEndTime = leaveEndTime == null ? null : leaveEndTime.trim();
+    }
+
+    public String getLeaveApprovaler() {
+        return leaveApprovaler;
+    }
+
+    public void setLeaveApprovaler(String leaveApprovaler) {
+        this.leaveApprovaler = leaveApprovaler == null ? null : leaveApprovaler.trim();
+    }
+
+    public String getLeaveApprovalTime() {
+        return leaveApprovalTime;
+    }
+
+    public void setLeaveApprovalTime(String leaveApprovalTime) {
+        this.leaveApprovalTime = leaveApprovalTime == null ? null : leaveApprovalTime.trim();
+    }
+
+    public Integer getLeaveNum() {
+        return leaveNum;
+    }
+
+    public void setLeaveNum(Integer leaveNum) {
+        this.leaveNum = leaveNum;
+    }
+
+    public String getLeaveCreatime() {
+        return leaveCreatime;
+    }
+
+    public void setLeaveCreatime(String leaveCreatime) {
+        this.leaveCreatime = leaveCreatime == null ? null : leaveCreatime.trim();
+    }
+
+    public String getLeaveApprovalRes() {
+        return leaveApprovalRes;
+    }
+
+    public void setLeaveApprovalRes(String leaveApprovalRes) {
+        this.leaveApprovalRes = leaveApprovalRes == null ? null : leaveApprovalRes.trim();
+    }
+
+    public String getLeaveType() {
+        return leaveType;
+    }
+
+    public void setLeaveType(String leaveType) {
+        this.leaveType = leaveType == null ? null : leaveType.trim();
+    }
+
+    public String getLeavePass() {
+        return leavePass;
+    }
+
+    public void setLeavePass(String leavePass) {
+        this.leavePass = leavePass == null ? null : leavePass.trim();
+    }
+
+    public String getLeavePic() {
+        return leavePic;
+    }
+
+    public void setLeavePic(String leavePic) {
+        this.leavePic = leavePic == null ? null : leavePic.trim();
+    }
+}

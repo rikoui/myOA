@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.LeavePersonMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.LeavePerson" >
+    <id column="levae_id" property="levaeId" jdbcType="VARCHAR" />
+    <result column="leave_admin_id" property="leaveAdminId" jdbcType="VARCHAR" />
+    <result column="leave_reason" property="leaveReason" jdbcType="VARCHAR" />
+    <result column="leave_start_time" property="leaveStartTime" jdbcType="VARCHAR" />
+    <result column="leave_status" property="leaveStatus" jdbcType="CHAR" />
+    <result column="leave_approval_desc" property="leaveApprovalDesc" jdbcType="VARCHAR" />
+    <result column="leave_end_time" property="leaveEndTime" jdbcType="VARCHAR" />
+    <result column="leave_approvaler" property="leaveApprovaler" jdbcType="VARCHAR" />
+    <result column="leave_approval_time" property="leaveApprovalTime" jdbcType="VARCHAR" />
+    <result column="leave_num" property="leaveNum" jdbcType="INTEGER" />
+    <result column="leave_creatime" property="leaveCreatime" jdbcType="VARCHAR" />
+    <result column="leave_approval_res" property="leaveApprovalRes" jdbcType="CHAR" />
+    <result column="leave_type" property="leaveType" jdbcType="VARCHAR" />
+    <result column="leave_pass" property="leavePass" jdbcType="VARCHAR" />
+    <result column="leave_pic" property="leavePic" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    levae_id, leave_admin_id, leave_reason, leave_start_time, leave_status, leave_approval_desc, 
+    leave_end_time, leave_approvaler, leave_approval_time, leave_num, leave_creatime, 
+    leave_approval_res, leave_type, leave_pass, leave_pic
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.LeavePersonExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from leave_person
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from leave_person
+    where levae_id = #{levaeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from leave_person
+    where levae_id = #{levaeId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.LeavePersonExample" >
+    delete from leave_person
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.LeavePerson" >
+    insert into leave_person (levae_id, leave_admin_id, leave_reason, 
+      leave_start_time, leave_status, leave_approval_desc, 
+      leave_end_time, leave_approvaler, leave_approval_time, 
+      leave_num, leave_creatime, leave_approval_res, 
+      leave_type, leave_pass, leave_pic
+      )
+    values (#{levaeId,jdbcType=VARCHAR}, #{leaveAdminId,jdbcType=VARCHAR}, #{leaveReason,jdbcType=VARCHAR}, 
+      #{leaveStartTime,jdbcType=VARCHAR}, #{leaveStatus,jdbcType=CHAR}, #{leaveApprovalDesc,jdbcType=VARCHAR}, 
+      #{leaveEndTime,jdbcType=VARCHAR}, #{leaveApprovaler,jdbcType=VARCHAR}, #{leaveApprovalTime,jdbcType=VARCHAR}, 
+      #{leaveNum,jdbcType=INTEGER}, #{leaveCreatime,jdbcType=VARCHAR}, #{leaveApprovalRes,jdbcType=CHAR}, 
+      #{leaveType,jdbcType=VARCHAR}, #{leavePass,jdbcType=VARCHAR}, #{leavePic,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.LeavePerson" >
+    insert into leave_person
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="levaeId != null" >
+        levae_id,
+      </if>
+      <if test="leaveAdminId != null" >
+        leave_admin_id,
+      </if>
+      <if test="leaveReason != null" >
+        leave_reason,
+      </if>
+      <if test="leaveStartTime != null" >
+        leave_start_time,
+      </if>
+      <if test="leaveStatus != null" >
+        leave_status,
+      </if>
+      <if test="leaveApprovalDesc != null" >
+        leave_approval_desc,
+      </if>
+      <if test="leaveEndTime != null" >
+        leave_end_time,
+      </if>
+      <if test="leaveApprovaler != null" >
+        leave_approvaler,
+      </if>
+      <if test="leaveApprovalTime != null" >
+        leave_approval_time,
+      </if>
+      <if test="leaveNum != null" >
+        leave_num,
+      </if>
+      <if test="leaveCreatime != null" >
+        leave_creatime,
+      </if>
+      <if test="leaveApprovalRes != null" >
+        leave_approval_res,
+      </if>
+      <if test="leaveType != null" >
+        leave_type,
+      </if>
+      <if test="leavePass != null" >
+        leave_pass,
+      </if>
+      <if test="leavePic != null" >
+        leave_pic,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="levaeId != null" >
+        #{levaeId,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveAdminId != null" >
+        #{leaveAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveReason != null" >
+        #{leaveReason,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveStartTime != null" >
+        #{leaveStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveStatus != null" >
+        #{leaveStatus,jdbcType=CHAR},
+      </if>
+      <if test="leaveApprovalDesc != null" >
+        #{leaveApprovalDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveEndTime != null" >
+        #{leaveEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveApprovaler != null" >
+        #{leaveApprovaler,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveApprovalTime != null" >
+        #{leaveApprovalTime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveNum != null" >
+        #{leaveNum,jdbcType=INTEGER},
+      </if>
+      <if test="leaveCreatime != null" >
+        #{leaveCreatime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveApprovalRes != null" >
+        #{leaveApprovalRes,jdbcType=CHAR},
+      </if>
+      <if test="leaveType != null" >
+        #{leaveType,jdbcType=VARCHAR},
+      </if>
+      <if test="leavePass != null" >
+        #{leavePass,jdbcType=VARCHAR},
+      </if>
+      <if test="leavePic != null" >
+        #{leavePic,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.LeavePersonExample" resultType="java.lang.Integer" >
+    select count(*) from leave_person
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update leave_person
+    <set >
+      <if test="record.levaeId != null" >
+        levae_id = #{record.levaeId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveAdminId != null" >
+        leave_admin_id = #{record.leaveAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveReason != null" >
+        leave_reason = #{record.leaveReason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveStartTime != null" >
+        leave_start_time = #{record.leaveStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveStatus != null" >
+        leave_status = #{record.leaveStatus,jdbcType=CHAR},
+      </if>
+      <if test="record.leaveApprovalDesc != null" >
+        leave_approval_desc = #{record.leaveApprovalDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveEndTime != null" >
+        leave_end_time = #{record.leaveEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveApprovaler != null" >
+        leave_approvaler = #{record.leaveApprovaler,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveApprovalTime != null" >
+        leave_approval_time = #{record.leaveApprovalTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveNum != null" >
+        leave_num = #{record.leaveNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.leaveCreatime != null" >
+        leave_creatime = #{record.leaveCreatime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leaveApprovalRes != null" >
+        leave_approval_res = #{record.leaveApprovalRes,jdbcType=CHAR},
+      </if>
+      <if test="record.leaveType != null" >
+        leave_type = #{record.leaveType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leavePass != null" >
+        leave_pass = #{record.leavePass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leavePic != null" >
+        leave_pic = #{record.leavePic,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update leave_person
+    set levae_id = #{record.levaeId,jdbcType=VARCHAR},
+      leave_admin_id = #{record.leaveAdminId,jdbcType=VARCHAR},
+      leave_reason = #{record.leaveReason,jdbcType=VARCHAR},
+      leave_start_time = #{record.leaveStartTime,jdbcType=VARCHAR},
+      leave_status = #{record.leaveStatus,jdbcType=CHAR},
+      leave_approval_desc = #{record.leaveApprovalDesc,jdbcType=VARCHAR},
+      leave_end_time = #{record.leaveEndTime,jdbcType=VARCHAR},
+      leave_approvaler = #{record.leaveApprovaler,jdbcType=VARCHAR},
+      leave_approval_time = #{record.leaveApprovalTime,jdbcType=VARCHAR},
+      leave_num = #{record.leaveNum,jdbcType=INTEGER},
+      leave_creatime = #{record.leaveCreatime,jdbcType=VARCHAR},
+      leave_approval_res = #{record.leaveApprovalRes,jdbcType=CHAR},
+      leave_type = #{record.leaveType,jdbcType=VARCHAR},
+      leave_pass = #{record.leavePass,jdbcType=VARCHAR},
+      leave_pic = #{record.leavePic,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.LeavePerson" >
+    update leave_person
+    <set >
+      <if test="leaveAdminId != null" >
+        leave_admin_id = #{leaveAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveReason != null" >
+        leave_reason = #{leaveReason,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveStartTime != null" >
+        leave_start_time = #{leaveStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveStatus != null" >
+        leave_status = #{leaveStatus,jdbcType=CHAR},
+      </if>
+      <if test="leaveApprovalDesc != null" >
+        leave_approval_desc = #{leaveApprovalDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveEndTime != null" >
+        leave_end_time = #{leaveEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveApprovaler != null" >
+        leave_approvaler = #{leaveApprovaler,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveApprovalTime != null" >
+        leave_approval_time = #{leaveApprovalTime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveNum != null" >
+        leave_num = #{leaveNum,jdbcType=INTEGER},
+      </if>
+      <if test="leaveCreatime != null" >
+        leave_creatime = #{leaveCreatime,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveApprovalRes != null" >
+        leave_approval_res = #{leaveApprovalRes,jdbcType=CHAR},
+      </if>
+      <if test="leaveType != null" >
+        leave_type = #{leaveType,jdbcType=VARCHAR},
+      </if>
+      <if test="leavePass != null" >
+        leave_pass = #{leavePass,jdbcType=VARCHAR},
+      </if>
+      <if test="leavePic != null" >
+        leave_pic = #{leavePic,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where levae_id = #{levaeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.LeavePerson" >
+    update leave_person
+    set leave_admin_id = #{leaveAdminId,jdbcType=VARCHAR},
+      leave_reason = #{leaveReason,jdbcType=VARCHAR},
+      leave_start_time = #{leaveStartTime,jdbcType=VARCHAR},
+      leave_status = #{leaveStatus,jdbcType=CHAR},
+      leave_approval_desc = #{leaveApprovalDesc,jdbcType=VARCHAR},
+      leave_end_time = #{leaveEndTime,jdbcType=VARCHAR},
+      leave_approvaler = #{leaveApprovaler,jdbcType=VARCHAR},
+      leave_approval_time = #{leaveApprovalTime,jdbcType=VARCHAR},
+      leave_num = #{leaveNum,jdbcType=INTEGER},
+      leave_creatime = #{leaveCreatime,jdbcType=VARCHAR},
+      leave_approval_res = #{leaveApprovalRes,jdbcType=CHAR},
+      leave_type = #{leaveType,jdbcType=VARCHAR},
+      leave_pass = #{leavePass,jdbcType=VARCHAR},
+      leave_pic = #{leavePic,jdbcType=VARCHAR}
+    where levae_id = #{levaeId,jdbcType=VARCHAR}
+  </update>
+</mapper>

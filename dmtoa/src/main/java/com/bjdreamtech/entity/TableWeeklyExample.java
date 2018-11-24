@@ -1,0 +1,830 @@
+package com.bjdreamtech.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TableWeeklyExample {
+    protected String orderByClause;
+
+    protected boolean distinct;
+
+    protected List<Criteria> oredCriteria;
+
+    public TableWeeklyExample() {
+        oredCriteria = new ArrayList<Criteria>();
+    }
+
+    public void setOrderByClause(String orderByClause) {
+        this.orderByClause = orderByClause;
+    }
+
+    public String getOrderByClause() {
+        return orderByClause;
+    }
+
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
+    }
+
+    public boolean isDistinct() {
+        return distinct;
+    }
+
+    public List<Criteria> getOredCriteria() {
+        return oredCriteria;
+    }
+
+    public void or(Criteria criteria) {
+        oredCriteria.add(criteria);
+    }
+
+    public Criteria or() {
+        Criteria criteria = createCriteriaInternal();
+        oredCriteria.add(criteria);
+        return criteria;
+    }
+
+    public Criteria createCriteria() {
+        Criteria criteria = createCriteriaInternal();
+        if (oredCriteria.size() == 0) {
+            oredCriteria.add(criteria);
+        }
+        return criteria;
+    }
+
+    protected Criteria createCriteriaInternal() {
+        Criteria criteria = new Criteria();
+        return criteria;
+    }
+
+    public void clear() {
+        oredCriteria.clear();
+        orderByClause = null;
+        distinct = false;
+    }
+
+    protected abstract static class GeneratedCriteria {
+        protected List<Criterion> criteria;
+
+        protected GeneratedCriteria() {
+            super();
+            criteria = new ArrayList<Criterion>();
+        }
+
+        public boolean isValid() {
+            return criteria.size() > 0;
+        }
+
+        public List<Criterion> getAllCriteria() {
+            return criteria;
+        }
+
+        public List<Criterion> getCriteria() {
+            return criteria;
+        }
+
+        protected void addCriterion(String condition) {
+            if (condition == null) {
+                throw new RuntimeException("Value for condition cannot be null");
+            }
+            criteria.add(new Criterion(condition));
+        }
+
+        protected void addCriterion(String condition, Object value, String property) {
+            if (value == null) {
+                throw new RuntimeException("Value for " + property + " cannot be null");
+            }
+            criteria.add(new Criterion(condition, value));
+        }
+
+        protected void addCriterion(String condition, Object value1, Object value2, String property) {
+            if (value1 == null || value2 == null) {
+                throw new RuntimeException("Between values for " + property + " cannot be null");
+            }
+            criteria.add(new Criterion(condition, value1, value2));
+        }
+
+        public Criteria andWeeklyIdIsNull() {
+            addCriterion("weekly_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdIsNotNull() {
+            addCriterion("weekly_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdEqualTo(String value) {
+            addCriterion("weekly_id =", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdNotEqualTo(String value) {
+            addCriterion("weekly_id <>", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdGreaterThan(String value) {
+            addCriterion("weekly_id >", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_id >=", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdLessThan(String value) {
+            addCriterion("weekly_id <", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdLessThanOrEqualTo(String value) {
+            addCriterion("weekly_id <=", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdLike(String value) {
+            addCriterion("weekly_id like", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdNotLike(String value) {
+            addCriterion("weekly_id not like", value, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdIn(List<String> values) {
+            addCriterion("weekly_id in", values, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdNotIn(List<String> values) {
+            addCriterion("weekly_id not in", values, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdBetween(String value1, String value2) {
+            addCriterion("weekly_id between", value1, value2, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyIdNotBetween(String value1, String value2) {
+            addCriterion("weekly_id not between", value1, value2, "weeklyId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdIsNull() {
+            addCriterion("weekly_admin_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdIsNotNull() {
+            addCriterion("weekly_admin_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdEqualTo(String value) {
+            addCriterion("weekly_admin_id =", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdNotEqualTo(String value) {
+            addCriterion("weekly_admin_id <>", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdGreaterThan(String value) {
+            addCriterion("weekly_admin_id >", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_admin_id >=", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdLessThan(String value) {
+            addCriterion("weekly_admin_id <", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdLessThanOrEqualTo(String value) {
+            addCriterion("weekly_admin_id <=", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdLike(String value) {
+            addCriterion("weekly_admin_id like", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdNotLike(String value) {
+            addCriterion("weekly_admin_id not like", value, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdIn(List<String> values) {
+            addCriterion("weekly_admin_id in", values, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdNotIn(List<String> values) {
+            addCriterion("weekly_admin_id not in", values, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdBetween(String value1, String value2) {
+            addCriterion("weekly_admin_id between", value1, value2, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAdminIdNotBetween(String value1, String value2) {
+            addCriterion("weekly_admin_id not between", value1, value2, "weeklyAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminIsNull() {
+            addCriterion("weekly_auth_admin is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminIsNotNull() {
+            addCriterion("weekly_auth_admin is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminEqualTo(String value) {
+            addCriterion("weekly_auth_admin =", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminNotEqualTo(String value) {
+            addCriterion("weekly_auth_admin <>", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminGreaterThan(String value) {
+            addCriterion("weekly_auth_admin >", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_auth_admin >=", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminLessThan(String value) {
+            addCriterion("weekly_auth_admin <", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminLessThanOrEqualTo(String value) {
+            addCriterion("weekly_auth_admin <=", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminLike(String value) {
+            addCriterion("weekly_auth_admin like", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminNotLike(String value) {
+            addCriterion("weekly_auth_admin not like", value, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminIn(List<String> values) {
+            addCriterion("weekly_auth_admin in", values, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminNotIn(List<String> values) {
+            addCriterion("weekly_auth_admin not in", values, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminBetween(String value1, String value2) {
+            addCriterion("weekly_auth_admin between", value1, value2, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyAuthAdminNotBetween(String value1, String value2) {
+            addCriterion("weekly_auth_admin not between", value1, value2, "weeklyAuthAdmin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartIsNull() {
+            addCriterion("weekly_start is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartIsNotNull() {
+            addCriterion("weekly_start is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartEqualTo(String value) {
+            addCriterion("weekly_start =", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartNotEqualTo(String value) {
+            addCriterion("weekly_start <>", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartGreaterThan(String value) {
+            addCriterion("weekly_start >", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_start >=", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartLessThan(String value) {
+            addCriterion("weekly_start <", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartLessThanOrEqualTo(String value) {
+            addCriterion("weekly_start <=", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartLike(String value) {
+            addCriterion("weekly_start like", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartNotLike(String value) {
+            addCriterion("weekly_start not like", value, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartIn(List<String> values) {
+            addCriterion("weekly_start in", values, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartNotIn(List<String> values) {
+            addCriterion("weekly_start not in", values, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartBetween(String value1, String value2) {
+            addCriterion("weekly_start between", value1, value2, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStartNotBetween(String value1, String value2) {
+            addCriterion("weekly_start not between", value1, value2, "weeklyStart");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndIsNull() {
+            addCriterion("weekly_end is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndIsNotNull() {
+            addCriterion("weekly_end is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndEqualTo(String value) {
+            addCriterion("weekly_end =", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndNotEqualTo(String value) {
+            addCriterion("weekly_end <>", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndGreaterThan(String value) {
+            addCriterion("weekly_end >", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_end >=", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndLessThan(String value) {
+            addCriterion("weekly_end <", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndLessThanOrEqualTo(String value) {
+            addCriterion("weekly_end <=", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndLike(String value) {
+            addCriterion("weekly_end like", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndNotLike(String value) {
+            addCriterion("weekly_end not like", value, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndIn(List<String> values) {
+            addCriterion("weekly_end in", values, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndNotIn(List<String> values) {
+            addCriterion("weekly_end not in", values, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndBetween(String value1, String value2) {
+            addCriterion("weekly_end between", value1, value2, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyEndNotBetween(String value1, String value2) {
+            addCriterion("weekly_end not between", value1, value2, "weeklyEnd");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusIsNull() {
+            addCriterion("weekly_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusIsNotNull() {
+            addCriterion("weekly_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusEqualTo(String value) {
+            addCriterion("weekly_status =", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusNotEqualTo(String value) {
+            addCriterion("weekly_status <>", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusGreaterThan(String value) {
+            addCriterion("weekly_status >", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_status >=", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusLessThan(String value) {
+            addCriterion("weekly_status <", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusLessThanOrEqualTo(String value) {
+            addCriterion("weekly_status <=", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusLike(String value) {
+            addCriterion("weekly_status like", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusNotLike(String value) {
+            addCriterion("weekly_status not like", value, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusIn(List<String> values) {
+            addCriterion("weekly_status in", values, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusNotIn(List<String> values) {
+            addCriterion("weekly_status not in", values, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusBetween(String value1, String value2) {
+            addCriterion("weekly_status between", value1, value2, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyStatusNotBetween(String value1, String value2) {
+            addCriterion("weekly_status not between", value1, value2, "weeklyStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescIsNull() {
+            addCriterion("weekly_lastdesc is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescIsNotNull() {
+            addCriterion("weekly_lastdesc is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescEqualTo(String value) {
+            addCriterion("weekly_lastdesc =", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescNotEqualTo(String value) {
+            addCriterion("weekly_lastdesc <>", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescGreaterThan(String value) {
+            addCriterion("weekly_lastdesc >", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_lastdesc >=", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescLessThan(String value) {
+            addCriterion("weekly_lastdesc <", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescLessThanOrEqualTo(String value) {
+            addCriterion("weekly_lastdesc <=", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescLike(String value) {
+            addCriterion("weekly_lastdesc like", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescNotLike(String value) {
+            addCriterion("weekly_lastdesc not like", value, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescIn(List<String> values) {
+            addCriterion("weekly_lastdesc in", values, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescNotIn(List<String> values) {
+            addCriterion("weekly_lastdesc not in", values, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescBetween(String value1, String value2) {
+            addCriterion("weekly_lastdesc between", value1, value2, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyLastdescNotBetween(String value1, String value2) {
+            addCriterion("weekly_lastdesc not between", value1, value2, "weeklyLastdesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkIsNull() {
+            addCriterion("weekly_remark is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkIsNotNull() {
+            addCriterion("weekly_remark is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkEqualTo(String value) {
+            addCriterion("weekly_remark =", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkNotEqualTo(String value) {
+            addCriterion("weekly_remark <>", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkGreaterThan(String value) {
+            addCriterion("weekly_remark >", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_remark >=", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkLessThan(String value) {
+            addCriterion("weekly_remark <", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkLessThanOrEqualTo(String value) {
+            addCriterion("weekly_remark <=", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkLike(String value) {
+            addCriterion("weekly_remark like", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkNotLike(String value) {
+            addCriterion("weekly_remark not like", value, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkIn(List<String> values) {
+            addCriterion("weekly_remark in", values, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkNotIn(List<String> values) {
+            addCriterion("weekly_remark not in", values, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkBetween(String value1, String value2) {
+            addCriterion("weekly_remark between", value1, value2, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRemarkNotBetween(String value1, String value2) {
+            addCriterion("weekly_remark not between", value1, value2, "weeklyRemark");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthIsNull() {
+            addCriterion("weekly_realyauth is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthIsNotNull() {
+            addCriterion("weekly_realyauth is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthEqualTo(String value) {
+            addCriterion("weekly_realyauth =", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthNotEqualTo(String value) {
+            addCriterion("weekly_realyauth <>", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthGreaterThan(String value) {
+            addCriterion("weekly_realyauth >", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthGreaterThanOrEqualTo(String value) {
+            addCriterion("weekly_realyauth >=", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthLessThan(String value) {
+            addCriterion("weekly_realyauth <", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthLessThanOrEqualTo(String value) {
+            addCriterion("weekly_realyauth <=", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthLike(String value) {
+            addCriterion("weekly_realyauth like", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthNotLike(String value) {
+            addCriterion("weekly_realyauth not like", value, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthIn(List<String> values) {
+            addCriterion("weekly_realyauth in", values, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthNotIn(List<String> values) {
+            addCriterion("weekly_realyauth not in", values, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthBetween(String value1, String value2) {
+            addCriterion("weekly_realyauth between", value1, value2, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeeklyRealyauthNotBetween(String value1, String value2) {
+            addCriterion("weekly_realyauth not between", value1, value2, "weeklyRealyauth");
+            return (Criteria) this;
+        }
+    }
+
+    public static class Criteria extends GeneratedCriteria {
+
+        protected Criteria() {
+            super();
+        }
+    }
+
+    public static class Criterion {
+        private String condition;
+
+        private Object value;
+
+        private Object secondValue;
+
+        private boolean noValue;
+
+        private boolean singleValue;
+
+        private boolean betweenValue;
+
+        private boolean listValue;
+
+        private String typeHandler;
+
+        public String getCondition() {
+            return condition;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object getSecondValue() {
+            return secondValue;
+        }
+
+        public boolean isNoValue() {
+            return noValue;
+        }
+
+        public boolean isSingleValue() {
+            return singleValue;
+        }
+
+        public boolean isBetweenValue() {
+            return betweenValue;
+        }
+
+        public boolean isListValue() {
+            return listValue;
+        }
+
+        public String getTypeHandler() {
+            return typeHandler;
+        }
+
+        protected Criterion(String condition) {
+            super();
+            this.condition = condition;
+            this.typeHandler = null;
+            this.noValue = true;
+        }
+
+        protected Criterion(String condition, Object value, String typeHandler) {
+            super();
+            this.condition = condition;
+            this.value = value;
+            this.typeHandler = typeHandler;
+            if (value instanceof List<?>) {
+                this.listValue = true;
+            } else {
+                this.singleValue = true;
+            }
+        }
+
+        protected Criterion(String condition, Object value) {
+            this(condition, value, null);
+        }
+
+        protected Criterion(String condition, Object value, Object secondValue, String typeHandler) {
+            super();
+            this.condition = condition;
+            this.value = value;
+            this.secondValue = secondValue;
+            this.typeHandler = typeHandler;
+            this.betweenValue = true;
+        }
+
+        protected Criterion(String condition, Object value, Object secondValue) {
+            this(condition, value, secondValue, null);
+        }
+    }
+}

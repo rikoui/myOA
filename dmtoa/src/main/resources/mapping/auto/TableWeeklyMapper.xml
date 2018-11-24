@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.TableWeeklyMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.TableWeekly" >
+    <id column="weekly_id" property="weeklyId" jdbcType="VARCHAR" />
+    <result column="weekly_admin_id" property="weeklyAdminId" jdbcType="VARCHAR" />
+    <result column="weekly_auth_admin" property="weeklyAuthAdmin" jdbcType="VARCHAR" />
+    <result column="weekly_start" property="weeklyStart" jdbcType="VARCHAR" />
+    <result column="weekly_end" property="weeklyEnd" jdbcType="VARCHAR" />
+    <result column="weekly_status" property="weeklyStatus" jdbcType="VARCHAR" />
+    <result column="weekly_lastdesc" property="weeklyLastdesc" jdbcType="VARCHAR" />
+    <result column="weekly_remark" property="weeklyRemark" jdbcType="VARCHAR" />
+    <result column="weekly_realyauth" property="weeklyRealyauth" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    weekly_id, weekly_admin_id, weekly_auth_admin, weekly_start, weekly_end, weekly_status, 
+    weekly_lastdesc, weekly_remark, weekly_realyauth
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.TableWeeklyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from table_weekly
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from table_weekly
+    where weekly_id = #{weeklyId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from table_weekly
+    where weekly_id = #{weeklyId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.TableWeeklyExample" >
+    delete from table_weekly
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.TableWeekly" >
+    insert into table_weekly (weekly_id, weekly_admin_id, weekly_auth_admin, 
+      weekly_start, weekly_end, weekly_status, 
+      weekly_lastdesc, weekly_remark, weekly_realyauth
+      )
+    values (#{weeklyId,jdbcType=VARCHAR}, #{weeklyAdminId,jdbcType=VARCHAR}, #{weeklyAuthAdmin,jdbcType=VARCHAR}, 
+      #{weeklyStart,jdbcType=VARCHAR}, #{weeklyEnd,jdbcType=VARCHAR}, #{weeklyStatus,jdbcType=VARCHAR}, 
+      #{weeklyLastdesc,jdbcType=VARCHAR}, #{weeklyRemark,jdbcType=VARCHAR}, #{weeklyRealyauth,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.TableWeekly" >
+    insert into table_weekly
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="weeklyId != null" >
+        weekly_id,
+      </if>
+      <if test="weeklyAdminId != null" >
+        weekly_admin_id,
+      </if>
+      <if test="weeklyAuthAdmin != null" >
+        weekly_auth_admin,
+      </if>
+      <if test="weeklyStart != null" >
+        weekly_start,
+      </if>
+      <if test="weeklyEnd != null" >
+        weekly_end,
+      </if>
+      <if test="weeklyStatus != null" >
+        weekly_status,
+      </if>
+      <if test="weeklyLastdesc != null" >
+        weekly_lastdesc,
+      </if>
+      <if test="weeklyRemark != null" >
+        weekly_remark,
+      </if>
+      <if test="weeklyRealyauth != null" >
+        weekly_realyauth,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="weeklyId != null" >
+        #{weeklyId,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyAdminId != null" >
+        #{weeklyAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyAuthAdmin != null" >
+        #{weeklyAuthAdmin,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyStart != null" >
+        #{weeklyStart,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyEnd != null" >
+        #{weeklyEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyStatus != null" >
+        #{weeklyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyLastdesc != null" >
+        #{weeklyLastdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyRemark != null" >
+        #{weeklyRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyRealyauth != null" >
+        #{weeklyRealyauth,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.TableWeeklyExample" resultType="java.lang.Integer" >
+    select count(*) from table_weekly
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update table_weekly
+    <set >
+      <if test="record.weeklyId != null" >
+        weekly_id = #{record.weeklyId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyAdminId != null" >
+        weekly_admin_id = #{record.weeklyAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyAuthAdmin != null" >
+        weekly_auth_admin = #{record.weeklyAuthAdmin,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyStart != null" >
+        weekly_start = #{record.weeklyStart,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyEnd != null" >
+        weekly_end = #{record.weeklyEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyStatus != null" >
+        weekly_status = #{record.weeklyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyLastdesc != null" >
+        weekly_lastdesc = #{record.weeklyLastdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyRemark != null" >
+        weekly_remark = #{record.weeklyRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weeklyRealyauth != null" >
+        weekly_realyauth = #{record.weeklyRealyauth,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update table_weekly
+    set weekly_id = #{record.weeklyId,jdbcType=VARCHAR},
+      weekly_admin_id = #{record.weeklyAdminId,jdbcType=VARCHAR},
+      weekly_auth_admin = #{record.weeklyAuthAdmin,jdbcType=VARCHAR},
+      weekly_start = #{record.weeklyStart,jdbcType=VARCHAR},
+      weekly_end = #{record.weeklyEnd,jdbcType=VARCHAR},
+      weekly_status = #{record.weeklyStatus,jdbcType=VARCHAR},
+      weekly_lastdesc = #{record.weeklyLastdesc,jdbcType=VARCHAR},
+      weekly_remark = #{record.weeklyRemark,jdbcType=VARCHAR},
+      weekly_realyauth = #{record.weeklyRealyauth,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.TableWeekly" >
+    update table_weekly
+    <set >
+      <if test="weeklyAdminId != null" >
+        weekly_admin_id = #{weeklyAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyAuthAdmin != null" >
+        weekly_auth_admin = #{weeklyAuthAdmin,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyStart != null" >
+        weekly_start = #{weeklyStart,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyEnd != null" >
+        weekly_end = #{weeklyEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyStatus != null" >
+        weekly_status = #{weeklyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyLastdesc != null" >
+        weekly_lastdesc = #{weeklyLastdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyRemark != null" >
+        weekly_remark = #{weeklyRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="weeklyRealyauth != null" >
+        weekly_realyauth = #{weeklyRealyauth,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where weekly_id = #{weeklyId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.TableWeekly" >
+    update table_weekly
+    set weekly_admin_id = #{weeklyAdminId,jdbcType=VARCHAR},
+      weekly_auth_admin = #{weeklyAuthAdmin,jdbcType=VARCHAR},
+      weekly_start = #{weeklyStart,jdbcType=VARCHAR},
+      weekly_end = #{weeklyEnd,jdbcType=VARCHAR},
+      weekly_status = #{weeklyStatus,jdbcType=VARCHAR},
+      weekly_lastdesc = #{weeklyLastdesc,jdbcType=VARCHAR},
+      weekly_remark = #{weeklyRemark,jdbcType=VARCHAR},
+      weekly_realyauth = #{weeklyRealyauth,jdbcType=VARCHAR}
+    where weekly_id = #{weeklyId,jdbcType=VARCHAR}
+  </update>
+</mapper>

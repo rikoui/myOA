@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.WeeklyManageMapper">
+	<select id="WeeklyQuery" resultType="Map" parameterType="Map">
+		SELECT weekly_id, weekly_admin_id,weekly_auth_admin,weekly_start,
+		weekly_end,weekly_status,weekly_lastdesc
+		FROM table_weekly
+		<where>
+			<if test="weeklyadminid !=null and '' != weeklyadminid">
+				and #{weeklyadminid,jdbcType=VARCHAR}=
+				table_weekly.weekly_admin_id
+			</if>
+			<if test="weeklystart !=null and '' != weeklystart">
+				and #{weeklystart,jdbcType=VARCHAR} BETWEEN
+				table_weekly.weekly_start AND table_weekly.weekly_end
+			</if>
+		</where>
+	</select>
+	<select id="queryWeeklyAdminSelect" resultType="Map" parameterType="Map">
+		SELECT
+			tb1.weekly_id AS "weeklyid", 
+			tb1.weekly_admin_id as "weeklyadminid",
+			sa1.ADMIN_ID AS "adminid", 
+			sa1.ADMIN_REALNAME AS"realname"
+		FROM table_weekly tb1, sys_admin sa1
+		where tb1.weekly_admin_id = sa1.ADMIN_ID GROUP BY weekly_admin_id
+	</select>
+	<select id="queryWeeklyListByPage" resultType="Map"
+		parameterType="Map">
+		SELECT
+		sa1.ADMIN_STAFF_NO AS "staffno",
+		sa1.ADMIN_REALNAME AS "weeklyadmin",
+		sa2.ADMIN_REALNAME as "authadmin",
+		tb1.weekly_start as "weeklystart",
+		tb1.weekly_end as "weeklyend",
+		tb1.weekly_status as "weeklystatus",
+		tb1.weekly_admin_id as "weeklyadminid"
+		FROM table_weekly tb1, sys_admin sa1, sys_admin sa2
+		WHERE sa1.ADMIN_ID = tb1.weekly_admin_id and sa2.ADMIN_ID = tb1.weekly_auth_admin 
+		<if test="weeklyadmin != null and weeklyadmin != ''">
+			AND tb1.weekly_admin_id = #{weeklyadmin,jdbcType=VARCHAR}
+		</if>
+		<if test="weeklystatus != null and weeklystatus != ''">
+			AND tb1.weekly_status = #{weeklystatus,jdbcType=VARCHAR}
+		</if>
+		<if test="weeklytime != null and weeklytime != ''">
+			AND #{weeklytime,jdbcType=VARCHAR} BETWEEN tb1.weekly_start AND tb1.weekly_end
+		</if>
+		ORDER BY tb1.weekly_start DESC,sa1.ADMIN_STAFF_NO ASC
+	</select>
+	<select id="QueryWeeklyDetail" resultType="Map" parameterType="Map">
+		SELECT tw.weekly_id,
+		tw.weekly_admin_id,
+		tw.weekly_auth_admin,
+		tw.weekly_start,
+		tw.weekly_end,
+		tw.weekly_status,
+		tw.weekly_lastdesc,
+		sa1.admin_realname as "realName",
+		sa2.ADMIN_REALNAME as "authadmin",
+		r.role_name as "roleName"
+		FROM table_weekly tw,  sys_admin sa1, sys_admin sa2, sys_role r
+		<where>
+			<if test="weeklyadminid !=null and '' != weeklyadminid">
+				and tw.weekly_admin_id = #{weeklyadminid,jdbcType=VARCHAR}
+			</if>
+			<if test="weeklystart !=null and '' != weeklystart">
+				and #{weeklystart,jdbcType=VARCHAR} = tw.weekly_start
+			</if>
+		</where>
+		and tw.weekly_admin_id = sa1.admin_id and sa2.ADMIN_ID = tw.weekly_auth_admin 
+		and r.role_id = sa1.admin_role_id
+	</select>
+	<select id="QueryWeekly" resultType="Map" parameterType="Map">
+		SELECT tw.weekly_id,tw.weekly_admin_id,tw.weekly_auth_admin,tw.weekly_start,
+		tw.weekly_end,tw.weekly_status,tw.weekly_lastdesc
+		FROM table_weekly tw
+		<where>
+			<if test="weeklyadmin !=null and '' != weeklyadmin">
+				and tw.weekly_admin_id=(SELECT ADMIN_ID FROM sys_admin
+				WHERE #{weeklyadmin,jdbcType=VARCHAR}=ADMIN_REALNAME)
+			</if>
+			<if test="weeklystart !=null and '' != weeklystart">
+				and #{weeklystart,jdbcType=VARCHAR} = tw.weekly_start
+			</if>
+		</where>
+	</select>
+	<select id="queryweeklyReadListByPage" resultType="Map" parameterType="Map">
+		SELECT
+		sa1.ADMIN_STAFF_NO AS "staffno",
+		sa1.ADMIN_REALNAME AS "weeklyadmin",
+		sa2.ADMIN_REALNAME as "authadmin",
+		tb1.weekly_start as "weeklystart",
+		tb1.weekly_end as "weeklyend",
+		tb1.weekly_status as "weeklystatus",
+		tb1.weekly_admin_id as "weeklyadminid"
+		FROM table_weekly tb1, sys_admin sa1, sys_admin sa2
+		WHERE sa1.ADMIN_ID = tb1.weekly_admin_id and sa2.ADMIN_ID = tb1.weekly_auth_admin 
+		<if test="weeklyadmin != null and weeklyadmin != ''">
+			AND tb1.weekly_admin_id = #{weeklyadmin,jdbcType=VARCHAR}
+		</if>
+		<if test="weeklystatus != null and weeklystatus != ''">
+			AND tb1.weekly_status = #{weeklystatus,jdbcType=VARCHAR}
+		</if>
+		<if test="weeklytime != null and weeklytime != ''">
+			AND #{weeklytime,jdbcType=VARCHAR} BETWEEN tb1.weekly_start AND tb1.weekly_end
+		</if>
+		<if test="adminid != null and adminid != ''">
+			AND tb1.weekly_auth_admin = #{adminid,jdbcType=VARCHAR}
+		</if>
+		ORDER BY tb1.weekly_start DESC,sa1.ADMIN_STAFF_NO ASC
+	</select>
+</mapper>

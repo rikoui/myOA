@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.ITableSalaryDao" >
+ 
+	<!-- 批量插入 -->
+ 	<insert id="batchInsert" parameterType="list">
+		 	INSERT INTO table_salary (salary_id,salary_type,salary_staff_no,salary_staff_name,salary_staff_carno
+		,salary_bank_account,salary_check_standard_day,salary_formal_day,salary_use_day,salary_ycqts_day,salary_base_pay
+		,salary_merit_pay,salary_account,salary_paid,salary_other_add,salary_sick_pay
+		,salary_abs_pay,salary_other_pay,salary_sum_pay,salary_sum_account,salary_security_base
+		,salary_fund_base,salaray_insurance,salaray_unemployment,salaray_medical_base,salaray_housing_fund
+		,salaray_reduction_sum,salaray_tax,salaray_tax_pay,salaray_payroll,salaray_create_time	
+		,salaray_payroll_period_month,salaray_send_time,salaray_table_time,salary_mail)
+		 VALUES 
+		 <foreach collection ="list" item="TableSalary" index= "index" separator =","> 
+		(
+		#{TableSalary.salaryId},#{TableSalary.salaryType},#{TableSalary.salaryStaffNo},#{TableSalary.salaryStaffName},#{TableSalary.salaryStaffCarno}
+		,#{TableSalary.salaryBankAccount},#{TableSalary.salaryCheckStandardDay},#{TableSalary.salaryFormalDay},#{TableSalary.salaryUseDay},#{TableSalary.salaryYcqtsDay},#{TableSalary.salaryBasePay}
+		,#{TableSalary.salaryMeritPay},#{TableSalary.salaryAccount},#{TableSalary.salaryPaid},#{TableSalary.salaryOtherAdd},#{TableSalary.salarySickPay}
+		,#{TableSalary.salaryAbsPay},#{TableSalary.salaryOtherPay},#{TableSalary.salarySumPay},#{TableSalary.salarySumAccount},#{TableSalary.salarySecurityBase}
+		,#{TableSalary.salaryFundBase},#{TableSalary.salarayInsurance},#{TableSalary.salarayUnemployment},#{TableSalary.salarayMedicalBase},#{TableSalary.salarayHousingFund}
+		,#{TableSalary.salarayReductionSum},#{TableSalary.salarayTax},#{TableSalary.salarayTaxPay},#{TableSalary.salarayPayroll},#{TableSalary.salarayCreateTime}
+		,#{TableSalary.salarayPayrollPeriodMonth},#{TableSalary.salaraySendTime},#{TableSalary.salarayTableTime},#{TableSalary.salaryMail}
+		) 
+   		  </foreach>    
+ 	</insert>
+  
+  <!-- 分页查询 -->
+  <select id="QueryListByPage" resultType="Map" parameterType="Map">
+  SELECT salary_id,salary_type,salary_staff_no,salary_staff_name,salary_staff_carno,salary_bank_account,
+		salary_check_standard_day,salary_formal_day,salary_use_day,salary_ycqts_day,salary_base_pay
+		,salary_merit_pay,salary_account,salary_paid,salary_other_add,salary_sick_pay
+		,salary_abs_pay,salary_other_pay,salary_sum_pay,salary_sum_account,salary_security_base
+		,salary_fund_base,salaray_insurance,salaray_unemployment,salaray_medical_base,salaray_housing_fund
+		,salaray_reduction_sum,salaray_tax,salaray_tax_pay,salaray_payroll,salaray_create_time	
+		,salaray_payroll_period_month,salaray_send_time,salaray_table_time,salary_mail
+		FROM table_salary
+		<where>
+			<if test="salaryStaffName !=null and '' != salaryStaffName">
+				and salary_staff_name =  #{salaryStaffName,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="salarayPayrollPeriodMonth != null and '' != salarayPayrollPeriodMonth">
+				and salaray_payroll_period_month  =  #{salarayPayrollPeriodMonth,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="salarayPayrollMin != null and '' != salarayPayrollMin and salarayPayrollMax != null and '' != salarayPayrollMax" >
+				and salaray_payroll>#{salarayPayrollMin,jdbcType=VARCHAR} and #{salarayPayrollMax,jdbcType=VARCHAR}>salaray_payroll  
+			</if>
+		</where>
+  		order by salaray_payroll_period_month desc,salary_staff_no ASC
+  </select>
+</mapper>

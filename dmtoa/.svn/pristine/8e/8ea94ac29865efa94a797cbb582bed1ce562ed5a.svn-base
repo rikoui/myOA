@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.RoleManageMapper" >
+  
+  <select id="queryRoleListByPage" resultType="Map" parameterType="Map">
+  	SELECT 
+	ROLE_ID AS "id",
+	ROLE_NAME AS "name",
+	(SELECT COUNT(ADMIN_ID) FROM sys_admin WHERE ADMIN_ROLE_ID = ROLE_ID) AS "number",
+	ROLE_DESCRIPTION AS "description",
+	ROLE_STATUS AS "status",
+	ROLE_CREATETIME AS "createtime" 
+	FROM sys_role where 1 = 1 
+	<if test="name != null" >
+	AND ROLE_NAME LIKE #{name,jdbcType=VARCHAR} 
+	</if>
+	<if test="status != null">
+	AND ROLE_STATUS = #{status,jdbcType=VARCHAR}
+	</if>
+	order by ROLE_CREATETIME desc
+  </select>
+  
+  <select id="queryMenuList" resultType="Map" parameterType="Map">
+  	SELECT 
+	MENU_ID AS "id",
+	MENU_NAME AS "name",
+	(SELECT MENU_NAME  FROM sys_menu WHERE MENU_ID = t2.MENU_PARENT_ID) AS "model"
+	FROM sys_menu t2
+	WHERE MENU_LEVEL = '2'
+	ORDER BY MENU_ID
+  </select>
+  
+  <!-- 查询角色详情菜单列表 -->
+  <select id="selectMenuList" resultType="Map" parameterType="String">
+  	SELECT 
+		MENU_ID AS "id",
+		MENU_NAME AS "name",
+		(SELECT MENU_NAME  FROM sys_menu WHERE MENU_ID = t2.MENU_PARENT_ID) AS "model"
+	FROM sys_menu t2,sys_auth,sys_role
+	WHERE ROLE_ID = #{roleid,jdbcType=VARCHAR}
+	AND MENU_LEVEL = '2'
+	AND AUTH_ROLE_ID = ROLE_ID
+	AND AUTH_MENU_ID = MENU_ID
+	ORDER BY MENU_ID
+  </select>
+  
+  <select id="queryAdminCount" resultType="Map" parameterType="String">
+  	SELECT
+  	ADMIN_ID as "id"
+  	FROM sys_admin
+  	WHERE ADMIN_ROLE_ID = #{roleId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryRoleSelect" resultType="Map" parameterType="Map">
+  	SELECT 
+	ROLE_ID AS "roleid",
+	ROLE_NAME AS "rolename"
+	FROM sys_role
+  </select>
+  
+  <select id="getMenuList" resultType="Map" parameterType="String">
+  	SELECT 
+	AUTH_MENU_ID AS "menuid"
+	FROM sys_auth 
+	WHERE AUTH_ROLE_ID = #{roleid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryRole" resultType="Map" parameterType="Map">
+  SELECT 
+	ROLE_ID AS "id",
+	ROLE_NAME AS "name",
+	(SELECT COUNT(ADMIN_ID) FROM sys_admin WHERE ADMIN_ROLE_ID = ROLE_ID) AS "number",
+	ROLE_DESCRIPTION AS "description",
+	ROLE_STATUS AS "status",
+	(SELECT ADMIN_REALNAME FROM sys_admin WHERE ADMIN_ID=ROLE_CREATEUSER) AS "createuser",
+	ROLE_CREATETIME AS "createtime" 
+	FROM sys_role 
+	WHERE ROLE_ID=  #{roleId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="adminList" resultType="Map" parameterType="Map"> 
+  SELECT 
+	ADMIN_ID AS "id",
+	(SELECT ROLE_NAME FROM sys_role WHERE ROLE_ID = ADMIN_ROLE_ID) AS "rolename",
+	ADMIN_USERNAME AS "username",
+	ADMIN_REALNAME AS "realname",
+	ADMIN_STATUS AS "status",
+	ADMIN_PHONE AS "phone",
+	ADMIN_CREATETIME AS "createtime",
+	ADMIN_EMAIL AS "email"
+	FROM sys_admin
+	WHERE ADMIN_ROLE_ID=  #{roleId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryMenuDeitalList" resultType="Map" parameterType="Map">
+  	SELECT 
+	MENU_ID AS "id",
+	MENU_NAME AS "name",
+	(SELECT MENU_NAME  FROM sys_menu WHERE MENU_ID = t2.MENU_PARENT_ID) AS "model"
+	FROM sys_menu t2
+	WHERE MENU_LEVEL = '2'
+  </select>
+</mapper>

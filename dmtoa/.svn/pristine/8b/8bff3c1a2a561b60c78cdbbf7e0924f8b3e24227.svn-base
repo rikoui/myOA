@@ -1,0 +1,468 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>周报录入</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<style type="text/css">
+.title_model{
+	width:100%;
+	text-align:left;
+	background-color:#eeeeee;
+	font-size:16px;
+	font-weight:bold;
+	padding:15px 0px;
+	margin:5px 0px;
+	margin-top:10px;
+}
+.table_div{
+	border:1px solid #ccc;
+	margin-bottom: 10px;
+}
+.red{
+	color:red;
+}
+.form_input{
+	height:20px;
+	border:1px solid #9FCAF4;
+}
+</style>
+<script type="text/javascript">
+$(function() {
+	// 获取url传过来的参数
+	var parameter = DMTParameter();
+	DMTRequest({
+		url : '../../weeklyController/queryWeeklyDetail.do',
+		params: parameter,
+		validate : true,
+		success : function(data) {
+			var weekly = data.result;
+			$("#rolename").html(weekly.rolename);
+			$("#weeklyadmin").html(weekly.weeklyadmin);
+			$("#weeklystart").html(weekly.timeStart);
+			$("#weeklyend").html(weekly.timeEnd);
+			var authNameAndId = weekly.authAdmin;
+			$("#authAdmin").html(authNameAndId.split("AND")[0]);
+			$("#lastdesc").html(weekly.lastDesc);
+			$("#weeklyRemark").html(weekly.weeklyRemark);
+			
+			// 设置日报的日期
+			for (var i = 0; i < 7; i ++) {
+				var date = addDate(weekly.timeStart, i);
+				var week = getWeek(date);
+				var index = i + 1;
+				$("#dailytime" + index).html(date + " " + week);
+			}
+			
+			// 日期
+			var dailyDate = weekly.dailyTime;
+			// 参与人
+			var dailypart = weekly.dailyPart;
+			// 工作内容
+			var dailycontent = weekly.dailyContent;
+			// 存在问题
+			var dailyquestion = weekly.dailyQuestion;
+			// 解决方案
+			var dailyanswer = weekly.dailyAnswer;
+			// 日报审阅意见
+			var dailyRemark = weekly.dailyRemark;
+			var index = 0;
+			if (!isNull(dailyDate)) {
+				for (var i = 0; i < dailyDate.length; i++) {
+					var dayWeekDate = dailyDate[i];
+					$("span[id^='dailytime']").each(function (i, e) {
+						var dayWeekPage = $(e).text();
+						if (dayWeekDate == dayWeekPage) {
+							var id = $(e).attr("id");
+							var idIndex = id.split("dailytime")[1];
+							document.getElementById("dailypart" + idIndex).value = dailypart[index];
+							document.getElementById("dailycontent" + idIndex).innerHTML = dailycontent[index];
+							document.getElementById("dailyquestion" + idIndex).innerHTML = dailyquestion[index];
+							document.getElementById("dailyanswer" + idIndex).innerHTML = dailyanswer[index];
+							$("#dailyRemark" + idIndex).val(dailyRemark[index]);
+							index = index + 1;
+						}
+					})
+				}
+			}
+			
+			var no = weekly.no;
+			$("tr[name='del']").remove();
+			for(var i=0;i<no.length;i++){
+				var j = i+1;
+				$("#nextplan").append(
+						'<tr name="del">'
+						+ '<th align="center" style="height: 20px;">'
+						+ '<label name = "no" id="no' + j + '">'
+						+ '</th>'
+						+ '<th align="center" style="height: 20px;">'
+						+ '<textarea class="form_input" id="nextplanthing'+j+'" disabled style="width:200px;height:50px;"></textarea>'
+						+ '</th>'
+						+ '<th align="center" style="height: 20px;">'
+						+ '<input class="form_input" id="nextplanstarttime'+j+'" disabled style="width: 65px; height: 20px;">'
+						+ '</th>'
+						+ '<th align="center" style="height: 20px;">'
+						+ '<input class="form_input" id="nextplanovertime'+j+'" disabled style="width: 65px; height: 20px;">'
+						+ '</th>'
+						+ '<th align="center" style="height: 20px;">'
+						+ '<input class="form_input" id="nextplanleading'+j+'" disabled style="width: 150px; height: 20px;">'
+						+ '</th>'
+						+ '<th align="center" style="height: 20px;">'
+						+ '<input class="form_input" id="nextplanparting'+j+'" disabled style="width: 150px; height: 20px;">'
+						+ '</th>'
+					+ '</tr>');
+			}
+			for (var i = 0; i < no.length; i++) {
+				var content = "";
+				var a = "no";
+				var j = i + 1;
+				var b = a + j;
+				content = no[i];
+				$("#" + b).html(content);
+			}
+			var nextplanthing = weekly.nextplanThing;
+			for (var i = 0; i < nextplanthing.length; i++) {
+				var content = "";
+				var a = "nextplanthing";
+				var j = i + 1;
+				var b = a + j;
+				content = nextplanthing[i];
+				document.getElementById(b).value = content;
+			}
+			var nextplanStarttime =weekly.nextplanStarttime;
+			for (var i = 0; i < nextplanStarttime.length; i++) {
+				var content = "";
+				var a = "nextplanstarttime";
+				var j = i + 1;
+				var b = a + j;
+				content = nextplanStarttime[i];
+				document.getElementById(b).value = content;
+			}
+			var nextplanovertime =weekly.nextplanOvertime;
+			for (var i = 0; i < nextplanovertime.length; i++) {
+				var content = "";
+				var a = "nextplanovertime";
+				var j = i + 1;
+				var b = a + j;
+				content = nextplanovertime[i];
+				document.getElementById(b).value = content;
+			}
+			var nextplanleading =weekly.nextplanLeading;
+			for (var i = 0; i < nextplanleading.length; i++) {
+				var content = "";
+				var a = "nextplanleading";
+				var j = i + 1;
+				var b = a + j;
+				content = nextplanleading[i];
+				document.getElementById(b).value = content;
+			}
+			var nextplanpart =weekly.nextplanPart;
+			for (var i = 0; i < nextplanpart.length; i++) {
+				var content = "";
+				var a = "nextplanparting";
+				var j = i + 1;
+				var b = a + j;
+				content = nextplanpart[i];
+				document.getElementById(b).value = content;
+			}
+		}
+	});
+});
+//日期加减
+function addDate (date, days) {
+	var day = new Date(date); 
+	day.setDate(day.getDate() + days); 
+	var m = day.getMonth() + 1;
+	if (m < 10) {
+		m = "0" + m;
+	}
+	var d = day.getDate();
+	if (d < 10) {
+		d = "0" + d;
+	}
+	return day.getFullYear() + '-' + m + '-' + d; 
+};
+
+//根据当前日期获取星期
+function getWeek(dateString){
+	var date;
+	if(isNull(dateString)){
+		date = new Date();
+	}else{
+		var dateArray = dateString.split("-");
+		date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
+	}
+	return "星期" + "日一二三四五六".charAt(date.getDay());
+};
+// 判断非空
+function isNull(object){  
+    if(object == null || typeof object == "undefined" || object == ""){  
+        return true;  
+    }  
+    return false;  
+};
+// 获取当前系统时间
+function getTime () {
+	// 获取当前时间
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth() + 1;
+	if (month < 10) {
+		month = "0" + month;
+	}
+	var day = date.getDate();
+	return year + "-" + month + "-" + day;
+}
+</script>
+
+</head>
+<body>
+	<div class="dmt_form" style="width: 1120px; border: solid 1px #cccccc; background-color: white; padding: 20px;">
+	<div align="center">
+		<div style="font-size:28px;line-heigth:40px;font-weight:bold;margin:20px;">工作周报</div>
+		<hr class="dmt_hr" />
+	</div>
+	<div>
+		<form action="">
+			<table>
+				<tr>
+					<th align="left" style="width: 271px; height: 40px;">部门：<label id="rolename"></label></th>
+					<th align="left" style="width: 270px; height: 40px;">报告填写人：<label id="weeklyadmin"></label></th>
+					<th align="left" style="width: 270px; height: 40px;">审阅人：<label id="authAdmin"></label></th>
+					<th align="center" style="width: 150px; height: 40px;">时间：<label id="weeklystart"></label></th>
+					<th align="left" style="width: 270px; height: 40px;">至&nbsp;&nbsp;&nbsp;<label id="weeklyend"></label></th>
+				</tr>
+			</table>
+
+			<div class="title_model">上周总结</div>
+			<textarea id="lastdesc" style="width: 1114px; height: 100px;border:1px solid #9FCAF4;" disabled></textarea>
+			<div class="title_model">本周工作记录</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime1" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart1" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent1" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion1" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer1" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark1" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime2" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart2" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent2" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion2" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer2" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark2" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime3" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart3" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent3" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion3" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer3" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark3" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime4" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart4" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent4" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion4" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer4" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark4" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime5" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart5" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent5" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion5" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer5" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark5" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime6" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart6" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent6" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion6" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer6" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark6" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="table_div">
+				<table class="dmt_form_table">
+					<tr>
+						<th class="dmt_td_value" style="width:32%;">
+							日期：<span id="dailytime7" class="red"></span>
+						</th>
+						<th class="dmt_td_value" style="width:32%;">
+							参与人：<input type="text" id="dailypart7" disabled>
+						</th>
+						<th class="dmt_td_value" style="width:32%;"></th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">工作内容：</th>
+						<th class="dmt_td_value">存在问题：</th>
+						<th class="dmt_td_value">建议解决方案：</th>
+					</tr>
+					<tr>
+						<th class="dmt_td_value">
+							<textarea id="dailycontent7" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyquestion7" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+						<th class="dmt_td_value">
+							<textarea id="dailyanswer7" style="width: 95%; height: 100px;" disabled></textarea>
+						</th>
+					</tr>
+				</table>
+				<div style="margin:10px 0;">日报审阅意见：<input id="dailyRemark7" style="width: 85%;" disabled class="form_input"></input></div>
+			</div>
+			<div class="title_model">下周工作计划</div>
+			<table class="dmt_form_table" style="width:100%;border:1px solid #ddd;" id="nextplan">
+				<tr>
+					<th align="center" style="height: 40px;">编号</th>
+					<th align="center" style="height: 40px;">下周事项</th>
+					<th align="center" style="height: 40px;">计划开始时间</th>
+					<th align="center" style="height: 40px;">计划完成时间</th>
+					<th align="center" style="height: 40px;">负责人</th>
+					<th align="center" style="height: 40px;">参与人</th>
+				</tr>
+			</table>
+			<div class="title_model">周报审阅意见</div>
+			<textarea id="weeklyRemark" style="width: 1114px; height: 100px;border:1px solid #9FCAF4;" disabled></textarea>
+		</form>
+	</div>
+	</div>
+</body>
+</html>

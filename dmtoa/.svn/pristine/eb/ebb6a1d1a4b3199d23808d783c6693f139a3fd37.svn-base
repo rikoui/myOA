@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.SysLoginMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.SysLogin" >
+    <id column="LOGIN_ID" property="loginId" jdbcType="VARCHAR" />
+    <result column="LOGIN_ADMIN_ID" property="loginAdminId" jdbcType="VARCHAR" />
+    <result column="LOGIN_LAST_TIME" property="loginLastTime" jdbcType="VARCHAR" />
+    <result column="LOGIN_TIME" property="loginTime" jdbcType="VARCHAR" />
+    <result column="LOGIN_IP" property="loginIp" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    LOGIN_ID, LOGIN_ADMIN_ID, LOGIN_LAST_TIME, LOGIN_TIME, LOGIN_IP
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.SysLoginExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from SYS_LOGIN
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_LOGIN
+    where LOGIN_ID = #{loginId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYS_LOGIN
+    where LOGIN_ID = #{loginId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.SysLoginExample" >
+    delete from SYS_LOGIN
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.SysLogin" >
+    insert into SYS_LOGIN (LOGIN_ID, LOGIN_ADMIN_ID, LOGIN_LAST_TIME, 
+      LOGIN_TIME, LOGIN_IP)
+    values (#{loginId,jdbcType=VARCHAR}, #{loginAdminId,jdbcType=VARCHAR}, #{loginLastTime,jdbcType=VARCHAR}, 
+      #{loginTime,jdbcType=VARCHAR}, #{loginIp,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.SysLogin" >
+    insert into SYS_LOGIN
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="loginId != null" >
+        LOGIN_ID,
+      </if>
+      <if test="loginAdminId != null" >
+        LOGIN_ADMIN_ID,
+      </if>
+      <if test="loginLastTime != null" >
+        LOGIN_LAST_TIME,
+      </if>
+      <if test="loginTime != null" >
+        LOGIN_TIME,
+      </if>
+      <if test="loginIp != null" >
+        LOGIN_IP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="loginId != null" >
+        #{loginId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginAdminId != null" >
+        #{loginAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginLastTime != null" >
+        #{loginLastTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTime != null" >
+        #{loginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loginIp != null" >
+        #{loginIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.SysLoginExample" resultType="java.lang.Integer" >
+    select count(*) from SYS_LOGIN
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update SYS_LOGIN
+    <set >
+      <if test="record.loginId != null" >
+        LOGIN_ID = #{record.loginId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginAdminId != null" >
+        LOGIN_ADMIN_ID = #{record.loginAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginLastTime != null" >
+        LOGIN_LAST_TIME = #{record.loginLastTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginTime != null" >
+        LOGIN_TIME = #{record.loginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginIp != null" >
+        LOGIN_IP = #{record.loginIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update SYS_LOGIN
+    set LOGIN_ID = #{record.loginId,jdbcType=VARCHAR},
+      LOGIN_ADMIN_ID = #{record.loginAdminId,jdbcType=VARCHAR},
+      LOGIN_LAST_TIME = #{record.loginLastTime,jdbcType=VARCHAR},
+      LOGIN_TIME = #{record.loginTime,jdbcType=VARCHAR},
+      LOGIN_IP = #{record.loginIp,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.SysLogin" >
+    update SYS_LOGIN
+    <set >
+      <if test="loginAdminId != null" >
+        LOGIN_ADMIN_ID = #{loginAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginLastTime != null" >
+        LOGIN_LAST_TIME = #{loginLastTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTime != null" >
+        LOGIN_TIME = #{loginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loginIp != null" >
+        LOGIN_IP = #{loginIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where LOGIN_ID = #{loginId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.SysLogin" >
+    update SYS_LOGIN
+    set LOGIN_ADMIN_ID = #{loginAdminId,jdbcType=VARCHAR},
+      LOGIN_LAST_TIME = #{loginLastTime,jdbcType=VARCHAR},
+      LOGIN_TIME = #{loginTime,jdbcType=VARCHAR},
+      LOGIN_IP = #{loginIp,jdbcType=VARCHAR}
+    where LOGIN_ID = #{loginId,jdbcType=VARCHAR}
+  </update>
+</mapper>

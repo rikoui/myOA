@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.SysAuthvaliMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.SysAuthvali" >
+    <id column="AUTHVALI_ID" property="authvaliId" jdbcType="VARCHAR" />
+    <result column="AUTHVALI_ACTION" property="authvaliAction" jdbcType="VARCHAR" />
+    <result column="AUTHVALI_MENU_ID" property="authvaliMenuId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    AUTHVALI_ID, AUTHVALI_ACTION, AUTHVALI_MENU_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.SysAuthvaliExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from SYS_AUTHVALI
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_AUTHVALI
+    where AUTHVALI_ID = #{authvaliId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYS_AUTHVALI
+    where AUTHVALI_ID = #{authvaliId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.SysAuthvaliExample" >
+    delete from SYS_AUTHVALI
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.SysAuthvali" >
+    insert into SYS_AUTHVALI (AUTHVALI_ID, AUTHVALI_ACTION, AUTHVALI_MENU_ID
+      )
+    values (#{authvaliId,jdbcType=VARCHAR}, #{authvaliAction,jdbcType=VARCHAR}, #{authvaliMenuId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.SysAuthvali" >
+    insert into SYS_AUTHVALI
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="authvaliId != null" >
+        AUTHVALI_ID,
+      </if>
+      <if test="authvaliAction != null" >
+        AUTHVALI_ACTION,
+      </if>
+      <if test="authvaliMenuId != null" >
+        AUTHVALI_MENU_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="authvaliId != null" >
+        #{authvaliId,jdbcType=VARCHAR},
+      </if>
+      <if test="authvaliAction != null" >
+        #{authvaliAction,jdbcType=VARCHAR},
+      </if>
+      <if test="authvaliMenuId != null" >
+        #{authvaliMenuId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.SysAuthvaliExample" resultType="java.lang.Integer" >
+    select count(*) from SYS_AUTHVALI
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update SYS_AUTHVALI
+    <set >
+      <if test="record.authvaliId != null" >
+        AUTHVALI_ID = #{record.authvaliId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authvaliAction != null" >
+        AUTHVALI_ACTION = #{record.authvaliAction,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authvaliMenuId != null" >
+        AUTHVALI_MENU_ID = #{record.authvaliMenuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update SYS_AUTHVALI
+    set AUTHVALI_ID = #{record.authvaliId,jdbcType=VARCHAR},
+      AUTHVALI_ACTION = #{record.authvaliAction,jdbcType=VARCHAR},
+      AUTHVALI_MENU_ID = #{record.authvaliMenuId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.SysAuthvali" >
+    update SYS_AUTHVALI
+    <set >
+      <if test="authvaliAction != null" >
+        AUTHVALI_ACTION = #{authvaliAction,jdbcType=VARCHAR},
+      </if>
+      <if test="authvaliMenuId != null" >
+        AUTHVALI_MENU_ID = #{authvaliMenuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where AUTHVALI_ID = #{authvaliId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.SysAuthvali" >
+    update SYS_AUTHVALI
+    set AUTHVALI_ACTION = #{authvaliAction,jdbcType=VARCHAR},
+      AUTHVALI_MENU_ID = #{authvaliMenuId,jdbcType=VARCHAR}
+    where AUTHVALI_ID = #{authvaliId,jdbcType=VARCHAR}
+  </update>
+</mapper>

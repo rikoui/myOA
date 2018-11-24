@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.SysControlMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.SysControl" >
+    <id column="CONTROL_ID" property="controlId" jdbcType="VARCHAR" />
+    <result column="CONTROL_ADMIN_ID" property="controlAdminId" jdbcType="VARCHAR" />
+    <result column="CONTROL_SESSIONID" property="controlSessionid" jdbcType="VARCHAR" />
+    <result column="CONTROL_LOGINTIME" property="controlLogintime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    CONTROL_ID, CONTROL_ADMIN_ID, CONTROL_SESSIONID, CONTROL_LOGINTIME
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.SysControlExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from SYS_CONTROL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_CONTROL
+    where CONTROL_ID = #{controlId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYS_CONTROL
+    where CONTROL_ID = #{controlId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.SysControlExample" >
+    delete from SYS_CONTROL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.SysControl" >
+    insert into SYS_CONTROL (CONTROL_ID, CONTROL_ADMIN_ID, CONTROL_SESSIONID, 
+      CONTROL_LOGINTIME)
+    values (#{controlId,jdbcType=VARCHAR}, #{controlAdminId,jdbcType=VARCHAR}, #{controlSessionid,jdbcType=VARCHAR}, 
+      #{controlLogintime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.SysControl" >
+    insert into SYS_CONTROL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="controlId != null" >
+        CONTROL_ID,
+      </if>
+      <if test="controlAdminId != null" >
+        CONTROL_ADMIN_ID,
+      </if>
+      <if test="controlSessionid != null" >
+        CONTROL_SESSIONID,
+      </if>
+      <if test="controlLogintime != null" >
+        CONTROL_LOGINTIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="controlId != null" >
+        #{controlId,jdbcType=VARCHAR},
+      </if>
+      <if test="controlAdminId != null" >
+        #{controlAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="controlSessionid != null" >
+        #{controlSessionid,jdbcType=VARCHAR},
+      </if>
+      <if test="controlLogintime != null" >
+        #{controlLogintime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.SysControlExample" resultType="java.lang.Integer" >
+    select count(*) from SYS_CONTROL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update SYS_CONTROL
+    <set >
+      <if test="record.controlId != null" >
+        CONTROL_ID = #{record.controlId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.controlAdminId != null" >
+        CONTROL_ADMIN_ID = #{record.controlAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.controlSessionid != null" >
+        CONTROL_SESSIONID = #{record.controlSessionid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.controlLogintime != null" >
+        CONTROL_LOGINTIME = #{record.controlLogintime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update SYS_CONTROL
+    set CONTROL_ID = #{record.controlId,jdbcType=VARCHAR},
+      CONTROL_ADMIN_ID = #{record.controlAdminId,jdbcType=VARCHAR},
+      CONTROL_SESSIONID = #{record.controlSessionid,jdbcType=VARCHAR},
+      CONTROL_LOGINTIME = #{record.controlLogintime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.SysControl" >
+    update SYS_CONTROL
+    <set >
+      <if test="controlAdminId != null" >
+        CONTROL_ADMIN_ID = #{controlAdminId,jdbcType=VARCHAR},
+      </if>
+      <if test="controlSessionid != null" >
+        CONTROL_SESSIONID = #{controlSessionid,jdbcType=VARCHAR},
+      </if>
+      <if test="controlLogintime != null" >
+        CONTROL_LOGINTIME = #{controlLogintime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CONTROL_ID = #{controlId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.SysControl" >
+    update SYS_CONTROL
+    set CONTROL_ADMIN_ID = #{controlAdminId,jdbcType=VARCHAR},
+      CONTROL_SESSIONID = #{controlSessionid,jdbcType=VARCHAR},
+      CONTROL_LOGINTIME = #{controlLogintime,jdbcType=VARCHAR}
+    where CONTROL_ID = #{controlId,jdbcType=VARCHAR}
+  </update>
+</mapper>

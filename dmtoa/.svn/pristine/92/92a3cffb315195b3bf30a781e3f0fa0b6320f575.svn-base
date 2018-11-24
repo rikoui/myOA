@@ -1,0 +1,1240 @@
+package com.bjdreamtech.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LeavePersonExample {
+    protected String orderByClause;
+
+    protected boolean distinct;
+
+    protected List<Criteria> oredCriteria;
+
+    public LeavePersonExample() {
+        oredCriteria = new ArrayList<Criteria>();
+    }
+
+    public void setOrderByClause(String orderByClause) {
+        this.orderByClause = orderByClause;
+    }
+
+    public String getOrderByClause() {
+        return orderByClause;
+    }
+
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
+    }
+
+    public boolean isDistinct() {
+        return distinct;
+    }
+
+    public List<Criteria> getOredCriteria() {
+        return oredCriteria;
+    }
+
+    public void or(Criteria criteria) {
+        oredCriteria.add(criteria);
+    }
+
+    public Criteria or() {
+        Criteria criteria = createCriteriaInternal();
+        oredCriteria.add(criteria);
+        return criteria;
+    }
+
+    public Criteria createCriteria() {
+        Criteria criteria = createCriteriaInternal();
+        if (oredCriteria.size() == 0) {
+            oredCriteria.add(criteria);
+        }
+        return criteria;
+    }
+
+    protected Criteria createCriteriaInternal() {
+        Criteria criteria = new Criteria();
+        return criteria;
+    }
+
+    public void clear() {
+        oredCriteria.clear();
+        orderByClause = null;
+        distinct = false;
+    }
+
+    protected abstract static class GeneratedCriteria {
+        protected List<Criterion> criteria;
+
+        protected GeneratedCriteria() {
+            super();
+            criteria = new ArrayList<Criterion>();
+        }
+
+        public boolean isValid() {
+            return criteria.size() > 0;
+        }
+
+        public List<Criterion> getAllCriteria() {
+            return criteria;
+        }
+
+        public List<Criterion> getCriteria() {
+            return criteria;
+        }
+
+        protected void addCriterion(String condition) {
+            if (condition == null) {
+                throw new RuntimeException("Value for condition cannot be null");
+            }
+            criteria.add(new Criterion(condition));
+        }
+
+        protected void addCriterion(String condition, Object value, String property) {
+            if (value == null) {
+                throw new RuntimeException("Value for " + property + " cannot be null");
+            }
+            criteria.add(new Criterion(condition, value));
+        }
+
+        protected void addCriterion(String condition, Object value1, Object value2, String property) {
+            if (value1 == null || value2 == null) {
+                throw new RuntimeException("Between values for " + property + " cannot be null");
+            }
+            criteria.add(new Criterion(condition, value1, value2));
+        }
+
+        public Criteria andLevaeIdIsNull() {
+            addCriterion("levae_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdIsNotNull() {
+            addCriterion("levae_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdEqualTo(String value) {
+            addCriterion("levae_id =", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdNotEqualTo(String value) {
+            addCriterion("levae_id <>", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdGreaterThan(String value) {
+            addCriterion("levae_id >", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdGreaterThanOrEqualTo(String value) {
+            addCriterion("levae_id >=", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdLessThan(String value) {
+            addCriterion("levae_id <", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdLessThanOrEqualTo(String value) {
+            addCriterion("levae_id <=", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdLike(String value) {
+            addCriterion("levae_id like", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdNotLike(String value) {
+            addCriterion("levae_id not like", value, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdIn(List<String> values) {
+            addCriterion("levae_id in", values, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdNotIn(List<String> values) {
+            addCriterion("levae_id not in", values, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdBetween(String value1, String value2) {
+            addCriterion("levae_id between", value1, value2, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevaeIdNotBetween(String value1, String value2) {
+            addCriterion("levae_id not between", value1, value2, "levaeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdIsNull() {
+            addCriterion("leave_admin_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdIsNotNull() {
+            addCriterion("leave_admin_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdEqualTo(String value) {
+            addCriterion("leave_admin_id =", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdNotEqualTo(String value) {
+            addCriterion("leave_admin_id <>", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdGreaterThan(String value) {
+            addCriterion("leave_admin_id >", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_admin_id >=", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdLessThan(String value) {
+            addCriterion("leave_admin_id <", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdLessThanOrEqualTo(String value) {
+            addCriterion("leave_admin_id <=", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdLike(String value) {
+            addCriterion("leave_admin_id like", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdNotLike(String value) {
+            addCriterion("leave_admin_id not like", value, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdIn(List<String> values) {
+            addCriterion("leave_admin_id in", values, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdNotIn(List<String> values) {
+            addCriterion("leave_admin_id not in", values, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdBetween(String value1, String value2) {
+            addCriterion("leave_admin_id between", value1, value2, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveAdminIdNotBetween(String value1, String value2) {
+            addCriterion("leave_admin_id not between", value1, value2, "leaveAdminId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonIsNull() {
+            addCriterion("leave_reason is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonIsNotNull() {
+            addCriterion("leave_reason is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonEqualTo(String value) {
+            addCriterion("leave_reason =", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonNotEqualTo(String value) {
+            addCriterion("leave_reason <>", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonGreaterThan(String value) {
+            addCriterion("leave_reason >", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_reason >=", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonLessThan(String value) {
+            addCriterion("leave_reason <", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonLessThanOrEqualTo(String value) {
+            addCriterion("leave_reason <=", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonLike(String value) {
+            addCriterion("leave_reason like", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonNotLike(String value) {
+            addCriterion("leave_reason not like", value, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonIn(List<String> values) {
+            addCriterion("leave_reason in", values, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonNotIn(List<String> values) {
+            addCriterion("leave_reason not in", values, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonBetween(String value1, String value2) {
+            addCriterion("leave_reason between", value1, value2, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveReasonNotBetween(String value1, String value2) {
+            addCriterion("leave_reason not between", value1, value2, "leaveReason");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeIsNull() {
+            addCriterion("leave_start_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeIsNotNull() {
+            addCriterion("leave_start_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeEqualTo(String value) {
+            addCriterion("leave_start_time =", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeNotEqualTo(String value) {
+            addCriterion("leave_start_time <>", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeGreaterThan(String value) {
+            addCriterion("leave_start_time >", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_start_time >=", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeLessThan(String value) {
+            addCriterion("leave_start_time <", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeLessThanOrEqualTo(String value) {
+            addCriterion("leave_start_time <=", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeLike(String value) {
+            addCriterion("leave_start_time like", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeNotLike(String value) {
+            addCriterion("leave_start_time not like", value, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeIn(List<String> values) {
+            addCriterion("leave_start_time in", values, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeNotIn(List<String> values) {
+            addCriterion("leave_start_time not in", values, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeBetween(String value1, String value2) {
+            addCriterion("leave_start_time between", value1, value2, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStartTimeNotBetween(String value1, String value2) {
+            addCriterion("leave_start_time not between", value1, value2, "leaveStartTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusIsNull() {
+            addCriterion("leave_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusIsNotNull() {
+            addCriterion("leave_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusEqualTo(String value) {
+            addCriterion("leave_status =", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusNotEqualTo(String value) {
+            addCriterion("leave_status <>", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusGreaterThan(String value) {
+            addCriterion("leave_status >", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_status >=", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusLessThan(String value) {
+            addCriterion("leave_status <", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusLessThanOrEqualTo(String value) {
+            addCriterion("leave_status <=", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusLike(String value) {
+            addCriterion("leave_status like", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusNotLike(String value) {
+            addCriterion("leave_status not like", value, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusIn(List<String> values) {
+            addCriterion("leave_status in", values, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusNotIn(List<String> values) {
+            addCriterion("leave_status not in", values, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusBetween(String value1, String value2) {
+            addCriterion("leave_status between", value1, value2, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveStatusNotBetween(String value1, String value2) {
+            addCriterion("leave_status not between", value1, value2, "leaveStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescIsNull() {
+            addCriterion("leave_approval_desc is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescIsNotNull() {
+            addCriterion("leave_approval_desc is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescEqualTo(String value) {
+            addCriterion("leave_approval_desc =", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescNotEqualTo(String value) {
+            addCriterion("leave_approval_desc <>", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescGreaterThan(String value) {
+            addCriterion("leave_approval_desc >", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_approval_desc >=", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescLessThan(String value) {
+            addCriterion("leave_approval_desc <", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescLessThanOrEqualTo(String value) {
+            addCriterion("leave_approval_desc <=", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescLike(String value) {
+            addCriterion("leave_approval_desc like", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescNotLike(String value) {
+            addCriterion("leave_approval_desc not like", value, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescIn(List<String> values) {
+            addCriterion("leave_approval_desc in", values, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescNotIn(List<String> values) {
+            addCriterion("leave_approval_desc not in", values, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescBetween(String value1, String value2) {
+            addCriterion("leave_approval_desc between", value1, value2, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalDescNotBetween(String value1, String value2) {
+            addCriterion("leave_approval_desc not between", value1, value2, "leaveApprovalDesc");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeIsNull() {
+            addCriterion("leave_end_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeIsNotNull() {
+            addCriterion("leave_end_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeEqualTo(String value) {
+            addCriterion("leave_end_time =", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeNotEqualTo(String value) {
+            addCriterion("leave_end_time <>", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeGreaterThan(String value) {
+            addCriterion("leave_end_time >", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_end_time >=", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeLessThan(String value) {
+            addCriterion("leave_end_time <", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeLessThanOrEqualTo(String value) {
+            addCriterion("leave_end_time <=", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeLike(String value) {
+            addCriterion("leave_end_time like", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeNotLike(String value) {
+            addCriterion("leave_end_time not like", value, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeIn(List<String> values) {
+            addCriterion("leave_end_time in", values, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeNotIn(List<String> values) {
+            addCriterion("leave_end_time not in", values, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeBetween(String value1, String value2) {
+            addCriterion("leave_end_time between", value1, value2, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveEndTimeNotBetween(String value1, String value2) {
+            addCriterion("leave_end_time not between", value1, value2, "leaveEndTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerIsNull() {
+            addCriterion("leave_approvaler is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerIsNotNull() {
+            addCriterion("leave_approvaler is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerEqualTo(String value) {
+            addCriterion("leave_approvaler =", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerNotEqualTo(String value) {
+            addCriterion("leave_approvaler <>", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerGreaterThan(String value) {
+            addCriterion("leave_approvaler >", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_approvaler >=", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerLessThan(String value) {
+            addCriterion("leave_approvaler <", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerLessThanOrEqualTo(String value) {
+            addCriterion("leave_approvaler <=", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerLike(String value) {
+            addCriterion("leave_approvaler like", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerNotLike(String value) {
+            addCriterion("leave_approvaler not like", value, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerIn(List<String> values) {
+            addCriterion("leave_approvaler in", values, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerNotIn(List<String> values) {
+            addCriterion("leave_approvaler not in", values, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerBetween(String value1, String value2) {
+            addCriterion("leave_approvaler between", value1, value2, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalerNotBetween(String value1, String value2) {
+            addCriterion("leave_approvaler not between", value1, value2, "leaveApprovaler");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeIsNull() {
+            addCriterion("leave_approval_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeIsNotNull() {
+            addCriterion("leave_approval_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeEqualTo(String value) {
+            addCriterion("leave_approval_time =", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeNotEqualTo(String value) {
+            addCriterion("leave_approval_time <>", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeGreaterThan(String value) {
+            addCriterion("leave_approval_time >", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_approval_time >=", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeLessThan(String value) {
+            addCriterion("leave_approval_time <", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeLessThanOrEqualTo(String value) {
+            addCriterion("leave_approval_time <=", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeLike(String value) {
+            addCriterion("leave_approval_time like", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeNotLike(String value) {
+            addCriterion("leave_approval_time not like", value, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeIn(List<String> values) {
+            addCriterion("leave_approval_time in", values, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeNotIn(List<String> values) {
+            addCriterion("leave_approval_time not in", values, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeBetween(String value1, String value2) {
+            addCriterion("leave_approval_time between", value1, value2, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalTimeNotBetween(String value1, String value2) {
+            addCriterion("leave_approval_time not between", value1, value2, "leaveApprovalTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumIsNull() {
+            addCriterion("leave_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumIsNotNull() {
+            addCriterion("leave_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumEqualTo(Integer value) {
+            addCriterion("leave_num =", value, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumNotEqualTo(Integer value) {
+            addCriterion("leave_num <>", value, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumGreaterThan(Integer value) {
+            addCriterion("leave_num >", value, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumGreaterThanOrEqualTo(Integer value) {
+            addCriterion("leave_num >=", value, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumLessThan(Integer value) {
+            addCriterion("leave_num <", value, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumLessThanOrEqualTo(Integer value) {
+            addCriterion("leave_num <=", value, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumIn(List<Integer> values) {
+            addCriterion("leave_num in", values, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumNotIn(List<Integer> values) {
+            addCriterion("leave_num not in", values, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumBetween(Integer value1, Integer value2) {
+            addCriterion("leave_num between", value1, value2, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveNumNotBetween(Integer value1, Integer value2) {
+            addCriterion("leave_num not between", value1, value2, "leaveNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeIsNull() {
+            addCriterion("leave_creatime is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeIsNotNull() {
+            addCriterion("leave_creatime is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeEqualTo(String value) {
+            addCriterion("leave_creatime =", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeNotEqualTo(String value) {
+            addCriterion("leave_creatime <>", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeGreaterThan(String value) {
+            addCriterion("leave_creatime >", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_creatime >=", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeLessThan(String value) {
+            addCriterion("leave_creatime <", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeLessThanOrEqualTo(String value) {
+            addCriterion("leave_creatime <=", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeLike(String value) {
+            addCriterion("leave_creatime like", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeNotLike(String value) {
+            addCriterion("leave_creatime not like", value, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeIn(List<String> values) {
+            addCriterion("leave_creatime in", values, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeNotIn(List<String> values) {
+            addCriterion("leave_creatime not in", values, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeBetween(String value1, String value2) {
+            addCriterion("leave_creatime between", value1, value2, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveCreatimeNotBetween(String value1, String value2) {
+            addCriterion("leave_creatime not between", value1, value2, "leaveCreatime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResIsNull() {
+            addCriterion("leave_approval_res is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResIsNotNull() {
+            addCriterion("leave_approval_res is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResEqualTo(String value) {
+            addCriterion("leave_approval_res =", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResNotEqualTo(String value) {
+            addCriterion("leave_approval_res <>", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResGreaterThan(String value) {
+            addCriterion("leave_approval_res >", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_approval_res >=", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResLessThan(String value) {
+            addCriterion("leave_approval_res <", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResLessThanOrEqualTo(String value) {
+            addCriterion("leave_approval_res <=", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResLike(String value) {
+            addCriterion("leave_approval_res like", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResNotLike(String value) {
+            addCriterion("leave_approval_res not like", value, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResIn(List<String> values) {
+            addCriterion("leave_approval_res in", values, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResNotIn(List<String> values) {
+            addCriterion("leave_approval_res not in", values, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResBetween(String value1, String value2) {
+            addCriterion("leave_approval_res between", value1, value2, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveApprovalResNotBetween(String value1, String value2) {
+            addCriterion("leave_approval_res not between", value1, value2, "leaveApprovalRes");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeIsNull() {
+            addCriterion("leave_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeIsNotNull() {
+            addCriterion("leave_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeEqualTo(String value) {
+            addCriterion("leave_type =", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeNotEqualTo(String value) {
+            addCriterion("leave_type <>", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeGreaterThan(String value) {
+            addCriterion("leave_type >", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_type >=", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeLessThan(String value) {
+            addCriterion("leave_type <", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeLessThanOrEqualTo(String value) {
+            addCriterion("leave_type <=", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeLike(String value) {
+            addCriterion("leave_type like", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeNotLike(String value) {
+            addCriterion("leave_type not like", value, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeIn(List<String> values) {
+            addCriterion("leave_type in", values, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeNotIn(List<String> values) {
+            addCriterion("leave_type not in", values, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeBetween(String value1, String value2) {
+            addCriterion("leave_type between", value1, value2, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeaveTypeNotBetween(String value1, String value2) {
+            addCriterion("leave_type not between", value1, value2, "leaveType");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassIsNull() {
+            addCriterion("leave_pass is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassIsNotNull() {
+            addCriterion("leave_pass is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassEqualTo(String value) {
+            addCriterion("leave_pass =", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassNotEqualTo(String value) {
+            addCriterion("leave_pass <>", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassGreaterThan(String value) {
+            addCriterion("leave_pass >", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_pass >=", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassLessThan(String value) {
+            addCriterion("leave_pass <", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassLessThanOrEqualTo(String value) {
+            addCriterion("leave_pass <=", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassLike(String value) {
+            addCriterion("leave_pass like", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassNotLike(String value) {
+            addCriterion("leave_pass not like", value, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassIn(List<String> values) {
+            addCriterion("leave_pass in", values, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassNotIn(List<String> values) {
+            addCriterion("leave_pass not in", values, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassBetween(String value1, String value2) {
+            addCriterion("leave_pass between", value1, value2, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePassNotBetween(String value1, String value2) {
+            addCriterion("leave_pass not between", value1, value2, "leavePass");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicIsNull() {
+            addCriterion("leave_pic is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicIsNotNull() {
+            addCriterion("leave_pic is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicEqualTo(String value) {
+            addCriterion("leave_pic =", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicNotEqualTo(String value) {
+            addCriterion("leave_pic <>", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicGreaterThan(String value) {
+            addCriterion("leave_pic >", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicGreaterThanOrEqualTo(String value) {
+            addCriterion("leave_pic >=", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicLessThan(String value) {
+            addCriterion("leave_pic <", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicLessThanOrEqualTo(String value) {
+            addCriterion("leave_pic <=", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicLike(String value) {
+            addCriterion("leave_pic like", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicNotLike(String value) {
+            addCriterion("leave_pic not like", value, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicIn(List<String> values) {
+            addCriterion("leave_pic in", values, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicNotIn(List<String> values) {
+            addCriterion("leave_pic not in", values, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicBetween(String value1, String value2) {
+            addCriterion("leave_pic between", value1, value2, "leavePic");
+            return (Criteria) this;
+        }
+
+        public Criteria andLeavePicNotBetween(String value1, String value2) {
+            addCriterion("leave_pic not between", value1, value2, "leavePic");
+            return (Criteria) this;
+        }
+    }
+
+    public static class Criteria extends GeneratedCriteria {
+
+        protected Criteria() {
+            super();
+        }
+    }
+
+    public static class Criterion {
+        private String condition;
+
+        private Object value;
+
+        private Object secondValue;
+
+        private boolean noValue;
+
+        private boolean singleValue;
+
+        private boolean betweenValue;
+
+        private boolean listValue;
+
+        private String typeHandler;
+
+        public String getCondition() {
+            return condition;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object getSecondValue() {
+            return secondValue;
+        }
+
+        public boolean isNoValue() {
+            return noValue;
+        }
+
+        public boolean isSingleValue() {
+            return singleValue;
+        }
+
+        public boolean isBetweenValue() {
+            return betweenValue;
+        }
+
+        public boolean isListValue() {
+            return listValue;
+        }
+
+        public String getTypeHandler() {
+            return typeHandler;
+        }
+
+        protected Criterion(String condition) {
+            super();
+            this.condition = condition;
+            this.typeHandler = null;
+            this.noValue = true;
+        }
+
+        protected Criterion(String condition, Object value, String typeHandler) {
+            super();
+            this.condition = condition;
+            this.value = value;
+            this.typeHandler = typeHandler;
+            if (value instanceof List<?>) {
+                this.listValue = true;
+            } else {
+                this.singleValue = true;
+            }
+        }
+
+        protected Criterion(String condition, Object value) {
+            this(condition, value, null);
+        }
+
+        protected Criterion(String condition, Object value, Object secondValue, String typeHandler) {
+            super();
+            this.condition = condition;
+            this.value = value;
+            this.secondValue = secondValue;
+            this.typeHandler = typeHandler;
+            this.betweenValue = true;
+        }
+
+        protected Criterion(String condition, Object value, Object secondValue) {
+            this(condition, value, secondValue, null);
+        }
+    }
+}

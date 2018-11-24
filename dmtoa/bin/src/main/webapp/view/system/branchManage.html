@@ -1,0 +1,421 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>机构管理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		DMTForm("add");
+		DMTForm("edit");
+		DMTSelectData("branch_status", "SIMPLE_STATUS");
+		DMTSelectData("add_branch_status", "SIMPLE_STATUS");
+		//绑定查询按钮点击事件
+		$("#submit").click(function(){
+			//查询机构数据
+			DMTDatatable({
+				id:"#datagrid", //需要被填充的table
+				title:"机构列表",  //数据名称
+				url:"../../branchAction/branchList.do",  //数据url
+				validate:true,
+				params:{
+					branchId:$("input[name=branch_id]").val(),
+					branchName:$("input[name=branch_name]").val(),
+					branchStatus:$("select[name=branch_status]").val()
+				},
+				checkbox:false,  //每条数据前是否带checkbox复选框
+				//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+				columns:[[
+				    {field:'branchName',title:'机构名称',width:fixWidth(0.23),align:'center'},
+				    {field:'branchId',title:'机构编码',width:fixWidth(0.2),align:'center'},
+				    {field:'branchLevel',title:'机构级别',width:fixWidth(0.2),align:'center'},
+				    {field:'statusCopy',title:'机构状态',width:fixWidth(0.2),align:'center'},
+				    {field:'_opt',title:'操作',width:fixWidth(0.2),align:'center',
+				    	formatter:function(value,rec){
+		                var html = '<a href="javascript:branchDetail(\''+rec.branchId+'\');">详情</a> '; 
+		                if(rec.status == '0'){
+		                	html += '|<a href="javascript:statusBranch(\''+rec.branchId+'\',\'1\');">禁用</a>';
+		                }else{
+		                	html += '|<a href="javascript:statusBranch(\''+rec.branchId+'\',\'0\');">启用</a>'
+		                }
+		                html += '| <a href="javascript:editBranch(\''+rec.branchId+'\');">编辑</a> ';
+		                return html; 
+		               }
+				    }
+				]],
+				//操作按钮
+				toolbar:[{ 
+			        text: '添加', 
+			        iconCls: 'icon-add', 
+			        handler: function() { 
+			        	//打开机构添加框
+			        	$("#add").dialog("open");
+			        	DMTInitMsg();
+			        } 
+			    }]
+			});
+		});
+		
+		$("#submit").click();
+		
+		//定义新增机构弹出框
+		$('#add').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#addForm")[0].reset();
+			},
+			buttons : [ {
+				text : '确认',
+				iconCls : 'icon-ok',
+				handler : function() {
+					if (DMTValidate("addForm")) {
+						DMTRequest({
+							url : '../../branchAction/branchAdd.do',
+							params : {
+								branchParent:$("span[name=add_branch_parent]").html(),
+								branchId:$("input[name=add_branch_id]").val(),
+								branchName:$("input[name=add_branch_name]").val(),
+								branchShortname:$("input[name=add_branch_shortname]").val(),
+								branchStatus:$("select[name=add_branch_status]").val(),
+								branchPerson:$("input[name=add_branch_person]").val(),
+								branchPhone:$("input[name=add_branch_phone]").val(),
+								branchRemark:$("textarea[name=add_branch_remark]").val()
+							},
+							validate : true,
+							success : function(data) {
+								$("#add_branch_status").empty();
+								$("#add").dialog('close');
+								$("#addForm")[0].reset();
+								$("#datagrid").datagrid('reload');
+								$.messager.alert("系统提示", "新增机构成功", "info");
+							}
+						});
+					}
+				}
+			}, {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#add').dialog('close');
+					$("#addForm")[0].reset();
+				}
+			} ]
+		});
+		
+		//定义修改机构弹出框
+		$('#edit').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#editForm")[0].reset();
+			},
+			buttons : [ {
+				text : '确认',
+				iconCls : 'icon-ok',
+				handler : function() {
+					if (DMTValidate("editForm")) {
+						DMTRequest({
+							url : '../../branchAction/branchEdit.do',
+							params : {
+								branchParent:$("span[name=edit_branch_parent]").html(),
+								branchId:$("span[name=edit_branch_id]").html(),
+								branchName:$("input[name=edit_branch_name]").val(),
+								branchShortname:$("input[name=edit_branch_shortname]").val(),
+								branchStatus:$("select[name=edit_branch_status]").val(),
+								branchPerson:$("input[name=edit_branch_person]").val(),
+								branchPhone:$("input[name=edit_branch_phone]").val(),
+								branchRemark:$("textarea[name=edit_branch_remark]").val()
+							},
+							validate : true,
+							success : function(data) {
+								$("#edit").dialog('close');
+								$("#editForm")[0].reset();
+								$("#datagrid").datagrid('reload');
+								$.messager.alert("系统提示", "修改机构成功", "info");
+							}
+						});
+					}
+				}
+			}, {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#edit').dialog('close');
+					$("#editForm")[0].reset();
+				}
+			} ]
+		});
+		
+		//定义机构详情弹出框
+		$('#detail').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#detailForm")[0].reset();
+			},
+			buttons : [ {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#detail').dialog('close');
+					$("#detailForm")[0].reset();
+				}
+			} ]
+		});
+	})
+	
+	//点击启用或者禁用事件
+	function statusBranch(id, status) {
+		DMTRequest({
+			url : '../../branchAction/branchStatus.do',
+			params : {
+				id : id,
+				status : status,
+			},
+			validate : true,
+			success : function(data) {
+				$("#datagrid").datagrid("reload");
+				$.messager.alert("系统提示", data.result, "info");
+			}
+		});
+	}
+	
+	//机构详情
+	function branchDetail(id){
+		DMTRequest({
+			url : '../../branchAction/branchDetail.do',
+			params : {
+				id : id,
+			},
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("span[name=detail_branch_id]").html(id);
+				$("span[name=detail_branch_name]").html(res.branchName);
+				$("span[name=detail_branch_shortname]").html(res.branchShortname);
+				$("span[name=detail_branch_level]").html(res.branchLevel);
+				$("span[name=detail_branch_person]").html(res.branchPerson);
+				$("span[name=detail_branch_phone]").html(res.branchPhone);
+				$("span[name=detail_branch_status]").html(res.statusCopy);
+				$("span[name=detail_branch_remark]").html(res.branchRemark);
+			}
+		});
+		$("#detail").dialog("open");
+	}
+	
+	//修改弹出窗
+	function editBranch(id){
+		DMTRequest({
+			url : '../../branchAction/branchDetail.do',
+			params : {
+				id : id,
+			},
+			validate : true,
+			success : function(data) {
+				$("#edit_branch_status").empty();
+				var res = data.result;
+				$("span[name=edit_branch_parent]").html(res.branchParent);
+				$("span[name=edit_branch_id]").html(id);
+				$("input[name=edit_branch_name]").val(res.branchName);
+				$("input[name=edit_branch_shortname]").val(res.branchShortname);
+				DMTSelectData("edit_branch_status", "SIMPLE_STATUS",res.branchStatus);
+				$("input[name=edit_branch_person]").val(res.branchPerson);
+				$("input[name=edit_branch_phone]").val(res.branchPhone);
+				$("textarea[name=edit_branch_remark]").val(res.branchRemark);
+			}
+		});
+		$("#edit").dialog("open");
+		DMTInitMsg();
+	}
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">机构编号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="branch_id" /></td>
+					<td class="dmt_td_name">机构名称：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="branch_name" /></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">机构状态：</td>
+					<td class="dmt_td_value"><select name="branch_status"
+						id="branch_status">
+							<option value="">全部</option>
+					</select></td>
+					<td class="dmt_td_name"></td>
+					<td class="dmt_td_value"></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+
+	<!-- 数据新增弹出框开始 -->
+	<div id="add" class="easyui-dialog" title="新增机构" closed="true">
+		<form id="addForm">
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name" width="130px"><span class="dmt_star">*</span>上级机构：</td>
+					<td class="dmt_td_value" width="450px"><span name="add_branch_parent">江西金猫银猫支付有限公司</span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>机构编号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="add_branch_id" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>机构名称：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="add_branch_name" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>机构简称：</td>
+					<td class="dmt_td_value"><input type="text" name="add_branch_shortname"
+						maxlength="8" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>初始化状态：</td>
+					<td class="dmt_td_value"><select name="add_branch_status"
+						id="add_branch_status"></select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>联系人：</td>
+					<td class="dmt_td_value"><input type="text" name="add_branch_person"
+						maxlength="10" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>联系方式：</td>
+					<td class="dmt_td_value"><input type="text" name="add_branch_phone"
+						maxlength="11" validate="NOTNULL,PHONE"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">备注：</td>
+					<td class="dmt_td_value"><textarea name="add_branch_remark" maxlength="100"></textarea></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据新增弹出框结束 -->
+	
+	<!-- 数据详情弹出框开始 -->
+	<div id="detail" class="easyui-dialog" title="机构详情" closed="true">
+		<form id="detailForm">
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name">机构编号：</td>
+					<td class="dmt_td_value"><span name="detail_branch_id"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">机构名称：</td>
+					<td class="dmt_td_value"><span name="detail_branch_name"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">机构简称：</td>
+					<td class="dmt_td_value"><span name="detail_branch_shortname"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">机构级别：</td>
+					<td class="dmt_td_value"><span name="detail_branch_level"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">联系人：</td>
+					<td class="dmt_td_value"><span name="detail_branch_person"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">联系方式：</td>
+					<td class="dmt_td_value"><span name="detail_branch_phone"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">机构状态：</td>
+					<td class="dmt_td_value"><span name="detail_branch_status"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">备注：</td>
+					<td class="dmt_td_value"><span name="detail_branch_remark"></span></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据新增弹出框结束 -->
+
+	<!-- 数据修改弹出框开始 -->
+	<div id="edit" class="easyui-dialog" title="修改机构" closed="true">
+		<form id="editForm">
+			<input type="hidden" name="edit_id" />
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name" width="130px"><span class="dmt_star">*</span>机构编号：</td>
+					<td class="dmt_td_value" width="450px"><span name="edit_branch_id"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>机构名称：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_branch_name" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>机构简称：</td>
+					<td class="dmt_td_value"><input type="text" name="edit_branch_shortname"
+						maxlength="8" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>初始化状态：</td>
+					<td class="dmt_td_value"><select name="edit_branch_status"
+						id="edit_branch_status"></select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>联系人：</td>
+					<td class="dmt_td_value"><input type="text" name="edit_branch_person"
+						maxlength="10" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>联系方式：</td>
+					<td class="dmt_td_value"><input type="text" name="edit_branch_phone"
+						maxlength="11" validate="NOTNULL,PHONE"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">备注：</td>
+					<td class="dmt_td_value"><textarea name="edit_branch_remark" maxlength="100"></textarea></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据修改弹出框结束 -->
+</body>
+</html>

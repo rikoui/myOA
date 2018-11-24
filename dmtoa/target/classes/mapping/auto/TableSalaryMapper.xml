@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjdreamtech.mapper.auto.TableSalaryMapper">
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.TableSalary">
+    <id column="salary_id" jdbcType="VARCHAR" property="salaryId" />
+    <result column="salary_type" jdbcType="VARCHAR" property="salaryType" />
+    <result column="salary_staff_no" jdbcType="VARCHAR" property="salaryStaffNo" />
+    <result column="salary_staff_name" jdbcType="VARCHAR" property="salaryStaffName" />
+    <result column="salary_staff_carno" jdbcType="VARCHAR" property="salaryStaffCarno" />
+    <result column="salary_bank_account" jdbcType="VARCHAR" property="salaryBankAccount" />
+    <result column="salary_check_standard_day" jdbcType="DOUBLE" property="salaryCheckStandardDay" />
+    <result column="salary_formal_day" jdbcType="DOUBLE" property="salaryFormalDay" />
+    <result column="salary_use_day" jdbcType="DOUBLE" property="salaryUseDay" />
+    <result column="salary_ycqts_day" jdbcType="DOUBLE" property="salaryYcqtsDay" />
+    <result column="salary_base_pay" jdbcType="DOUBLE" property="salaryBasePay" />
+    <result column="salary_merit_pay" jdbcType="DOUBLE" property="salaryMeritPay" />
+    <result column="salary_account" jdbcType="DOUBLE" property="salaryAccount" />
+    <result column="salary_paid" jdbcType="DOUBLE" property="salaryPaid" />
+    <result column="salary_other_add" jdbcType="DOUBLE" property="salaryOtherAdd" />
+    <result column="salary_sick_pay" jdbcType="DOUBLE" property="salarySickPay" />
+    <result column="salary_abs_pay" jdbcType="DOUBLE" property="salaryAbsPay" />
+    <result column="salary_other_pay" jdbcType="DOUBLE" property="salaryOtherPay" />
+    <result column="salary_sum_pay" jdbcType="DOUBLE" property="salarySumPay" />
+    <result column="salary_sum_account" jdbcType="DOUBLE" property="salarySumAccount" />
+    <result column="salary_security_base" jdbcType="DOUBLE" property="salarySecurityBase" />
+    <result column="salary_fund_base" jdbcType="DOUBLE" property="salaryFundBase" />
+    <result column="salaray_insurance" jdbcType="DOUBLE" property="salarayInsurance" />
+    <result column="salaray_unemployment" jdbcType="DOUBLE" property="salarayUnemployment" />
+    <result column="salaray_medical_base" jdbcType="DOUBLE" property="salarayMedicalBase" />
+    <result column="salaray_housing_fund" jdbcType="DOUBLE" property="salarayHousingFund" />
+    <result column="salaray_reduction_sum" jdbcType="DOUBLE" property="salarayReductionSum" />
+    <result column="salaray_tax" jdbcType="DOUBLE" property="salarayTax" />
+    <result column="salaray_tax_pay" jdbcType="DOUBLE" property="salarayTaxPay" />
+    <result column="salaray_payroll" jdbcType="DOUBLE" property="salarayPayroll" />
+    <result column="salaray_create_time" jdbcType="VARCHAR" property="salarayCreateTime" />
+    <result column="salaray_payroll_period_month" jdbcType="VARCHAR" property="salarayPayrollPeriodMonth" />
+    <result column="salaray_send_time" jdbcType="VARCHAR" property="salaraySendTime" />
+    <result column="salaray_table_time" jdbcType="VARCHAR" property="salarayTableTime" />
+    <result column="salary_mail" jdbcType="VARCHAR" property="salaryMail" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    salary_id, salary_type, salary_staff_no, salary_staff_name, salary_staff_carno, salary_bank_account, 
+    salary_check_standard_day, salary_formal_day, salary_use_day, salary_ycqts_day, salary_base_pay, 
+    salary_merit_pay, salary_account, salary_paid, salary_other_add, salary_sick_pay, 
+    salary_abs_pay, salary_other_pay, salary_sum_pay, salary_sum_account, salary_security_base, 
+    salary_fund_base, salaray_insurance, salaray_unemployment, salaray_medical_base, 
+    salaray_housing_fund, salaray_reduction_sum, salaray_tax, salaray_tax_pay, salaray_payroll, 
+    salaray_create_time, salaray_payroll_period_month, salaray_send_time, salaray_table_time, 
+    salary_mail
+  </sql>
+  <select id="selectByExample" parameterType="com.bjdreamtech.entity.TableSalaryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from table_salary
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from table_salary
+    where salary_id = #{salaryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from table_salary
+    where salary_id = #{salaryId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.TableSalaryExample">
+    delete from table_salary
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.TableSalary">
+    insert into table_salary (salary_id, salary_type, salary_staff_no, 
+      salary_staff_name, salary_staff_carno, salary_bank_account, 
+      salary_check_standard_day, salary_formal_day, 
+      salary_use_day, salary_ycqts_day, salary_base_pay, 
+      salary_merit_pay, salary_account, salary_paid, 
+      salary_other_add, salary_sick_pay, salary_abs_pay, 
+      salary_other_pay, salary_sum_pay, salary_sum_account, 
+      salary_security_base, salary_fund_base, salaray_insurance, 
+      salaray_unemployment, salaray_medical_base, 
+      salaray_housing_fund, salaray_reduction_sum, 
+      salaray_tax, salaray_tax_pay, salaray_payroll, 
+      salaray_create_time, salaray_payroll_period_month, 
+      salaray_send_time, salaray_table_time, salary_mail
+      )
+    values (#{salaryId,jdbcType=VARCHAR}, #{salaryType,jdbcType=VARCHAR}, #{salaryStaffNo,jdbcType=VARCHAR}, 
+      #{salaryStaffName,jdbcType=VARCHAR}, #{salaryStaffCarno,jdbcType=VARCHAR}, #{salaryBankAccount,jdbcType=VARCHAR}, 
+      #{salaryCheckStandardDay,jdbcType=DOUBLE}, #{salaryFormalDay,jdbcType=DOUBLE}, 
+      #{salaryUseDay,jdbcType=DOUBLE}, #{salaryYcqtsDay,jdbcType=DOUBLE}, #{salaryBasePay,jdbcType=DOUBLE}, 
+      #{salaryMeritPay,jdbcType=DOUBLE}, #{salaryAccount,jdbcType=DOUBLE}, #{salaryPaid,jdbcType=DOUBLE}, 
+      #{salaryOtherAdd,jdbcType=DOUBLE}, #{salarySickPay,jdbcType=DOUBLE}, #{salaryAbsPay,jdbcType=DOUBLE}, 
+      #{salaryOtherPay,jdbcType=DOUBLE}, #{salarySumPay,jdbcType=DOUBLE}, #{salarySumAccount,jdbcType=DOUBLE}, 
+      #{salarySecurityBase,jdbcType=DOUBLE}, #{salaryFundBase,jdbcType=DOUBLE}, #{salarayInsurance,jdbcType=DOUBLE}, 
+      #{salarayUnemployment,jdbcType=DOUBLE}, #{salarayMedicalBase,jdbcType=DOUBLE}, 
+      #{salarayHousingFund,jdbcType=DOUBLE}, #{salarayReductionSum,jdbcType=DOUBLE}, 
+      #{salarayTax,jdbcType=DOUBLE}, #{salarayTaxPay,jdbcType=DOUBLE}, #{salarayPayroll,jdbcType=DOUBLE}, 
+      #{salarayCreateTime,jdbcType=VARCHAR}, #{salarayPayrollPeriodMonth,jdbcType=VARCHAR}, 
+      #{salaraySendTime,jdbcType=VARCHAR}, #{salarayTableTime,jdbcType=VARCHAR}, #{salaryMail,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.TableSalary">
+    insert into table_salary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="salaryId != null">
+        salary_id,
+      </if>
+      <if test="salaryType != null">
+        salary_type,
+      </if>
+      <if test="salaryStaffNo != null">
+        salary_staff_no,
+      </if>
+      <if test="salaryStaffName != null">
+        salary_staff_name,
+      </if>
+      <if test="salaryStaffCarno != null">
+        salary_staff_carno,
+      </if>
+      <if test="salaryBankAccount != null">
+        salary_bank_account,
+      </if>
+      <if test="salaryCheckStandardDay != null">
+        salary_check_standard_day,
+      </if>
+      <if test="salaryFormalDay != null">
+        salary_formal_day,
+      </if>
+      <if test="salaryUseDay != null">
+        salary_use_day,
+      </if>
+      <if test="salaryYcqtsDay != null">
+        salary_ycqts_day,
+      </if>
+      <if test="salaryBasePay != null">
+        salary_base_pay,
+      </if>
+      <if test="salaryMeritPay != null">
+        salary_merit_pay,
+      </if>
+      <if test="salaryAccount != null">
+        salary_account,
+      </if>
+      <if test="salaryPaid != null">
+        salary_paid,
+      </if>
+      <if test="salaryOtherAdd != null">
+        salary_other_add,
+      </if>
+      <if test="salarySickPay != null">
+        salary_sick_pay,
+      </if>
+      <if test="salaryAbsPay != null">
+        salary_abs_pay,
+      </if>
+      <if test="salaryOtherPay != null">
+        salary_other_pay,
+      </if>
+      <if test="salarySumPay != null">
+        salary_sum_pay,
+      </if>
+      <if test="salarySumAccount != null">
+        salary_sum_account,
+      </if>
+      <if test="salarySecurityBase != null">
+        salary_security_base,
+      </if>
+      <if test="salaryFundBase != null">
+        salary_fund_base,
+      </if>
+      <if test="salarayInsurance != null">
+        salaray_insurance,
+      </if>
+      <if test="salarayUnemployment != null">
+        salaray_unemployment,
+      </if>
+      <if test="salarayMedicalBase != null">
+        salaray_medical_base,
+      </if>
+      <if test="salarayHousingFund != null">
+        salaray_housing_fund,
+      </if>
+      <if test="salarayReductionSum != null">
+        salaray_reduction_sum,
+      </if>
+      <if test="salarayTax != null">
+        salaray_tax,
+      </if>
+      <if test="salarayTaxPay != null">
+        salaray_tax_pay,
+      </if>
+      <if test="salarayPayroll != null">
+        salaray_payroll,
+      </if>
+      <if test="salarayCreateTime != null">
+        salaray_create_time,
+      </if>
+      <if test="salarayPayrollPeriodMonth != null">
+        salaray_payroll_period_month,
+      </if>
+      <if test="salaraySendTime != null">
+        salaray_send_time,
+      </if>
+      <if test="salarayTableTime != null">
+        salaray_table_time,
+      </if>
+      <if test="salaryMail != null">
+        salary_mail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="salaryId != null">
+        #{salaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryType != null">
+        #{salaryType,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryStaffNo != null">
+        #{salaryStaffNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryStaffName != null">
+        #{salaryStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryStaffCarno != null">
+        #{salaryStaffCarno,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryBankAccount != null">
+        #{salaryBankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryCheckStandardDay != null">
+        #{salaryCheckStandardDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryFormalDay != null">
+        #{salaryFormalDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryUseDay != null">
+        #{salaryUseDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryYcqtsDay != null">
+        #{salaryYcqtsDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryBasePay != null">
+        #{salaryBasePay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryMeritPay != null">
+        #{salaryMeritPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryAccount != null">
+        #{salaryAccount,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryPaid != null">
+        #{salaryPaid,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryOtherAdd != null">
+        #{salaryOtherAdd,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySickPay != null">
+        #{salarySickPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryAbsPay != null">
+        #{salaryAbsPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryOtherPay != null">
+        #{salaryOtherPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySumPay != null">
+        #{salarySumPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySumAccount != null">
+        #{salarySumAccount,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySecurityBase != null">
+        #{salarySecurityBase,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryFundBase != null">
+        #{salaryFundBase,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayInsurance != null">
+        #{salarayInsurance,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayUnemployment != null">
+        #{salarayUnemployment,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayMedicalBase != null">
+        #{salarayMedicalBase,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayHousingFund != null">
+        #{salarayHousingFund,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayReductionSum != null">
+        #{salarayReductionSum,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayTax != null">
+        #{salarayTax,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayTaxPay != null">
+        #{salarayTaxPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayPayroll != null">
+        #{salarayPayroll,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayCreateTime != null">
+        #{salarayCreateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="salarayPayrollPeriodMonth != null">
+        #{salarayPayrollPeriodMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="salaraySendTime != null">
+        #{salaraySendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="salarayTableTime != null">
+        #{salarayTableTime,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryMail != null">
+        #{salaryMail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.TableSalaryExample" resultType="java.lang.Integer">
+    select count(*) from table_salary
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update table_salary
+    <set>
+      <if test="record.salaryId != null">
+        salary_id = #{record.salaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryType != null">
+        salary_type = #{record.salaryType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryStaffNo != null">
+        salary_staff_no = #{record.salaryStaffNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryStaffName != null">
+        salary_staff_name = #{record.salaryStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryStaffCarno != null">
+        salary_staff_carno = #{record.salaryStaffCarno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryBankAccount != null">
+        salary_bank_account = #{record.salaryBankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryCheckStandardDay != null">
+        salary_check_standard_day = #{record.salaryCheckStandardDay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryFormalDay != null">
+        salary_formal_day = #{record.salaryFormalDay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryUseDay != null">
+        salary_use_day = #{record.salaryUseDay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryYcqtsDay != null">
+        salary_ycqts_day = #{record.salaryYcqtsDay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryBasePay != null">
+        salary_base_pay = #{record.salaryBasePay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryMeritPay != null">
+        salary_merit_pay = #{record.salaryMeritPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryAccount != null">
+        salary_account = #{record.salaryAccount,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryPaid != null">
+        salary_paid = #{record.salaryPaid,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryOtherAdd != null">
+        salary_other_add = #{record.salaryOtherAdd,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarySickPay != null">
+        salary_sick_pay = #{record.salarySickPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryAbsPay != null">
+        salary_abs_pay = #{record.salaryAbsPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryOtherPay != null">
+        salary_other_pay = #{record.salaryOtherPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarySumPay != null">
+        salary_sum_pay = #{record.salarySumPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarySumAccount != null">
+        salary_sum_account = #{record.salarySumAccount,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarySecurityBase != null">
+        salary_security_base = #{record.salarySecurityBase,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salaryFundBase != null">
+        salary_fund_base = #{record.salaryFundBase,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayInsurance != null">
+        salaray_insurance = #{record.salarayInsurance,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayUnemployment != null">
+        salaray_unemployment = #{record.salarayUnemployment,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayMedicalBase != null">
+        salaray_medical_base = #{record.salarayMedicalBase,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayHousingFund != null">
+        salaray_housing_fund = #{record.salarayHousingFund,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayReductionSum != null">
+        salaray_reduction_sum = #{record.salarayReductionSum,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayTax != null">
+        salaray_tax = #{record.salarayTax,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayTaxPay != null">
+        salaray_tax_pay = #{record.salarayTaxPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayPayroll != null">
+        salaray_payroll = #{record.salarayPayroll,jdbcType=DOUBLE},
+      </if>
+      <if test="record.salarayCreateTime != null">
+        salaray_create_time = #{record.salarayCreateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salarayPayrollPeriodMonth != null">
+        salaray_payroll_period_month = #{record.salarayPayrollPeriodMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaraySendTime != null">
+        salaray_send_time = #{record.salaraySendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salarayTableTime != null">
+        salaray_table_time = #{record.salarayTableTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salaryMail != null">
+        salary_mail = #{record.salaryMail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update table_salary
+    set salary_id = #{record.salaryId,jdbcType=VARCHAR},
+      salary_type = #{record.salaryType,jdbcType=VARCHAR},
+      salary_staff_no = #{record.salaryStaffNo,jdbcType=VARCHAR},
+      salary_staff_name = #{record.salaryStaffName,jdbcType=VARCHAR},
+      salary_staff_carno = #{record.salaryStaffCarno,jdbcType=VARCHAR},
+      salary_bank_account = #{record.salaryBankAccount,jdbcType=VARCHAR},
+      salary_check_standard_day = #{record.salaryCheckStandardDay,jdbcType=DOUBLE},
+      salary_formal_day = #{record.salaryFormalDay,jdbcType=DOUBLE},
+      salary_use_day = #{record.salaryUseDay,jdbcType=DOUBLE},
+      salary_ycqts_day = #{record.salaryYcqtsDay,jdbcType=DOUBLE},
+      salary_base_pay = #{record.salaryBasePay,jdbcType=DOUBLE},
+      salary_merit_pay = #{record.salaryMeritPay,jdbcType=DOUBLE},
+      salary_account = #{record.salaryAccount,jdbcType=DOUBLE},
+      salary_paid = #{record.salaryPaid,jdbcType=DOUBLE},
+      salary_other_add = #{record.salaryOtherAdd,jdbcType=DOUBLE},
+      salary_sick_pay = #{record.salarySickPay,jdbcType=DOUBLE},
+      salary_abs_pay = #{record.salaryAbsPay,jdbcType=DOUBLE},
+      salary_other_pay = #{record.salaryOtherPay,jdbcType=DOUBLE},
+      salary_sum_pay = #{record.salarySumPay,jdbcType=DOUBLE},
+      salary_sum_account = #{record.salarySumAccount,jdbcType=DOUBLE},
+      salary_security_base = #{record.salarySecurityBase,jdbcType=DOUBLE},
+      salary_fund_base = #{record.salaryFundBase,jdbcType=DOUBLE},
+      salaray_insurance = #{record.salarayInsurance,jdbcType=DOUBLE},
+      salaray_unemployment = #{record.salarayUnemployment,jdbcType=DOUBLE},
+      salaray_medical_base = #{record.salarayMedicalBase,jdbcType=DOUBLE},
+      salaray_housing_fund = #{record.salarayHousingFund,jdbcType=DOUBLE},
+      salaray_reduction_sum = #{record.salarayReductionSum,jdbcType=DOUBLE},
+      salaray_tax = #{record.salarayTax,jdbcType=DOUBLE},
+      salaray_tax_pay = #{record.salarayTaxPay,jdbcType=DOUBLE},
+      salaray_payroll = #{record.salarayPayroll,jdbcType=DOUBLE},
+      salaray_create_time = #{record.salarayCreateTime,jdbcType=VARCHAR},
+      salaray_payroll_period_month = #{record.salarayPayrollPeriodMonth,jdbcType=VARCHAR},
+      salaray_send_time = #{record.salaraySendTime,jdbcType=VARCHAR},
+      salaray_table_time = #{record.salarayTableTime,jdbcType=VARCHAR},
+      salary_mail = #{record.salaryMail,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.TableSalary">
+    update table_salary
+    <set>
+      <if test="salaryType != null">
+        salary_type = #{salaryType,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryStaffNo != null">
+        salary_staff_no = #{salaryStaffNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryStaffName != null">
+        salary_staff_name = #{salaryStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryStaffCarno != null">
+        salary_staff_carno = #{salaryStaffCarno,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryBankAccount != null">
+        salary_bank_account = #{salaryBankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryCheckStandardDay != null">
+        salary_check_standard_day = #{salaryCheckStandardDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryFormalDay != null">
+        salary_formal_day = #{salaryFormalDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryUseDay != null">
+        salary_use_day = #{salaryUseDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryYcqtsDay != null">
+        salary_ycqts_day = #{salaryYcqtsDay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryBasePay != null">
+        salary_base_pay = #{salaryBasePay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryMeritPay != null">
+        salary_merit_pay = #{salaryMeritPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryAccount != null">
+        salary_account = #{salaryAccount,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryPaid != null">
+        salary_paid = #{salaryPaid,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryOtherAdd != null">
+        salary_other_add = #{salaryOtherAdd,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySickPay != null">
+        salary_sick_pay = #{salarySickPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryAbsPay != null">
+        salary_abs_pay = #{salaryAbsPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryOtherPay != null">
+        salary_other_pay = #{salaryOtherPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySumPay != null">
+        salary_sum_pay = #{salarySumPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySumAccount != null">
+        salary_sum_account = #{salarySumAccount,jdbcType=DOUBLE},
+      </if>
+      <if test="salarySecurityBase != null">
+        salary_security_base = #{salarySecurityBase,jdbcType=DOUBLE},
+      </if>
+      <if test="salaryFundBase != null">
+        salary_fund_base = #{salaryFundBase,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayInsurance != null">
+        salaray_insurance = #{salarayInsurance,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayUnemployment != null">
+        salaray_unemployment = #{salarayUnemployment,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayMedicalBase != null">
+        salaray_medical_base = #{salarayMedicalBase,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayHousingFund != null">
+        salaray_housing_fund = #{salarayHousingFund,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayReductionSum != null">
+        salaray_reduction_sum = #{salarayReductionSum,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayTax != null">
+        salaray_tax = #{salarayTax,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayTaxPay != null">
+        salaray_tax_pay = #{salarayTaxPay,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayPayroll != null">
+        salaray_payroll = #{salarayPayroll,jdbcType=DOUBLE},
+      </if>
+      <if test="salarayCreateTime != null">
+        salaray_create_time = #{salarayCreateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="salarayPayrollPeriodMonth != null">
+        salaray_payroll_period_month = #{salarayPayrollPeriodMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="salaraySendTime != null">
+        salaray_send_time = #{salaraySendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="salarayTableTime != null">
+        salaray_table_time = #{salarayTableTime,jdbcType=VARCHAR},
+      </if>
+      <if test="salaryMail != null">
+        salary_mail = #{salaryMail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where salary_id = #{salaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.TableSalary">
+    update table_salary
+    set salary_type = #{salaryType,jdbcType=VARCHAR},
+      salary_staff_no = #{salaryStaffNo,jdbcType=VARCHAR},
+      salary_staff_name = #{salaryStaffName,jdbcType=VARCHAR},
+      salary_staff_carno = #{salaryStaffCarno,jdbcType=VARCHAR},
+      salary_bank_account = #{salaryBankAccount,jdbcType=VARCHAR},
+      salary_check_standard_day = #{salaryCheckStandardDay,jdbcType=DOUBLE},
+      salary_formal_day = #{salaryFormalDay,jdbcType=DOUBLE},
+      salary_use_day = #{salaryUseDay,jdbcType=DOUBLE},
+      salary_ycqts_day = #{salaryYcqtsDay,jdbcType=DOUBLE},
+      salary_base_pay = #{salaryBasePay,jdbcType=DOUBLE},
+      salary_merit_pay = #{salaryMeritPay,jdbcType=DOUBLE},
+      salary_account = #{salaryAccount,jdbcType=DOUBLE},
+      salary_paid = #{salaryPaid,jdbcType=DOUBLE},
+      salary_other_add = #{salaryOtherAdd,jdbcType=DOUBLE},
+      salary_sick_pay = #{salarySickPay,jdbcType=DOUBLE},
+      salary_abs_pay = #{salaryAbsPay,jdbcType=DOUBLE},
+      salary_other_pay = #{salaryOtherPay,jdbcType=DOUBLE},
+      salary_sum_pay = #{salarySumPay,jdbcType=DOUBLE},
+      salary_sum_account = #{salarySumAccount,jdbcType=DOUBLE},
+      salary_security_base = #{salarySecurityBase,jdbcType=DOUBLE},
+      salary_fund_base = #{salaryFundBase,jdbcType=DOUBLE},
+      salaray_insurance = #{salarayInsurance,jdbcType=DOUBLE},
+      salaray_unemployment = #{salarayUnemployment,jdbcType=DOUBLE},
+      salaray_medical_base = #{salarayMedicalBase,jdbcType=DOUBLE},
+      salaray_housing_fund = #{salarayHousingFund,jdbcType=DOUBLE},
+      salaray_reduction_sum = #{salarayReductionSum,jdbcType=DOUBLE},
+      salaray_tax = #{salarayTax,jdbcType=DOUBLE},
+      salaray_tax_pay = #{salarayTaxPay,jdbcType=DOUBLE},
+      salaray_payroll = #{salarayPayroll,jdbcType=DOUBLE},
+      salaray_create_time = #{salarayCreateTime,jdbcType=VARCHAR},
+      salaray_payroll_period_month = #{salarayPayrollPeriodMonth,jdbcType=VARCHAR},
+      salaray_send_time = #{salaraySendTime,jdbcType=VARCHAR},
+      salaray_table_time = #{salarayTableTime,jdbcType=VARCHAR},
+      salary_mail = #{salaryMail,jdbcType=VARCHAR}
+    where salary_id = #{salaryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

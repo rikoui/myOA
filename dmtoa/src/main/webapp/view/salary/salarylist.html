@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>一级代理商信息查询</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript">
+//群发邮件是否选中判断
+function validatGroupMail() {
+	var row = $("#datagrid").datagrid("getSelections");
+	var ids = "";
+	for(var i=0;i<row.length;i++){
+		if(i==row.length-1){
+			ids = ids + row[i].salary_id;
+		}
+		else{
+			ids = ids + row[i].salary_id+",";
+		}
+		
+	}
+	if(ids==null||ids==""){
+		$.messager.alert('系统提示', '没有选中要发送的邮件', 'warning');
+		return false;
+		}
+	return true;
+	}
+	$(function(){
+		DMTForm("edit");
+		DMTSelectData("mer_status", "SIMPLE_STATUS");
+		//绑定查询按钮点击事件
+		$("#submit").click(function(){
+				//查询代理商操作员数据
+				DMTDatatable({
+					id:"#datagrid", //需要被填充的table
+					title:"工资条查询列表",  //数据名称
+					url:"../../salarayMailController/salarayQueryList.do",  //数据url
+					validate:true,
+					params:{
+						salaryStaffName:$("input[name=name]").val(),
+						salarayPayrollMin:$("input[name=salarayPayrollMin]").val(),
+						salarayPayrollMax:$("input[name=salarayPayrollMax]").val(),
+						salarayPayrollPeriodMonth:$("input[name=salarayPayrollPeriodMonth]").val()
+					},
+					checkbox:true,  //每条数据前是否带checkbox复选框
+					//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+					columns:[[
+						{field:'salary_id',title:'id',width:'100px',align:'center',hidden : true},
+					    {field:'salary_staff_no',title:'员工编号',width:'100px',align:'center'},
+					    {field:'salaray_payroll_period_month',title:'工资所属月份',width:'100px',align:'center'},
+					    {field:'salaray_send_time',title:'工资发放日期',width:'100px',align:'center'},
+						{field:'salary_type',title:'薪资类型',width:'100px',align:'center'},
+					    {field:'salary_staff_name',title:'姓名',width:'100px',align:'center'},
+					    {field:'salary_check_standard_day',title:'月标准天数',width:'100px',align:'center'},
+					    {field:'salary_formal_day',title:'正式工天数',width:'100px',align:'center'},
+					    {field:'salary_use_day',title:'试用工天数',width:'100px',align:'center'},
+					    {field:'salary_ycqts_day',title:'出勤天数',width:'100px',align:'center'},
+					    {field:'salary_base_pay',title:'基本工资(元)',width:'100px',align:'center',
+					    	formatter:function(value,rec){
+				                var basePay = rec.salary_base_pay;
+				                return formatNum(basePay);
+				            }},
+					    {field:'salary_merit_pay',title:'绩效工资(元)',width:'100px',align:'center',
+					    	    formatter:function(value,rec){
+				                var salaryMeritPay = rec.salary_merit_pay;
+				                return formatNum(salaryMeritPay);
+				            }},
+					    {field:'salary_account',title:'工资总额(元)',width:'100px',align:'center',
+						        formatter:function(value,rec){
+					            var salaryAccount = rec.salary_account;
+					            return formatNum(salaryAccount);
+					        }},
+					    {field:'salary_paid',title:'应发工资(元)',width:'100px',align:'center',
+							    formatter:function(value,rec){
+						        var salaryPaid = rec.salary_paid;
+						        return formatNum(salaryPaid);
+						    }},
+					    {field:'salary_other_add',title:'其他增发(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+							    var salaryOtherAdd = rec.salary_other_add;
+							    return formatNum(salaryOtherAdd);
+							}},
+					    {field:'salary_sick_pay',title:'病假扣款(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+							    var salarySickPay = rec.salary_sick_pay;
+								 return formatNum(salarySickPay);
+						    }},
+					    {field:'salary_abs_pay',title:'事假扣款(元)',width:'100px',align:'center',
+							    formatter:function(value,rec){
+							    var salaryabsPay = rec.salary_abs_pay;
+							    return formatNum(salaryabsPay);
+						    }},
+					    {field:'salary_other_pay',title:'其他扣款(元)',width:'100px',align:'center',
+							    formatter:function(value,rec){
+								var salaryOtherPay = rec.salary_other_pay;
+								return formatNum(salaryOtherPay);
+							}},
+					   	{field:'salary_sum_pay',title:'扣减合计(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+								var salarySumPay = rec.salary_sum_pay;
+								return formatNum(salarySumPay);
+							}},
+					    {field:'salary_sum_account',title:'收入总额(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+							    var salarySumAccount = rec.salary_sum_account;
+								return formatNum(salarySumAccount);
+			                }},
+					    {field:'salary_security_base',title:'社保基数(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+				  				var salarySecurityBase = rec.salary_security_base;
+		  						return formatNum(salarySecurityBase);
+							}},
+					    {field:'salary_fund_base',title:'公积金基数(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+				   				var salaryFundBase = rec.salary_fund_base;
+					  			return formatNum(salaryFundBase);
+							}},
+					    {field:'salaray_insurance',title:'养老保险(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+						      	var salarayInsurance = rec.salaray_insurance;
+								return formatNum(salarayInsurance);
+							}},
+					    {field:'salaray_unemployment',title:'失业保险(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+							 	var salarayUnemployment = rec.salaray_unemployment;
+							  	return formatNum(salarayUnemployment);
+							}},
+					    {field:'salaray_medical_base',title:'基本医疗(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+							 	var salarayMedicalBase = rec.salaray_medical_base;
+								return formatNum(salarayMedicalBase);
+							}},
+					    {field:'salaray_housing_fund',title:'住房公积金(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+						    	var salarayHousingFund = rec.salaray_housing_fund;
+								return formatNum(salarayHousingFund);
+							}},
+					    {field:'salaray_reduction_sum',title:'减发合计(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+						 		var salarayReductionSum = rec.salaray_reduction_sum;
+								return formatNum(salarayReductionSum);
+							}},
+					    {field:'salaray_tax',title:'纳税所得(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+								var salarayTax = rec.salaray_tax;
+								 return formatNum(salarayTax);
+							}},
+					    {field:'salaray_tax_pay',title:'应扣税金(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+								var salarayTaxPay = rec.salaray_tax_pay;
+								return formatNum(salarayTaxPay);
+							}},
+					    {field:'salaray_payroll',title:'实发金额(元)',width:'100px',align:'center',
+								formatter:function(value,rec){
+								var salarayPayroll = rec.salaray_payroll;
+								return formatNum(salarayPayroll);
+							}},
+					   
+					    {field:'salaray_create_time',title:'创建时间',width:'100px',align:'center'},
+					    
+					    {field:'_opt',title:'操作',width:'100px',align:'center',   /*关闭|详情|修改 */
+					    	formatter:function(value,rec){
+			                var html = '<a href="javascript:sendEmailyDetail(\''+rec.salary_id+'\');">发邮件</a> ';
+			               /*  if(rec.agentStatus == '0'){
+			                	html += '|<a href="javascript:statusAgentQuery(\''+rec.Id+'\',\'1\');">禁用</a>';
+			                }else{
+			                	html += '|<a href="javascript:statusAgentQuery(\''+rec.Id+'\',\'0\');">启用</a>'
+			                } */
+			                return html; 
+			               }
+					    }
+					]],
+					 toolbar : [ {
+						text : '群发邮件',
+						iconCls : 'icon-ok',
+						handler : function() {
+							var row = $("#datagrid").datagrid("getSelections");
+		            		var ids = "";
+		            		for(var i=0;i<row.length;i++){
+		            			if(i==row.length-1){
+		            				ids = ids + row[i].salary_id;
+		            			}
+		            			else{
+		            				ids = ids + row[i].salary_id+",";
+		            			}
+		            			
+		            		}
+		            		if (validatGroupMail()){
+		            			DMTRequest({
+			            			url:'../../salarayMailController/groupMailDetail.do',
+			            			params:{
+				                		ids:ids
+				                	},
+			            			validate:true,
+			            			success:function(data){
+//	 		            				var status = data.status;
+				        					$.messager.alert("系统提示",data.errorMsg , "info");
+//	 		            				if(status==0){
+			            					
+//	 		            				}else{
+//	 		            					$.messager.alert("系统提示",data.errorMsg , "info");
+//	 		            				}
+//	 		            				$("#datagrid").datagrid("reload");
+			            			}
+			            		});
+		            		}
+		            	
+					}} ] 
+					
+					
+					
+					
+					
+				});
+		});
+		
+		$("#submit").click();
+		
+	})
+	
+	//点击发邮件
+	function sendEmailyDetail(id) {
+		DMTRequest({
+			url : '../../salarayMailController/sendEmailyDetail.do',
+			params : {
+				salaryId : id
+			},
+			validate : true,
+			success : function(data) {
+				$("#datagrid").datagrid("reload");
+				$.messager.alert("系统提示", data.result, "info");
+			}
+		});
+	}
+	
+	
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">真实名称：</td>
+					<td class="dmt_td_value"><input type="text" name="name" /></td>
+					<td class="dmt_td_name" >实发工资：</td>
+					<td class="dmt_td_value"><input type="text" name="salarayPayrollMin" /></td>
+					<td class="dmt_td_value">~</td>
+					<td class="dmt_td_value"><input type="text" name="salarayPayrollMax" ></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">工资月份：</td>
+					<td class="dmt_td_value" width="370px">
+						<input type="datetime" style="width: 198px" name="salarayPayrollPeriodMonth" onClick="WdatePicker()" readonly="readonly" />
+						
+					</td>
+					
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+
+	
+</body>
+</html>

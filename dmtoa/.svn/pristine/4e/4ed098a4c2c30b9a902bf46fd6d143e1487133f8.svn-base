@@ -1,0 +1,392 @@
+package com.bjdreamtech.service.impl;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.bjdreamtech.dmt.bean.DMTDataTableBean;
+import com.bjdreamtech.dmt.bean.DMTResultBean;
+import com.bjdreamtech.dmt.bean.DMTSessionBean;
+import com.bjdreamtech.dmt.format.DMTTimeFormatter;
+import com.bjdreamtech.dmt.util.DMTConfigUtil;
+import com.bjdreamtech.dmt.util.DMTDateUtil;
+import com.bjdreamtech.dmt.util.DMTFileUtil;
+import com.bjdreamtech.dmt.util.DMTPrimaryKeyUtil;
+import com.bjdreamtech.entity.Holiday;
+import com.bjdreamtech.entity.LeavePerson;
+import com.bjdreamtech.entity.SysAdmin;
+import com.bjdreamtech.entity.SysAdminExample;
+import com.bjdreamtech.format.DMTStatusFormatter;
+import com.bjdreamtech.mapper.auto.HolidayMapper;
+import com.bjdreamtech.mapper.auto.LeavePersonMapper;
+import com.bjdreamtech.mapper.auto.SysAdminMapper;
+import com.bjdreamtech.mapper.custom.LeaveManageMapper;
+import com.bjdreamtech.mapper.custom.ParamManageMapper;
+import com.bjdreamtech.service.ILeaveService;
+
+@Service
+public class LeaveServiceImpl extends BaseServiceImpl implements ILeaveService{
+	@Autowired
+	private LeaveManageMapper leaveManageMapper;
+	@Autowired
+	private ParamManageMapper paramManageMapper;
+	@Autowired
+	private LeavePersonMapper leavePersonMapper;
+	@Autowired
+	private HolidayMapper holidayMapper;
+	@Autowired
+	private SysAdminMapper adminMapper;
+	
+	/**
+	 * 请假单列表查询
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTDataTableBean queryLeaves(HttpServletRequest request) {
+		initPageParameter(request);
+		DMTSessionBean sessionBean = (DMTSessionBean) request.getSession().getAttribute("sessionBean");
+		String adminid = sessionBean.getAdminid();
+		String roleid = sessionBean.getRoleid();
+		String applyer = request.getParameter("applyer");
+		String status = request.getParameter("status");
+		String type = request.getParameter("type");
+		String approval_res = request.getParameter("approval_res");
+		if(notNull(status)) {
+			params.put("status", status);
+		}
+		if("1".equals(type)) {
+			//申请列表查询
+			params.put("applyer", adminid);
+			if(notNull(approval_res)) {
+				params.put("approval_res", approval_res);
+			}
+		}else if("2".equals(type)) {
+			//审阅列表查询
+			if(!"88888888".equals(roleid)) {
+				//非超级管理员，查询审阅人为当前管理员的
+				params.put("approvaler", adminid);
+			}else {
+				//如果是超级管理员，查询所有人或指定用户提交的并过滤自身提交的
+				if(notNull(applyer)) {
+					params.put("applyer", applyer);
+				}else {
+					params.put("extension_applyer", adminid);
+				}
+			}
+		}
+		
+		
+		List<Map<String, Object>> leaves = leaveManageMapper.queryLeavesByPage(params);
+		//审阅状态转换
+		DMTStatusFormatter.formatStatusList(leaves, "status", "statusCopy", "WEEKLY_AUTH_STATUS", paramManageMapper);
+		//审阅结果转换
+		DMTStatusFormatter.formatStatusList(leaves, "approvalRes", "approvalResCopy", "LEAVE_AUTH_STATUS", paramManageMapper);
+		//开始日期转换
+		DMTTimeFormatter.formatDateList(leaves, "startTime", "startTimeCopy");
+		//结束日期转换
+		DMTTimeFormatter.formatDateList(leaves, "endTime", "endTimeCopy");
+		//创建时间转换
+		DMTTimeFormatter.formatTimeList(leaves, "createtime", "createtimeCopy");
+		return new DMTDataTableBean(pageUtil.getTotalCount(),leaves);
+	}
+	
+	/**
+	 * 请假申请
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean leaveAdd(HttpServletRequest request) {
+		try {
+			DMTSessionBean sessionBean = (DMTSessionBean) request.getSession().getAttribute("sessionBean");
+			String startTime = request.getParameter("startTime");
+			String endTime = request.getParameter("endTime");
+			String reason = request.getParameter("reason");
+			String approvaler = request.getParameter("approvaler");
+			String leaveType = request.getParameter("leavetype");
+			String leavePic = request.getParameter("leavePic");
+			if(isNull(startTime)) {
+				return new DMTResultBean("1","请选择请假开始日期","");
+			}
+			if(isNull(endTime)) {
+				return new DMTResultBean("1","请选择请假结束日期","");
+			}
+			if(isNull(reason)) {
+				return new DMTResultBean("1","请输入请假原因","");
+			}
+			if(isNull(approvaler)) {
+				return new DMTResultBean("1","请选择审阅人","");
+			}
+			if(isNull(leaveType)) {
+				return new DMTResultBean("1","请选择请假类型","");
+			}
+			// 病假和产假需要证明
+			if ("01".equals(leaveType) || "06".equals(leaveType)) {
+				if(isNull(leavePic)) {
+					return new DMTResultBean("1","请上传处方或医院证明","");
+				}
+			}
+			//startTime = startTime.replaceAll("-", "").replaceAll(":", "").trim();
+			//endTime = endTime.replaceAll("-", "").replaceAll(":", "").trim();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Calendar c = Calendar.getInstance();
+			c.setTime(sdf.parse(startTime));
+			Calendar c1 = Calendar.getInstance();
+			c1.setTime(sdf.parse(endTime));
+			if(c.after(c1)) {
+				return new DMTResultBean("1","请假结束日期必须大于等于开始日期","");
+			}
+			List<String> days = startToEndDays(startTime,endTime);
+			//查询所有假期
+			List<Holiday> holidays = holidayMapper.selectByExample(null);
+			//去除请假日期中的假期
+			for(int i=0;i<days.size();i++) {
+				String day = days.get(i);
+				if(holidays.stream().map(Holiday::getHolidayId).anyMatch(holiday -> holiday.equals(day))) {
+					days.remove(day);
+				}
+			}
+			//申请存库
+			LeavePerson leavePerson = new LeavePerson();
+			leavePerson.setLevaeId(DMTPrimaryKeyUtil.getPrimaryKey(""));
+			leavePerson.setLeaveAdminId(sessionBean.getAdminid());
+			leavePerson.setLeaveEndTime(endTime);
+			leavePerson.setLeaveStatus("01");
+			leavePerson.setLeaveStartTime(startTime);
+			leavePerson.setLeaveReason(reason);
+			leavePerson.setLeaveNum(days.size());
+			leavePerson.setLeaveCreatime(DMTDateUtil.parseDate());
+			leavePerson.setLeaveApprovaler(approvaler);
+			leavePerson.setLeaveType(leaveType);
+			leavePerson.setLeavePass("01");
+			leavePerson.setLeavePic(leavePic);
+			leavePersonMapper.insertSelective(leavePerson);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return new DMTResultBean("1","系统异常","");
+		}
+		return new DMTResultBean();
+	}
+	
+	/**
+	 * 根据请假开始日期和结束日期计算具体每个请假日期
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 * @throws ParseException
+	 */
+	private List<String> startToEndDays(String startTime,String endTime) throws ParseException {
+		List<String> list = new ArrayList<String>();
+		list.add(startTime);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(sdf.parse(startTime));
+		Calendar c1 = Calendar.getInstance();
+		c1.setTime(sdf.parse(endTime));
+		while(c.compareTo(c1) == -1) {
+			c.add(Calendar.DATE, 1);
+			list.add(sdf.format(c.getTime()));
+		}
+		return list;
+	}
+
+	/**
+	 * 请假申请信息查询
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean getLeaveInfo(HttpServletRequest request) {
+		LeavePerson leavePerson = leavePersonMapper.selectByPrimaryKey(request.getParameter("id"));
+		leavePerson.setLeaveStartTime(DMTDateUtil.packDateShort(leavePerson.getLeaveStartTime()));
+		leavePerson.setLeaveEndTime(DMTDateUtil.packDateShort(leavePerson.getLeaveEndTime()));
+		return new DMTResultBean("0","",leavePerson);
+	}
+
+	/**
+	 * 请假申请修改
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean leaveEdit(HttpServletRequest request) {
+		try {
+			String id = request.getParameter("id");
+			String startTime = request.getParameter("startTime");
+			String endTime = request.getParameter("endTime");
+			String reason = request.getParameter("reason");
+			String approvaler = request.getParameter("approvaler");
+			if(isNull(startTime)) {
+				return new DMTResultBean("1","请选择请假开始日期","");
+			}
+			if(isNull(endTime)) {
+				return new DMTResultBean("1","请选择请假结束日期","");
+			}
+			if(isNull(reason)) {
+				return new DMTResultBean("1","请输入请假原因","");
+			}
+			startTime = startTime.replaceAll("-", "");
+			endTime = endTime.replaceAll("-", "");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			Calendar c = Calendar.getInstance();
+			c.setTime(sdf.parse(startTime));
+			Calendar c1 = Calendar.getInstance();
+			c1.setTime(sdf.parse(endTime));
+			if(c.after(c1)) {
+				return new DMTResultBean("1","请假结束日期必须大于等于开始日期","");
+			}
+			List<String> days = startToEndDays(startTime,endTime);
+			//查询所有假期
+			List<Holiday> holidays = holidayMapper.selectByExample(null);
+			//去除请假日期中的假期
+			for(int i=0;i<days.size();i++) {
+				String day = days.get(i);
+				if(holidays.stream().map(Holiday::getHolidayId).anyMatch(holiday -> holiday.equals(day))) {
+					days.remove(day);
+				}
+			}
+			//申请存库
+			LeavePerson leavePerson = new LeavePerson();
+			leavePerson.setLevaeId(id);
+			leavePerson.setLeaveEndTime(endTime);
+			leavePerson.setLeaveStartTime(startTime);
+			leavePerson.setLeaveReason(reason);
+			leavePerson.setLeaveNum(days.size());
+			leavePerson.setLeaveApprovaler(approvaler);
+			leavePersonMapper.updateByPrimaryKeySelective(leavePerson);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return new DMTResultBean("1","系统异常","");
+		}
+		return new DMTResultBean();
+	}
+
+	/**
+	 * 获取所有操作员
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean getAllAdmin(HttpServletRequest request) {
+		DMTSessionBean sessionBean = (DMTSessionBean) request.getSession().getAttribute("sessionBean");
+		SysAdminExample example = new SysAdminExample();
+		example.createCriteria().andAdminStatusEqualTo("0").andAdminIdNotEqualTo(sessionBean.getAdminid());
+		List<SysAdmin> admins = adminMapper.selectByExample(example);
+		return new DMTResultBean("0","",admins);
+	}
+
+	/**
+	 * 获取请假申请详细信息
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean getLeaveDetail(HttpServletRequest request) {
+		String id = request.getParameter("id");
+		List<Map<String,Object>> list = leaveManageMapper.getLeaveDetail(id);
+		if(list != null && list.size() > 0) {
+			Map<String,Object> res = list.get(0);
+			//审阅状态转换
+			DMTStatusFormatter.formatStatus(res, "status", "statusCopy", "WEEKLY_AUTH_STATUS", paramManageMapper);
+			//审阅结果转换
+			DMTStatusFormatter.formatStatus(res, "approvalRes", "approvalResCopy", "LEAVE_AUTH_STATUS", paramManageMapper);
+			//开始日期转换
+			DMTTimeFormatter.formatTimeChina(res, "startTime", "startTimeCopy");
+			//结束日期转换
+			DMTTimeFormatter.formatTimeChina(res, "endTime", "endTimeCopy");
+			//创建时间转换
+			DMTTimeFormatter.formatTime(res, "createtime", "createtimeCopy");
+			//审阅时间转换
+			DMTTimeFormatter.formatTime(res, "approvalTime", "approvalTimeCopy");
+			return new DMTResultBean("0","",res);
+		}
+		return new DMTResultBean("1","未查询到相关请假申请","");
+	}
+
+	/**
+	 * 请假申请审阅
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean leaveAuth(HttpServletRequest request) {
+		DMTSessionBean sessionBean = (DMTSessionBean) request.getSession().getAttribute("sessionBean");
+		String leaveId = request.getParameter("leaveId");
+		String aprovalRes = request.getParameter("aprovalRes");
+		String aprovalDesc = request.getParameter("aprovalDesc");
+		LeavePerson leavePerson = new LeavePerson();
+		leavePerson.setLevaeId(leaveId);
+		leavePerson.setLeaveStatus("00");
+		leavePerson.setLeaveApprovalDesc(aprovalDesc);
+		leavePerson.setLeaveApprovalRes(aprovalRes);
+		leavePerson.setLeaveApprovaler(sessionBean.getAdminid());
+		leavePerson.setLeaveApprovalTime(DMTDateUtil.parseDate());
+		leavePersonMapper.updateByPrimaryKeySelective(leavePerson);
+		return new DMTResultBean();
+	}
+
+	/**
+	 * 附件大小检查&上传
+	 * @throws Exception 
+	 */
+	@Override
+	public DMTResultBean checkFileSize(MultipartFile merCertPic, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		//校验文件大小
+		if(StringUtils.isNotEmpty(merCertPic.getOriginalFilename())){
+			// 判断是否是图片
+			BufferedImage image = ImageIO.read(merCertPic.getInputStream());
+			if(null==image||image.getWidth()<=0||image.getHeight()<=0){//如果iamge=null 表示上传的不是图片格式
+				return new DMTResultBean("1","上传的文件不是图片格式，请重新上传","");
+			} else if(merCertPic.getSize()>10485760){
+				return new DMTResultBean("1","图片大小不能超过10M","");
+			} else {
+				String oldName = merCertPic.getOriginalFilename();
+				// 取得扩展名  
+                String fileExtName = oldName.substring(oldName.lastIndexOf(".") + 1).toLowerCase(); 
+				// 创建图片名
+				String picName = DMTDateUtil.parseDateDetail();
+				InputStream is = merCertPic.getInputStream();
+				
+				// 创建当天的文件夹
+				SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+				String realPath = DMTConfigUtil.CONFIG_FILEPATH + sf.format(new Date()) + "/" + picName + fileExtName;
+				File file = new File(realPath);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+				
+				// 保存图片到服务器
+				DMTFileUtil.saveFile(is, realPath, picName);
+				
+				// 保存图片表
+				
+				
+				
+				Map<String,String> res = new HashMap<String,String>();
+				res.put("fileName", oldName);
+				return new DMTResultBean("0","",res);
+			}
+		}
+		return null;
+	}
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>追梦内部管理系统登录</title>
+
+<link href="res/css/login.css" rel="stylesheet" type="text/css"></link>
+<link rel="stylesheet" type="text/css"
+	href="res/js/easyui/js/themes/default/easyui.css" />
+<link rel="stylesheet" type="text/css"
+	href="res/js/easyui/js/themes/icon.css" />
+	<link href="res/css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript"
+	src="res/js/easyui/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="res/js/easyui/js/jquery.easyui.js"></script>
+<script type="text/javascript" src="res/js/dmt.js"></script>
+<script type="text/javascript" src="res/js/json2.js"></script>
+<script src="res/js/cloud.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(function() {
+		
+		var docHeight = $(document).height(); //获取窗口高度  
+	     
+		  $('body').append('<div id="overlay" style="display:none;"></div>');  
+		     
+		  $('#overlay')  
+		    .height(docHeight)  
+		    .css({  
+		      'opacity': .4, //透明度  
+		      'position': 'absolute',  
+		      'top': 0,  
+		      'left': 0,  
+		      'background-color': 'black',  
+		      'width': '100%',  
+		      'z-index': 5000 //保证这个悬浮层位于其它内容之上  
+		    });
+		
+		//添加enter按钮回车事件
+		$("body").keydown(function() {
+	        if (event.keyCode == "13") {//keyCode=13是回车键
+	            $('#submit').click();
+	        }
+	    });
+		
+		$('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+		$(window).resize(function(){  
+	    $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+	    }) 
+		
+		$("#submit").click(function(){
+			clearMsg();
+			if(check()){
+				$('#overlay').fadeIn();
+				$("#loading").html("登录中，请稍后...");
+				$.post(
+					"systemAction/login.do",
+					{
+						"username":$("#username").val(),
+						"password":$("#password").val(),
+						"code":$("#code").val()
+					},
+					function(data){
+						/**
+						* 将后台返回的ResultBean转换成json对象
+						* data数据格式：{"status":"0","errorMsg":"","result":""}
+						* status:请求状态 0成功  1失败
+						* errorMsg:错误信息，当status为1时存在
+						* result:返回数据，当status为0时存在
+						**/
+						var res = JSON.parse(data);
+						if(res.status=="0"){
+							location.href = "main.html";
+						}else{
+							$("#errorMsg").html(res.errorMsg);
+							refreshCode();
+						}
+						$("#loading").html("");
+						$('#overlay').fadeOut();
+					}
+				);
+			}
+		});
+	});
+	
+	function check(){
+		var username = $("#username").val();
+		var password = $("#password").val();
+		var code = $("#code").val();
+		if(username == ""){
+			$("#errorMsg").html("用户名不能为空");
+			return false;
+		}
+		if(password == ""){
+			$("#errorMsg").html("密码不能为空");
+			return false;
+		}
+		if(code == ""){
+			$("#errorMsg").html("校验码不能为空");
+			return false;
+		}
+		return true;
+	}
+	
+	function clearMsg(){
+		$("#errorMsg").html("");
+	}
+	
+	function refreshCode(){
+		$("#code_img").attr("src","systemAction/getImage.do?"+Math.random());
+	}
+</script>
+</head>
+<body style="background-color:#1c77ac; background-image:url(res/image/light.png); background-repeat:no-repeat; background-position:center top; overflow:hidden;">
+
+
+
+    <div id="mainBody">
+      <div id="cloud1" class="cloud"></div>
+      <div id="cloud2" class="cloud"></div>
+    </div>  
+
+
+<div class="logintop">    
+    <span>欢迎登录追梦内部管理系统</span>    
+    <ul>
+    <!-- <li><a href="">追梦商户系统</a></li> -->
+    <li><a href="#">帮助</a></li>
+    <li><a href="#">关于</a></li>
+    </ul>    
+    </div>
+    
+    <div class="loginbody">
+    
+    <span class="systemlogo">追梦 内部管理系统</span> 
+       
+    <div class="loginbox">
+    
+    <ul>
+    <li><input name="username" placeholder="用户名" id="username" type="text" class="loginuser" value="" onfocus="clearMsg()"/></li>
+    <li><input name="password" placeholder="" id="password" type="password" class="loginpwd" value="" onfocus="clearMsg()"/></li>
+    <li>
+    	<div style="width: 260px;height: 48px;">
+    	<div style="float: left;"><input name="code" placeholder="图片校验码" id="code" type="text" style="width: 120px;height: 48px;border: 2px solid #cccccc;border-radius:3px;font-size: 18px;padding-left:10px;font-weight: bold;" value=""/></div>
+    	<div style="float: right;"><img id="code_img" src="systemAction/getImage.do" style="width:120px;height:46px;border: 2px solid #000000;cursor: pointer;" onclick="refreshCode()"/></div>
+    	</div>
+    </li>
+    <li><input id="submit" type="button" class="loginbtn" value="登录"/>
+    	<label style="color:red" id="errorMsg"></label>
+    	<label style="" id="loading"></label>
+    </li>
+    </ul>
+    
+    
+    </div>
+    
+    </div>
+    
+    
+    
+    <div class="loginbm">版权所有  2016  <a href="#">北京追梦科技有限公司版权所有</a> </div>
+	
+    
+</body>
+</html>

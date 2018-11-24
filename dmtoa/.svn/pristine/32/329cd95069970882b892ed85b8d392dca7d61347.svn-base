@@ -1,0 +1,400 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>周报审阅</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<style type="text/css">
+.title_model{
+	width:100%;
+	text-align:left;
+	background-color:#eeeeee;
+	font-size:16px;
+	font-weight:bold;
+	padding:15px 0px;
+	margin:5px 0px;
+	margin-top:10px;
+}
+.table_div{
+	border:1px solid #ccc;
+	margin-bottom: 10px;
+}
+.red{
+	color:red;
+}
+.form_input{
+	height:20px;
+	border:1px solid #9FCAF4;
+}
+</style>
+<script type="text/javascript">
+$(function() {
+	//加载提交人下拉框数据
+	DMTRequest({
+		url : '../../weeklyController/findWeeklyAdminSelect.do',
+		validate : true,
+		success : function(data) {
+			var res = data.result;
+			for (var i = 0; i < res.length; i++) {
+				$("#condition_weeklyadmin").append("<option value='"+res[i].weeklyadminid+"'>" + res[i].realname + "</option>");
+			}
+		}
+	});
+	
+	// 统计逾期未提交日报
+ 	DMTRequest({
+		url : '../../weeklyController/queryCountDaily.do',
+		validate : true,
+		success : function(dataRes) {
+			if (dataRes.status == '0') {
+				var res = dataRes.result;
+				var flag = true;
+				for (var i = 0; i < res.length; i ++) {
+					/* if (res[i].dayCount > 0) {
+						if (i == res.length - 1) {
+							$("#countDiv").append("<div style='float: left'>【" + res[i].adminRealName + "】已有" + res[i].dayCount + "工作日未提交日报" + "</div>");
+						} else {
+							$("#countDiv").append("<div style='float: left'>【" + res[i].adminRealName + "】已有" + res[i].dayCount + "工作日未提交日报，" + "</div>");
+						}
+						flag = false;
+					} */
+					if (res[i].adminCountday > 0) {
+						$("#countDiv").append("<div style='float: left'>【" + res[i].adminRealname + "】已有" + res[i].adminCountday + "工作日未提交日报\&nbsp;" + "</div>");
+						flag = false;
+					}
+				}
+				if (flag) {
+					$("#countDiv").append("<label style='float:left;'>不存在未提交日报的情况</label>");
+				}
+			}
+		}
+	});
+	
+	$("#condition_weeklytime").val(getTimeLast());
+	$("#submit").click(
+		function() {
+			//查询用户数据
+			DMTDatatable({
+				id : "#datagrid", //需要被填充的table
+				title : "用户列表", //数据名称
+				url : "../../weeklyController/dailyReadList.do", //数据url
+				params : {
+					// 提交人
+					weeklyAdmin : $("#condition_weeklyadmin").val(),
+					// 周报时间
+					dailyTime : $("#condition_weeklytime").val(),
+					// 审阅状态
+					dailyStatus : $("#condition_status").val()
+				},
+				checkbox : false, //每条数据前是否带checkbox复选框
+				//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+				columns : [ [
+					{
+						field : 'staffNo',
+						title : '员工编号',
+						width : fixWidth(0.10),
+						align : 'center'
+					},
+					{
+						field : 'roleName',
+						title : '部门',
+						width : fixWidth(0.15),
+						align : 'center'
+					},
+					{
+						field : 'adminName',
+						title : '提交人',
+						width : fixWidth(0.10),
+						align : 'center'
+					},
+					{
+						field : 'realyAuth',
+						title : '实际审阅人',
+						width : fixWidth(0.10),
+						align : 'center'
+					},
+					{
+						field : 'dailyTime',
+						title : '日期',
+						width : fixWidth(0.15),
+						align : 'center'
+					},
+					{
+						field : 'dailyStatusCopy',
+						title : '审阅状态',
+						width : fixWidth(0.20),
+						align : 'center'
+					},
+					{
+						field : '_opt',
+						title : '操作',
+						width : fixWidth(0.20),
+						align : 'center',
+						formatter : function(value, rec) {
+							var html ='<a href="javascript:void(0); onclick=details(\'' + rec.dailyId + '\');">【详情】</a>'
+							//if (rec.dailyStatus == "01") {
+								 html +='|<a href="javascript:void(0); onclick=reviews(\'' + rec.dailyId + '\');">【审阅】</a>'
+							//}
+							return html;
+						}
+					}
+				]]
+			});
+		});
+	
+	var id = "condition_status";
+	var code = "WEEKLY_AUTH_STATUS";
+	var value = "01";
+	DMTRequest({
+		url:'../../systemAction/findParamByCode.do',
+		params:{
+			code:code
+		},
+		validate:true,
+		success:function(data){
+			var res = data.result;
+			for(var i=0;i<res.length;i++){
+				$("#"+id).append("<option value='"+res[i].key+"'>"+res[i].value+"</option>");
+			}
+			$("#"+id).val(value);
+			$("#submit").click();
+		}
+	});
+});
+
+function details (dailyId) {
+	// 清空审阅意见
+	$("#dailyRemark").val("");
+	DMTRequest({
+		url : '../../weeklyController/queryDaily.do',
+		params : {
+			dailyId : dailyId
+		},
+		validate : true,
+		success : function(data) {
+			var tableDaily = data.result;
+			$("#dailytime").html(tableDaily.dailyTime);
+			$("#dailypart").html(tableDaily.dailyPart);
+			$("#dailycontent").html(tableDaily.dailyContent);
+			$("#dailyquestion").html(tableDaily.dailyQuestion);
+			$("#dailyanswer").html(tableDaily.dailyAnswer);
+			$("#dailyRemark").val(tableDaily.dailyRemark);
+			$('#dailyDetail').dialog({
+				resizable : true, //定义对话框是否可编辑大小
+				width : '1000px',
+				height : '520px',
+				left : '140px',
+				top : '20px',
+				modal : true,
+				inline: true,
+				onClose : function() {
+					$("#content").val("");
+				}
+			}).dialog('open');
+		}
+	});
+}
+function reviews (dailyId) {
+	$("#dailyReadRemark").val("");
+	DMTRequest({
+		url : '../../weeklyController/queryDaily.do',
+		params : {
+			dailyId : dailyId,
+			flag : 'true'
+		},
+		validate : true,
+		success : function(data) {
+			var tableDaily = data.result;
+			$("#dailyReadtime").html(tableDaily.dailyTime);
+			$("#dailyReadpart").html(tableDaily.dailyPart);
+			$("#dailyReadcontent").html(tableDaily.dailyContent);
+			$("#dailyReadquestion").html(tableDaily.dailyQuestion);
+			$("#dailyReadanswer").html(tableDaily.dailyAnswer);
+			$("#dailyReadRemark").val(tableDaily.dailyRemark);
+			$('#dailyRead').dialog({
+				resizable : true, //定义对话框是否可编辑大小
+				width : '1000px',
+				height : '520px',
+				left : '140px',
+				top : '20px',
+				modal : true,
+				inline: true,
+				onClose : function() {
+					$("#datagrid").datagrid('reload');
+				},
+				buttons : [
+					{
+						text: '确定',
+						iconCls: 'icon-ok',
+						handler:  function () {
+							DMTRequest({
+								url : '../../weeklyController/saveDailyRead.do',
+								params : {
+									dailyId : dailyId,
+									dailyReadRemark : $("#dailyReadRemark").val()
+								},
+								validate : true,
+								success : function(data1) {
+									if (data1.status == '0') {
+										$('#dailyRead').dialog('close');
+										$.messager.alert("系统提示", data1.result, "info", function () {
+											$("#datagrid").datagrid('reload');
+										});
+									} else {
+										$.messager.alert("系统提示", data1.errorMsg, "info");
+									}
+								}
+							});
+						}
+					},
+					{
+						text: '取消',
+						iconCls: 'icon-cancel',
+						handler: function () {
+							$('#dailyRead').dialog('close');
+							$("#datagrid").datagrid('reload');
+						}
+					}
+				]
+			}).dialog('open');
+		}
+	});
+}
+//获取当前系统时间
+function getTimeLast () {
+	// 获取当前时间
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth() + 1;
+	if (month < 10) {
+		month = "0" + month;
+	}
+	var day = date.getDate() - 1;
+	return year + "-" + month + "-" + day;
+}
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">提交人：</td>
+					<td class="dmt_td_value" width="370px">
+						<select name="condition_weeklyadmin" id="condition_weeklyadmin">
+							<option value="">全部</option>
+						</select>
+					</td>
+					<td class="dmt_td_name">日报日期：</td>
+					<td class="dmt_td_value" width="370px">
+						<input style="width: 198px" type="datetime" id="condition_weeklytime" name="condition_weeklytime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly" validate="NOTNULL" />
+					</td>
+					<td class="dmt_td_name">审阅状态：</td>
+					<td class="dmt_td_value">
+						<select name="condition_weeklystatus" id="condition_status">
+							<option value="">全部</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4">
+						<input type="button" value=" 查询 " id="submit" />
+						<input type="reset" value=" 清空 " />
+					</td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+		<div id="countDiv" class="red"></div>
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table" style="float:left; padding-left:60px;">
+		<table id="datagrid" name="form1"></table>
+	</div>
+	<div id="dailyDetail" class="easyui-dialog" title="日报详情" closed="true">
+		<table class="dmt_condition_table">
+			<tr>
+				<td class="dmt_td_name">日期：</td>
+				<td class="dmt_td_value">
+					<span id="dailytime" class="red" style="width:400px;"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">参与人：</td>
+				<td class="dmt_td_value">
+					<span id="dailypart" style="width:400px;"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">工作内容：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailycontent" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">存在问题：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyquestion" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">建议解决方案：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyanswer" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">审阅意见：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyRemark" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="dailyRead" class="easyui-dialog" title="日报审阅" closed="true">
+		<table class="dmt_condition_table">
+			<tr>
+				<td class="dmt_td_name">日期：</td>
+				<td class="dmt_td_value">
+					<span id="dailyReadtime" class="red" style="width:400px;"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">参与人：</td>
+				<td class="dmt_td_value">
+					<span id="dailyReadpart" style="width:400px;"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">工作内容：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyReadcontent" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">存在问题：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyReadquestion" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">建议解决方案：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyReadanswer" disabled style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">审阅意见：</td>
+				<td class="dmt_td_value">
+					<textarea id="dailyReadRemark" style="width:400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

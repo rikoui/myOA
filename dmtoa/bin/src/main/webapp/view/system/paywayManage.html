@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>通道管理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		DMTForm("add");
+		DMTForm("edit");
+		DMTForm("detail");
+		DMTSelectData("payway_type", "PAYWAY_TYPE");
+		DMTSelectData("payway_status", "SIMPLE_STATUS");
+		//绑定查询按钮点击事件
+		$("#submit").click(function(){
+			//查询通道数据
+			DMTDatatable({
+				id:"#datagrid", //需要被填充的table
+				title:"通道管理列表",  //数据名称
+				url:"../../paywayAction/paywayList.do",  //数据url
+				validate:true,
+				params:{
+					paywayType:$("select[name=payway_type]").val(),
+					paywayName:$("input[name=payway_name]").val(),
+					paywayCode:$("input[name=payway_code]").val(),
+					paywayStatus:$("select[name=payway_status]").val()
+				},
+				checkbox:false,  //每条数据前是否带checkbox复选框
+				//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+				columns:[[
+				    {field:'paywayName',title:'通道名称',width:fixWidth(0.15),align:'center'},
+				    {field:'paywayCode',title:'通道代码',width:fixWidth(0.2),align:'center'},
+				    {field:'paywayTypeCopy',title:'支付类型',width:fixWidth(0.15),align:'center'},
+				    {field:'paywayRate',title:'费率',width:fixWidth(0.09),align:'center'},
+				    {field:'statusCopy',title:'通道状态',width:fixWidth(0.1),align:'center'},
+				    {field:'createtimeCopy',title:'创建时间',width:fixWidth(0.2),align:'center'},
+				    {field:'_opt',title:'操作',width:fixWidth(0.14),align:'center',
+				    	formatter:function(value,rec){
+		                var html = '<a href="javascript:paywayDetail(\''+rec.paywayId+'\');">详情</a> '; 
+		                if(rec.status == '0'){
+		                	html += '|<a href="javascript:statusPayway(\''+rec.paywayId+'\',\'1\');">禁用</a>';
+		                }else{
+		                	html += '|<a href="javascript:statusPayway(\''+rec.paywayId+'\',\'0\');">启用</a>'
+		                }
+		                html += '| <a href="javascript:editPayway(\''+rec.paywayId+'\');">编辑</a> ';
+		                return html; 
+		               }
+				    }
+				]],
+				//操作按钮
+				toolbar:[{ 
+			        text: '添加', 
+			        iconCls: 'icon-add', 
+			        handler: function() { 
+			        	//打开机构添加框
+			        	$("#add_payway_status").empty();
+						$("#add_payway_type").empty();
+						DMTSelectData("add_payway_status", "SIMPLE_STATUS");
+						DMTSelectData("add_payway_type", "PAYWAY_TYPE");
+			        	$("#add").dialog("open");
+			        	DMTInitMsg();
+			        } 
+			    }]
+			});
+		});
+		
+		$("#submit").click();
+		
+		//定义通道管理详情弹出框
+		$('#detail').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#detailForm")[0].reset();
+			},
+			buttons : [ {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#detail').dialog('close');
+					$("#detailForm")[0].reset();
+				}
+			} ]
+		});
+		
+		//定义新增通道弹出框
+		$('#add').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#addForm")[0].reset();
+			},
+			buttons : [ {
+				text : '确认',
+				iconCls : 'icon-ok',
+				handler : function() {
+					if (DMTValidate("addForm")) {
+						DMTRequest({
+							url : '../../paywayAction/paywayAdd.do',
+							params : {
+								paywayName:$("input[name=add_payway_name]").val(),
+								paywayCode:$("input[name=add_payway_code]").val(),
+								paywayType:$("select[name=add_payway_type]").val(),
+								paywayRate:$("input[name=add_payway_rate]").val(),
+								paywayStatus:$("select[name=add_payway_status]").val()
+							},
+							validate : true,
+							success : function(data) {
+								$("#add").dialog('close');
+								$("#addForm")[0].reset();
+								$("#datagrid").datagrid('reload');
+								$.messager.alert("系统提示", "新增通道成功", "info");
+							}
+						});
+					}
+				}
+			}, {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#add').dialog('close');
+					$("#addForm")[0].reset();
+				}
+			} ]
+		});
+		
+		//定义修改支付通道弹出框
+		$('#edit').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#editForm")[0].reset();
+			},
+			buttons : [ {
+				text : '确认',
+				iconCls : 'icon-ok',
+				handler : function() {
+					if (DMTValidate("editForm")) {
+						DMTRequest({
+							url : '../../paywayAction/paywayEdit.do',
+							params : {
+								paywayId:$("input[name=edit_id]").val(),
+								paywayName:$("input[name=edit_payway_name]").val(),
+								paywayCode:$("input[name=edit_payway_code]").val(),
+								paywayType:$("select[name=edit_payway_type]").val(),
+								paywayRate:$("input[name=edit_payway_rate]").val(),
+								paywayStatus:$("select[name=edit_payway_status]").val()
+							},
+							validate : true,
+							success : function(data) {
+								$("#edit").dialog('close');
+								$("#editForm")[0].reset();
+								$("#datagrid").datagrid('reload');
+								$.messager.alert("系统提示", "修改机构成功", "info");
+							}
+						});
+					}
+				}
+			}, {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#edit').dialog('close');
+					$("#editForm")[0].reset();
+				}
+			} ]
+		});
+	})
+	
+	//通道管理详情
+	function paywayDetail(id){
+		DMTRequest({
+			url : '../../paywayAction/paywayDetail.do',
+			params : {
+				id : id,
+			},
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("span[name=detail_payway_name]").html(res.paywayName);
+				$("span[name=detail_payway_code]").html(res.paywayCode);
+				$("span[name=detail_payway_type]").html(res.paywayTypeCopy);
+				$("span[name=detail_payway_rate]").html(res.paywayRate);
+				$("span[name=detail_payway_status]").html(res.statusCopy);
+				$("span[name=detail_createtime]").html(res.createtimeCopy);
+				$("span[name=detail_createuser]").html(res.createUser);
+				$("span[name=detail_updatetime]").html(res.updatetimeCopy);
+				$("span[name=detail_updateuser]").html(res.updateUser);
+			}
+		});
+		$("#detail").dialog("open");
+	}
+	
+	//编辑通道管理
+	function editPayway(id){
+		DMTRequest({
+			url : '../../paywayAction/paywayDetail.do',
+			params : {
+				id : id,
+			},
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("#edit_payway_status").empty();
+				$("#edit_payway_type").empty();
+				DMTSelectData("edit_payway_status", "SIMPLE_STATUS", res.status);
+				DMTSelectData("edit_payway_type", "PAYWAY_TYPE", res.paywayType);
+				$("input[name=edit_id]").val(id);
+				$("input[name=edit_payway_name]").val(res.paywayName);
+				$("input[name=edit_payway_code]").val(res.paywayCode);
+				$("input[name=edit_payway_rate]").val(res.paywayRate);
+			}
+		});
+		$("#edit").dialog("open");
+		DMTInitMsg();
+	}
+	
+	//点击启用或者禁用事件
+	function statusPayway(id, status) {
+		DMTRequest({
+			url : '../../paywayAction/statusPayway.do',
+			params : {
+				id : id,
+				status : status,
+			},
+			validate : true,
+			success : function(data) {
+				$("#datagrid").datagrid("reload");
+				$.messager.alert("系统提示", data.result, "info");
+			}
+		});
+	}
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">支付类型：</td>
+					<td class="dmt_td_value"><select name="payway_type"
+						id="payway_type">
+							<option value="">全部</option>
+					</select></td>
+					<td class="dmt_td_name">通道名称：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="payway_name" /></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">通道代码：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="payway_code" /></td>
+					<td class="dmt_td_name">通道状态：</td>
+					<td class="dmt_td_value"><select name="payway_status"
+						id="payway_status">
+							<option value="">全部</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+
+	<!-- 数据新增弹出框开始 -->
+	<div id="add" class="easyui-dialog" title="新增支付通道" closed="true">
+		<form id="addForm">
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name" width="130px"><span class="dmt_star">*</span>通道名称：</td>
+					<td class="dmt_td_value" width="350px"><input type="text"
+						name="add_payway_name" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>通道代码：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="add_payway_code" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>支付类型：</td>
+					<td class="dmt_td_value"><select name="add_payway_type"
+						id="add_payway_type"><option value="">全部</option></select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>费率：</td>
+					<td class="dmt_td_value"><input type="text" name="add_payway_rate"
+						maxlength="5" validate="NOTNULL,PERCENT" style="width: 100px" placeholder="单位：%"/> %</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>通道状态：</td>
+					<td class="dmt_td_value"><select name="add_payway_status"
+						id="add_payway_status"><option value="">全部</option></select></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据新增弹出框结束 -->
+	
+	<!-- 数据详情弹出框开始 -->
+	<div id="detail" class="easyui-dialog" title="通道管理详情" closed="true">
+		<form id="detailForm">
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name">通道名称：</td>
+					<td class="dmt_td_value"><span name="detail_payway_name"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">通道代码：</td>
+					<td class="dmt_td_value"><span name="detail_payway_code"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">支付类型：</td>
+					<td class="dmt_td_value"><span name="detail_payway_type"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">费率：</td>
+					<td class="dmt_td_value"><span name="detail_payway_rate"></span> %</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">通道状态：</td>
+					<td class="dmt_td_value"><span name="detail_payway_status"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">创建时间：</td>
+					<td class="dmt_td_value"><span name="detail_createtime"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">创建人：</td>
+					<td class="dmt_td_value"><span name="detail_createuser"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">修改时间：</td>
+					<td class="dmt_td_value"><span name="detail_updatetime"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">修改人：</td>
+					<td class="dmt_td_value"><span name="detail_updateuser"></span></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据详情弹出框结束 -->
+
+	<!-- 数据修改弹出框开始 -->
+	<div id="edit" class="easyui-dialog" title="编辑支付通道" closed="true">
+		<form id="editForm">
+			<input type="hidden" name="edit_id"/>
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name" width="130px"><span class="dmt_star">*</span>通道名称：</td>
+					<td class="dmt_td_value" width="350px"><input type="text"
+						name="edit_payway_name" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>通道代码：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_payway_code" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>支付类型：</td>
+					<td class="dmt_td_value"><select name="edit_payway_type"
+						id="edit_payway_type"><option value="">全部</option></select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>费率：</td>
+					<td class="dmt_td_value"><input type="text" name="edit_payway_rate"
+						maxlength="5" validate="NOTNULL,PERCENT" style="width: 100px" placeholder="单位：%"/> %</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>通道状态：</td>
+					<td class="dmt_td_value"><select name="edit_payway_status"
+						id="edit_payway_status"><option value="">全部</option></select></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据修改弹出框结束 -->
+</body>
+</html>

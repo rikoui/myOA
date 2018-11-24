@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.LoginMapper" >
+  
+  <select id="getMenu" resultType="Map" parameterType="map">
+  	SELECT DISTINCT
+	MENU_ID AS "id",
+	MENU_NAME AS "name",
+	MENU_PATH AS "path",
+	MENU_LEVEL AS "level",
+	MENU_PARENT_ID AS "parentid",
+	MENU_STATUS AS "status"
+	FROM sys_menu,sys_auth
+	WHERE MENU_STATUS = '0' 
+	AND AUTH_ROLE_ID = #{roleId}
+	AND AUTH_MENU_ID = MENU_ID
+	ORDER BY MENU_ID
+  </select>
+  
+  <select id="getNewSessionid" resultType="Map" parameterType="java.lang.String">
+  	select 
+  	CONTROL_SESSIONID as "sessionid" 
+  	from sys_control 
+  	where CONTROL_ADMIN_ID = #{adminid,jdbcType=VARCHAR}
+  	ORDER BY CONTROL_LOGINTIME DESC
+  </select>
+  
+  <select id="getActions" resultType="Map" parameterType="java.lang.String">
+  	select  authvali_action as "path"
+	from sys_authvali
+	where authvali_menu_id
+	in
+	(select auth_menu_id from sys_auth where auth_role_id = #{roleId})
+  </select>
+  
+</mapper>

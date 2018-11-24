@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.TableDailyMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.TableDaily" >
+    <id column="daily_id" property="dailyId" jdbcType="VARCHAR" />
+    <result column="daily_weekly_id" property="dailyWeeklyId" jdbcType="VARCHAR" />
+    <result column="daily_time" property="dailyTime" jdbcType="VARCHAR" />
+    <result column="daily_week" property="dailyWeek" jdbcType="VARCHAR" />
+    <result column="daily_part" property="dailyPart" jdbcType="VARCHAR" />
+    <result column="daily_content" property="dailyContent" jdbcType="VARCHAR" />
+    <result column="daily_question" property="dailyQuestion" jdbcType="VARCHAR" />
+    <result column="daily_answer" property="dailyAnswer" jdbcType="VARCHAR" />
+    <result column="daily_committime" property="dailyCommittime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    daily_id, daily_weekly_id, daily_time, daily_week, daily_part, daily_content, daily_question, 
+    daily_answer, daily_committime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.TableDailyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from table_daily
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from table_daily
+    where daily_id = #{dailyId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from table_daily
+    where daily_id = #{dailyId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.TableDailyExample" >
+    delete from table_daily
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.TableDaily" >
+    insert into table_daily (daily_id, daily_weekly_id, daily_time, 
+      daily_week, daily_part, daily_content, 
+      daily_question, daily_answer, daily_committime
+      )
+    values (#{dailyId,jdbcType=VARCHAR}, #{dailyWeeklyId,jdbcType=VARCHAR}, #{dailyTime,jdbcType=VARCHAR}, 
+      #{dailyWeek,jdbcType=VARCHAR}, #{dailyPart,jdbcType=VARCHAR}, #{dailyContent,jdbcType=VARCHAR}, 
+      #{dailyQuestion,jdbcType=VARCHAR}, #{dailyAnswer,jdbcType=VARCHAR}, #{dailyCommittime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.TableDaily" >
+    insert into table_daily
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dailyId != null" >
+        daily_id,
+      </if>
+      <if test="dailyWeeklyId != null" >
+        daily_weekly_id,
+      </if>
+      <if test="dailyTime != null" >
+        daily_time,
+      </if>
+      <if test="dailyWeek != null" >
+        daily_week,
+      </if>
+      <if test="dailyPart != null" >
+        daily_part,
+      </if>
+      <if test="dailyContent != null" >
+        daily_content,
+      </if>
+      <if test="dailyQuestion != null" >
+        daily_question,
+      </if>
+      <if test="dailyAnswer != null" >
+        daily_answer,
+      </if>
+      <if test="dailyCommittime != null" >
+        daily_committime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dailyId != null" >
+        #{dailyId,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyWeeklyId != null" >
+        #{dailyWeeklyId,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyTime != null" >
+        #{dailyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyWeek != null" >
+        #{dailyWeek,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyPart != null" >
+        #{dailyPart,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyContent != null" >
+        #{dailyContent,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyQuestion != null" >
+        #{dailyQuestion,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyAnswer != null" >
+        #{dailyAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyCommittime != null" >
+        #{dailyCommittime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.TableDailyExample" resultType="java.lang.Integer" >
+    select count(*) from table_daily
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update table_daily
+    <set >
+      <if test="record.dailyId != null" >
+        daily_id = #{record.dailyId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyWeeklyId != null" >
+        daily_weekly_id = #{record.dailyWeeklyId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyTime != null" >
+        daily_time = #{record.dailyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyWeek != null" >
+        daily_week = #{record.dailyWeek,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyPart != null" >
+        daily_part = #{record.dailyPart,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyContent != null" >
+        daily_content = #{record.dailyContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyQuestion != null" >
+        daily_question = #{record.dailyQuestion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyAnswer != null" >
+        daily_answer = #{record.dailyAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dailyCommittime != null" >
+        daily_committime = #{record.dailyCommittime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update table_daily
+    set daily_id = #{record.dailyId,jdbcType=VARCHAR},
+      daily_weekly_id = #{record.dailyWeeklyId,jdbcType=VARCHAR},
+      daily_time = #{record.dailyTime,jdbcType=VARCHAR},
+      daily_week = #{record.dailyWeek,jdbcType=VARCHAR},
+      daily_part = #{record.dailyPart,jdbcType=VARCHAR},
+      daily_content = #{record.dailyContent,jdbcType=VARCHAR},
+      daily_question = #{record.dailyQuestion,jdbcType=VARCHAR},
+      daily_answer = #{record.dailyAnswer,jdbcType=VARCHAR},
+      daily_committime = #{record.dailyCommittime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.TableDaily" >
+    update table_daily
+    <set >
+      <if test="dailyWeeklyId != null" >
+        daily_weekly_id = #{dailyWeeklyId,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyTime != null" >
+        daily_time = #{dailyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyWeek != null" >
+        daily_week = #{dailyWeek,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyPart != null" >
+        daily_part = #{dailyPart,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyContent != null" >
+        daily_content = #{dailyContent,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyQuestion != null" >
+        daily_question = #{dailyQuestion,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyAnswer != null" >
+        daily_answer = #{dailyAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="dailyCommittime != null" >
+        daily_committime = #{dailyCommittime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where daily_id = #{dailyId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.TableDaily" >
+    update table_daily
+    set daily_weekly_id = #{dailyWeeklyId,jdbcType=VARCHAR},
+      daily_time = #{dailyTime,jdbcType=VARCHAR},
+      daily_week = #{dailyWeek,jdbcType=VARCHAR},
+      daily_part = #{dailyPart,jdbcType=VARCHAR},
+      daily_content = #{dailyContent,jdbcType=VARCHAR},
+      daily_question = #{dailyQuestion,jdbcType=VARCHAR},
+      daily_answer = #{dailyAnswer,jdbcType=VARCHAR},
+      daily_committime = #{dailyCommittime,jdbcType=VARCHAR}
+    where daily_id = #{dailyId,jdbcType=VARCHAR}
+  </update>
+</mapper>

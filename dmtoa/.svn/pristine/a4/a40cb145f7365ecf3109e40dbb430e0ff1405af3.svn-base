@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>倒休天数管理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+	//点击修改按钮事件
+	function editAdmin(id) {
+		$("#edit").dialog("open");
+		$("#edit_adminId").val(id);
+		DMTRequest({
+			url : '../../adminAction/getAdminInfo.do',
+			validate : true,
+			params:{
+				adminid:id
+			},
+			success : function(data) {
+				var admin = data.result;
+				$("#edit_staffNo").html(admin.adminStaffNo);
+				$("#edit_name").html(admin.adminRealname);
+				$("#edit_leiuday").val(admin.adminLieuDay);
+			}
+		});
+	}
+
+	$(function() {
+		DMTRequest({
+			url : '../../adminAction/queryAllAdmin.do',
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				var html = "";
+				for(var i=0;i<res.length;i++){
+					html += '<option value="'+res[i].adminId+'">'+res[i].adminRealname+'</option>';
+				}
+				$("#staff").append(html);
+			}
+		});
+		
+		$("#edit").dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#editForm")[0].reset();
+			},
+			buttons : [ {
+				text : '确认',
+				iconCls : 'icon-ok',
+				handler : function() {
+					var leiuDay = $("#edit_leiuday").val();
+					if(leiuDay==null||leiuDay==undefined||leiuDay=="undefined"||leiuDay==""){
+						$.messager.alert("系统提示", "请输入员工剩余倒休天数", "warning");
+						return;
+					}
+					if(leiuDay<0){
+						$.messager.alert("系统提示", "请输入大于等于0的员工剩余倒休天数", "warning");
+						return;
+					}
+					DMTRequest({
+						url : '../../adminAction/editAdminLeiuDay.do',
+						params : {
+							adminId:$("#edit_adminId").val(),
+							leiuDay:leiuDay
+						},
+						validate : true,
+						success : function(data) {
+							$("#edit").dialog('close');
+							$("#editForm")[0].reset();
+							$("#datagrid").datagrid('reload');
+							$.messager.alert("系统提示", "员工剩余倒休天数修改成功", "info");
+						}
+					});
+				}
+			}, {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#edit').dialog('close');
+					$("#editForm")[0].reset();
+				}
+			} ]
+		});
+		//绑定查询按钮点击事件
+		$("#submit").click(function() {
+			//查询用户数据
+			DMTDatatable({
+				id : "#datagrid", //需要被填充的table
+				title : "用户倒休天数列表",
+				url : "../../adminAction/adminLeiuDayList.do", //数据url
+				params : {
+					amdinId:$("#staff").val()
+				},
+				checkbox : false, //每条数据前是否带checkbox复选框
+				//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+				columns : [ [
+						{
+							field : 'staffNo',
+							title : '员工编号',
+							width : fixWidth(0.25),
+							align : 'center'
+						},
+						{
+							field : 'realName',
+							title : '员工姓名',
+							width : fixWidth(0.25),
+							align : 'center'
+						},
+						{
+							field : 'lieuDay',
+							title : '剩余倒休天数',
+							width : fixWidth(0.25),
+							align : 'center'
+						},
+						{
+							field : '_opt',
+							title : '操作',
+							width : fixWidth(0.25),
+							align : 'center',
+							formatter : function(value, rec) {
+								var html = '<a href="javascript:editAdmin(\''
+										+ rec.adminId
+										+ '\');">编辑</a> ';
+								return html;
+							}
+						} ] ]
+			});
+		});
+
+		$("#submit").click();
+	});
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">员工：</td>
+					<td class="dmt_td_value">
+						<select id="staff">
+							<option value="">全部</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+	
+	<div id="edit" class="easyui-dialog" title="员工剩余倒休天数修改" closed="true">
+		<form id="editForm">
+			<input type="hidden" id="edit_adminId"/>
+			<table
+				style="width: 350px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name">员工编号：</td>
+					<td class="dmt_td_value"><span id="edit_staffNo"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">员工姓名：</td>
+					<td class="dmt_td_value"><span id="edit_name"></span></td>
+				</tr>
+				
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>剩余倒休天数：</td>
+					<td class="dmt_td_value"><input type="number" id="edit_leiuday"/></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>订单查询</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+	function addzero(v) {
+		if (v < 10) 
+			return '0' + v;
+		return v.toString();
+	}
+	
+	$(function(){
+		
+		var currentTime = new Date();
+		var start = currentTime.getFullYear().toString()+"-"+addzero(currentTime.getMonth()+1)+"-"+addzero(currentTime.getDate())+" 00:00:00";
+		var end = currentTime.getFullYear().toString()+"-"+addzero(currentTime.getMonth()+1)+"-"+addzero(currentTime.getDate())+" 23:59:59";
+		$("input[name=startTime]").val(start);
+		$("input[name=endTime]").val(end);
+		
+		//初始化订单状态
+		DMTSelectData("order_status", "ORDER_STATUS");
+		
+		//绑定查询按钮点击事件
+		$("#submit").click(function(){
+			//验证查询区域时间区间的正确性
+			var startTime = $("input[name=startTime]").val().replace(/-/g, "");
+			var endTime = $("input[name=endTime]").val().replace(/-/g, "");
+			if(startTime>endTime){
+				$.messager.alert("系统提示","开始时间不能大于结束时间","info");
+			}else{
+				//查询订单数据
+				DMTDatatable({
+					id:"#datagrid", //需要被填充的table
+					title:"订单查询列表",  //数据名称
+					url:"../../orderAction/orderList.do",  //数据url
+					validate:true,
+					params:{
+						orderId:$("input[name=order_id]").val(),
+						orderNo:$("input[name=order_no]").val(),
+						merName:$("input[name=mer_name]").val(),
+						merId:$("input[name=mer_id]").val(),
+						orderStatus:$("select[name=order_status]").val(),
+						startTime:$("input[name=startTime]").val(),
+						endTime:$("input[name=endTime]").val(),
+						orderAmt : $("input[name=amount]").val()
+						
+					},
+					checkbox:false,  //每条数据前是否带checkbox复选框
+					showFooter:true, //显示行脚
+					//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+					columns:[[
+					    {field:'orderId',title:'平台订单号',width:fixWidth(0.2),align:'center'},
+					    {field:'orderNo',title:'商城订单号',width:fixWidth(0.15),align:'center'},
+					    {field:'merName',title:'商户名称',width:fixWidth(0.15),align:'center'},
+					    {field:'merId',title:'商户编号',width:fixWidth(0.15),align:'center'},
+					    {field:'orderAmountCopy',title:'订单金额（元）',width:fixWidth(0.08),align:'center'},
+					    {field:'orderStatusCopy',title:'订单状态',width:fixWidth(0.08),align:'center'},
+					    {field:'orderCreateTimeCopy',title:'订单时间',width:fixWidth(0.15),align:'center'},
+					    {field:'_opt',title:'操作',width:fixWidth(0.07),align:'center',
+					    	formatter:function(value,rec){
+					    		var html = "";
+					    		if(rec._opt!="1"){
+					                html = '<a href="javascript:orderDetail(\''+rec.orderId+'\',\''+rec.orderNo+'\',\''+rec.merName+'\',\''
+					                		+rec.merId+'\',\''+rec.orderAmountCopy+'\',\''+rec.orderGoodsName+'\',\''+rec.orderGoodsNum+'\',\''+rec.orderCurType+'\',\''
+					                		+rec.orderDesc+'\',\''+rec.orderStatusCopy+'\',\''+rec.orderCreateTimeCopy+'\');">详情</a> ';
+				               }
+					    		return html;
+					    	}
+					    }
+					]]
+				});
+			}
+			
+		});
+		
+		$("#submit").click();
+		
+	})
+	
+	//订单操作-详情
+	function orderDetail(orderId,orderNo,merName,merId,orderAmountCopy,
+			orderGoodsName,orderGoodsNum,orderCurType,orderDesc,orderStatusCopy,orderCreateTime){
+		
+			$("span[name=detail_order_id]").html(orderId); // 平台订单号
+			if(typeof(orderNo)!="undefined"&&orderNo!="undefined"){
+				$("span[name=detail_order_no]").html(orderNo); // 商城订单号
+			}else{
+				$("span[name=detail_order_no]").html("");
+			}
+			
+			$("span[name=detail_mer_name]").html(merName);// 商户名称
+			$("span[name=detail_mer_id]").html(merId); // 商户编号
+			$("span[name=detail_order_amount]").html(orderAmountCopy+"元"); // 订单金额
+			$("span[name=detail_order_goodsname]").html(orderGoodsName); // 商品名称
+			if(typeof(orderGoodsNum)!="undefined"&&orderGoodsNum!="undefined"){
+				$("span[name=detail_order_goodsnum]").html(orderGoodsNum); // 商品数量
+			}else{
+				$("span[name=detail_order_goodsnum]").html("");
+			}
+			$("span[name=detail_order_curtype]").html(orderCurType); // 交易币种
+			if(typeof(orderDesc)!="undefined"&&orderDesc!="undefined"){
+				$("span[name=detail_order_desc]").html(orderDesc); // 订单描述
+			}else{
+				$("span[name=detail_order_desc]").html("");
+			}
+			$("span[name=detail_order_status]").html(orderStatusCopy); // 订单状态
+			$("span[name=detail_order_time]").html(orderCreateTime); // 订单时间
+		
+		//加载订单支付流水
+		DMTDatatable({
+			id:"#detail_flow_id", //需要被填充的table
+			title:"订单支付流水",  //数据名称
+			//page:false,
+			url:"../../orderAction/flowOrderList.do",  //数据url
+			params:{
+				flowOrderId:orderId,
+			},
+			//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+			columns:[[
+			    {field:'flowNo',title:'平台流水号',width:fixWidth(0.18),align:'center'},
+			    {field:'orderId',title:'平台订单号',width:fixWidth(0.13),align:'center'},
+			    {field:'merName',title:'商户名称',width:fixWidth(0.17),align:'center'},
+			    {field:'merId',title:'商户编号',width:150,align:'center'},
+			    {field:'flowPayWayCopy',title:'支付方式',width:fixWidth(0.15),align:'center'},
+			    {field:'flowAmountCopy',title:'支付金额（元）',width:fixWidth(0.07),align:'center'},
+			    {field:'flowStatusCopy',title:'支付状态',width:fixWidth(0.05),align:'center'},
+			    {field:'flowTransTypeCopy',title:'交易类型',width:fixWidth(0.05),align:'center'},
+			    //{field:'flowReturnStatusCopy',title:'退款状态',width:fixWidth(0.05),align:'center'},
+			    {field:'flowCreateTimeCopy',title:'支付时间',width:fixWidth(0.12),align:'center'}
+			]]
+		});
+		
+		$("#detail").dialog("open");
+
+	}
+	
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->    
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">平台订单号：</td>
+					<td class="dmt_td_value">
+						<input type="text" name="order_id" />
+					</td>
+					<td class="dmt_td_name">商城订单号：</td>
+					<td class="dmt_td_value">
+						<input type="text" name="order_no" />
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">商户名称：</td>
+					<td class="dmt_td_value">
+						<input type="text" name="mer_name" />
+					</td>
+					<td class="dmt_td_name">商户编号：</td>
+					<td class="dmt_td_value">
+						<input type="text" name="mer_id" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="dmt_td_name">订单状态：</td>
+					<td class="dmt_td_value">
+						<select name="order_status" id="order_status">
+							<option value="">全部</option>
+						</select>
+					</td>
+					<td class="dmt_td_name">订单时间：</td>
+					<td class="dmt_td_value">
+						<input type="datetime" style="width:122px;" name="startTime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly"/>至<input type="datetime" style="width:122px;" name="endTime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">订单金额：</td>
+					<td class="dmt_td_value">
+						<input type="text" name="amount" id="amount" />
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>	
+	<!-- 数据表格区域结束 -->
+	
+	<!-- 数据修改弹出框开始 -->
+	<div id="detail" class="easyui-dialog" title="订单详情" closed="true">
+		<form id="detailForm">
+			<table style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name">平台订单号：</td>
+					<td class="dmt_td_value"><span name="detail_order_id"></span></td>
+					<td class="dmt_td_name">商城订单号：</td>
+					<td class="dmt_td_value"><span name="detail_order_no"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">商户名称：</td>
+					<td class="dmt_td_value"><span name="detail_mer_name"></span></td>
+					<td class="dmt_td_name">商户编号：</td>
+					<td class="dmt_td_value"><span name="detail_mer_id"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">订单金额：</td>
+					<td class="dmt_td_value"><span name="detail_order_amount"></span></td>
+					<td class="dmt_td_name">商品名称：</td>
+					<td class="dmt_td_value"	><span name="detail_order_goodsname"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">商品数量：</td>
+					<td class="dmt_td_value"><span name="detail_order_goodsnum"></span></td>
+					<td class="dmt_td_name">交易币种：</td>
+					<td class="dmt_td_value"><span name="detail_order_curtype"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">订单时间：</td>
+					<td class="dmt_td_value"><span name="detail_order_time"></span></td>
+					<td class="dmt_td_name">订单状态：</td>
+					<td class="dmt_td_value"><span name="detail_order_status"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">订单描述：</td>
+					<td class="dmt_td_value"><span name="detail_order_desc"></span></td>
+				</tr>
+				<tr>
+        			<td class="dmt_td_name">订单支付流水：</td>
+        		</tr>
+				
+			</table>
+			<div style="width:780px;margin-left:auto;margin-right:auto;">
+        		<table id="detail_flow_id" style="width: 100%;"></table>
+        	</div>
+		</form>
+	</div>
+	<!-- 数据修改弹出框结束 -->
+
+	
+	
+
+</body>
+</html>

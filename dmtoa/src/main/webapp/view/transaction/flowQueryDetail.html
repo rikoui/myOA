@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>流水详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+
+
+	$(function(){
+		var params = DMTParameter();
+		var flowNo = params.id;
+		DMTRequest({
+			url : '../../transactionAction/flowQueryDetail.do',
+			params : {
+				flowNo : flowNo
+			},
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("span[name=flow_no]").html(res.flowNo);
+				$("span[name=order_no]").html(res.orderNo);
+				$("span[name=order_id]").html(res.orderId);
+				$("span[name=mer_name]").html(res.merName);
+				$("span[name=mer_id]").html(res.merId);
+				$("span[name=flow_amount]").html(res.flowAmountCopy+"元");
+				$("span[name=flow_fee]").html(res.flowFeeCopy+"元");
+				$("span[name=flow_status]").html(res.flowStatusCopy);
+				$("span[name=flow_transtype]").html(res.flowTranstypeCopy);
+				//$("span[name=flow_returnstatus]").html(res.returnStatusCopy);
+				$("span[name=flow_oldflowno]").html(res.flowOldflowno);
+				$("span[name=flow_payacc]").html(res.flowPayacc);
+				$("span[name=flow_inacc]").html(res.flowInacc);
+				$("span[name=payway_name]").html(res.paywayName);
+				$("span[name=flow_paybank]").html(res.flowPaybank);
+				$("span[name=flow_payway]").html(res.flowPaywayCopy);
+				$("span[name=flow_paymentno]").html(res.flowPaymentno);
+				$("span[name=flow_paymentcode]").html(res.flowPaymentcode);
+				$("span[name=flow_paymentmsg]").html(res.flowPaymentmsg);
+				$("span[name=createtime]").html(res.createtimeCopy);
+				$("span[name=successtime]").html(res.successtimeCopy);
+				$("span[name=flow_clientip]").html(res.flowClientip);
+				$("span[name=flow_backurl]").html(res.flowBackurl);
+				$("span[name=flow_settlestatus]").html(res.settleStatusCopy);
+				$("span[name=settle_id]").html(res.settleId);
+			}
+		});
+	});
+	
+</script>
+
+</head>
+<body style="padding: 0px;margin: 0px;">
+	<!-- 数据详情区域开始 -->
+	<div class="dmt_form"  style="border: solid 1px #cccccc;background-color: white;padding: 20px;">
+		<form>
+		<table class="dmt_form_table">
+			<tr><td colspan="4" align='left' style="font-size: 16px;line-height: 60px;background-color: #cccccc;"><b style="margin-left: 40px;">流水单基本信息</b></td></tr>
+			<tr>
+				<td class="dmt_td_name" width="100px">平台订单号：</td>
+				<td class="dmt_td_value" width="370px">
+					<span name="order_id"></span>
+				</td>
+				<td class="dmt_td_name" width="100px">商城订单号：</td>
+				<td class="dmt_td_value" width="370px">
+					<span name="order_no"></span>
+				</td>
+			
+				
+			</tr>
+			<tr>
+				<td class="dmt_td_name">商户名称：</td>
+				<td class="dmt_td_value">
+					<span name="mer_name"></span>
+				</td>
+				<td class="dmt_td_name">商户编号：</td>
+				<td class="dmt_td_value">
+					<span name="mer_id"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">订单金额：</td>
+				<td class="dmt_td_value">
+					<span name="flow_amount"></span>
+				</td>
+				<td class="dmt_td_name">商品名称：</td>
+				<td class="dmt_td_value">
+					<span name="flow_fee"></span>
+				</td>
+				
+			</tr>
+			<tr>
+				<td class="dmt_td_name">商品数量：</td>
+				<td class="dmt_td_value">
+					<span name="flow_status"></span>
+				</td>
+				<td class="dmt_td_name">交易币种：</td>
+				<td class="dmt_td_value">
+					<span name="flow_transtype"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">订单时间：</td>
+				<td class="dmt_td_value">
+					<span name="createtime"></span>
+				</td>
+				<td class="dmt_td_name">订单状态：</td>
+				<td class="dmt_td_value">
+					<span name="flow_status"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name" width="100px">订单支付流水：</td>
+				<td class="dmt_td_value" width="370px">
+					<span name="flow_no"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">订单描述：</td>
+				<td class="dmt_td_value">
+					<span name="flow_status"></span>
+				</td>
+			</tr>
+			<!-- <tr>
+				<td class="dmt_td_name">原交易流水号：</td>
+				<td class="dmt_td_value">
+					<span name="flow_oldflowno"></span>
+				</td>
+				<td class="dmt_td_name">付款账号：</td>
+				<td class="dmt_td_value">
+					<span name="flow_payacc"></span>
+				</td>
+				<td class="dmt_td_name">收款账号：</td>
+				<td class="dmt_td_value">
+					<span name="flow_inacc"></span>
+				</td>
+				<td class="dmt_td_name">支付通道：</td>
+				<td class="dmt_td_value">
+					<span name="payway_name"></span>
+				</td>
+				<td class="dmt_td_name">支付银行：</td>
+				<td class="dmt_td_value">
+					<span name="flow_paybank"></span>
+				</td>
+				<td class="dmt_td_name">付款方式：</td>
+				<td class="dmt_td_value">
+					<span name="flow_payway"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">三方流水号：</td>
+				<td class="dmt_td_value">
+					<span name="flow_paymentno"></span>
+				</td>
+				
+			</tr>
+			<tr>
+				<td class="dmt_td_name">交易成功时间：</td>
+				<td class="dmt_td_value">
+					<span name="successtime"></span>
+				</td>
+				<td class="dmt_td_name">交易地址：</td>
+				<td class="dmt_td_value">
+					<span name="flow_clientip"></span>
+				</td>
+			</tr> -->
+			<tr>
+				<td class="dmt_td_button" colspan="4">					
+					<input type="button" value="返回" onclick="javascript:history.back(-1);">	
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	<!-- 数据详情区域结束 -->
+
+</body>
+</html>

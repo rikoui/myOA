@@ -1,0 +1,15 @@
+package com.bjdreamtech.mapper.custom;
+
+import java.util.List;
+import java.util.Map;
+
+public interface DailyManageMapper {
+List<Map<String,Object>> dailyQueryList(String weeklyId)throws Exception;
+
+List<Map<String, Object>> queryDailyReadListByPage(Map<String, Object> params);
+
+List<Map<String, Object>> queryGroupDailyList();
+
+List<Map<String, Object>> queryDailyCount();
+
+}

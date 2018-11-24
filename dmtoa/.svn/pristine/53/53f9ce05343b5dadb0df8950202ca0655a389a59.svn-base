@@ -1,0 +1,22 @@
+package com.bjdreamtech.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 节假日模版下载业务层接口
+ * @author duanwu
+ *
+ */
+public interface IHolidayService extends IBaseService{
+
+	/**
+	 * 节假日模版下载
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	Map<String, Object> downHoliday(HttpServletRequest request, HttpServletResponse response);
+}

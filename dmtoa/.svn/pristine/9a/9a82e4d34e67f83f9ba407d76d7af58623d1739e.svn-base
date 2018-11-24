@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.DailyManageMapper" >
+		
+		<select id="dailyQueryList"  resultType="Map" parameterType="String">
+            SELECT  daily_time,daily_part,daily_week, daily_content,daily_question,daily_answer
+			 FROM table_daily
+		<where>
+			<if test=" _parameter !=null">
+				and table_daily.daily_weekly_id = #{weeklyId}
+			</if>
+			
+		</where>
+		order by daily_time,daily_week
+		</select>
+		
+		
+		
+</mapper>

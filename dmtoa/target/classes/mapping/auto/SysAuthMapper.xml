@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.SysAuthMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.SysAuth" >
+    <id column="AUTH_ID" property="authId" jdbcType="VARCHAR" />
+    <result column="AUTH_ROLE_ID" property="authRoleId" jdbcType="VARCHAR" />
+    <result column="AUTH_MENU_ID" property="authMenuId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    AUTH_ID, AUTH_ROLE_ID, AUTH_MENU_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.SysAuthExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from SYS_AUTH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_AUTH
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from SYS_AUTH
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.SysAuthExample" >
+    delete from SYS_AUTH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.SysAuth" >
+    insert into SYS_AUTH (AUTH_ID, AUTH_ROLE_ID, AUTH_MENU_ID
+      )
+    values (#{authId,jdbcType=VARCHAR}, #{authRoleId,jdbcType=VARCHAR}, #{authMenuId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.SysAuth" >
+    insert into SYS_AUTH
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="authId != null" >
+        AUTH_ID,
+      </if>
+      <if test="authRoleId != null" >
+        AUTH_ROLE_ID,
+      </if>
+      <if test="authMenuId != null" >
+        AUTH_MENU_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="authId != null" >
+        #{authId,jdbcType=VARCHAR},
+      </if>
+      <if test="authRoleId != null" >
+        #{authRoleId,jdbcType=VARCHAR},
+      </if>
+      <if test="authMenuId != null" >
+        #{authMenuId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.SysAuthExample" resultType="java.lang.Integer" >
+    select count(*) from SYS_AUTH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update SYS_AUTH
+    <set >
+      <if test="record.authId != null" >
+        AUTH_ID = #{record.authId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authRoleId != null" >
+        AUTH_ROLE_ID = #{record.authRoleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authMenuId != null" >
+        AUTH_MENU_ID = #{record.authMenuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update SYS_AUTH
+    set AUTH_ID = #{record.authId,jdbcType=VARCHAR},
+      AUTH_ROLE_ID = #{record.authRoleId,jdbcType=VARCHAR},
+      AUTH_MENU_ID = #{record.authMenuId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.SysAuth" >
+    update SYS_AUTH
+    <set >
+      <if test="authRoleId != null" >
+        AUTH_ROLE_ID = #{authRoleId,jdbcType=VARCHAR},
+      </if>
+      <if test="authMenuId != null" >
+        AUTH_MENU_ID = #{authMenuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.SysAuth" >
+    update SYS_AUTH
+    set AUTH_ROLE_ID = #{authRoleId,jdbcType=VARCHAR},
+      AUTH_MENU_ID = #{authMenuId,jdbcType=VARCHAR}
+    where AUTH_ID = #{authId,jdbcType=VARCHAR}
+  </update>
+</mapper>

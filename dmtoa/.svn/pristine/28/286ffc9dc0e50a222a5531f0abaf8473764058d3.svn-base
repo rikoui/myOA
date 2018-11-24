@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.TableTicketCustomMapper" >
+		
+		<select id="TickeQueryList"  resultType="Map" parameterType="Map">
+<!-- 		SELECT tbl.ticket_id 'id',tbl.ticket_time 'time',tbl.ticket_item 'item',tbl.ticket_use 'use', -->
+<!-- 		 tbl.ticket_pay 'pay',tbl.ticket_person 'person',tbl.ticket_type 'type', -->
+<!-- 		 tbl.ticket_remaker 'remaker',tbl.ticket_create_admin 'createadmin' -->
+<!-- 		FROM table_ticket tbl -->
+			SELECT tbl.ticket_time 'time',tbl.ticket_item 'item',tbl.ticket_use 'use',
+		 		tbl.ticket_pay 'pay',tbl.ticket_person 'person',tbl.ticket_type 'type',
+		 		tbl.ticket_remaker 'remaker' FROM table_ticket tbl
+		<where>
+			<if test=" ticketCreate !=null and '' != ticketCreate">
+				and tbl.ticket_create like  #{ticketCreate,jdbcType=VARCHAR}
+			</if>
+			<if test=" ticketTime !=null and '' != ticketTime">
+				and tbl.ticket_time like  #{ticketTime,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketPerson != null and '' != ticketPerson">
+				and tbl.ticket_person  =  #{ticketPerson,jdbcType=VARCHAR}
+			</if>
+			
+			
+			<if test="ticketCreateAdmin != null and '' != ticketCreateAdmin">
+				and tbl.ticket_create_admin  =  #{ticketCreateAdmin,jdbcType=VARCHAR}
+			</if>
+		</where>
+		
+		order by tbl.ticket_person DESC, tbl.ticket_time ASC
+		
+		</select>
+		
+		<select id="TickeQuery"  resultType="Map" parameterType="Map">
+		SELECT DISTINCT tbl.ticket_person 'person' , sum(tbl.ticket_pay) 'pay' FROM table_ticket tbl 
+		<where>
+			<if test=" ticketTime !=null and '' != ticketTime">
+				and tbl.ticket_time like  #{ticketTime,jdbcType=VARCHAR}
+			</if>
+			<if test=" ticketCreate !=null and '' != ticketCreate">
+				and tbl.ticket_create like  #{ticketCreate,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketPerson != null and '' != ticketPerson">
+				and tbl.ticket_person  =  #{ticketPerson,jdbcType=VARCHAR}
+			</if>
+		</where>
+		GROUP BY tbl.ticket_person order by tbl.ticket_person asc
+		</select>
+		
+		<select id="TickeBankAccountQuery"  resultType="Map" parameterType="Map">
+		SELECT  DISTINCT tbl.ticket_person 'person' ,tb2.salary_bank_account 'account', SUM(tbl.ticket_pay) 'pay'
+		 FROM table_ticket tbl, (SELECT DISTINCT salary_bank_account, salary_staff_name FROM table_salary) tb2
+		<where>
+			<if test=" ticketTime !=null and '' != ticketTime">
+				and tbl.ticket_time like  #{ticketTime,jdbcType=VARCHAR}
+			</if>
+			<if test=" ticketCreate !=null and '' != ticketCreate">
+				and tbl.ticket_create like  #{ticketCreate,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketPerson != null and '' != ticketPerson">
+				and tbl.ticket_person  =  #{ticketPerson,jdbcType=VARCHAR}
+			</if>
+			 and tbl.ticket_person = tb2.salary_staff_name
+		</where>
+		GROUP BY tbl.ticket_person,account order by tbl.ticket_person asc
+		</select>
+		
+		<select id="QueryListByPage"  resultType="Map" parameterType="Map">
+		SELECT tbl.ticket_id 'id',sa.ADMIN_ID 'adminid', sa.ADMIN_STAFF_NO 'staffno',tbl.ticket_time 'time',tbl.ticket_item 'item',tbl.ticket_use 'use',
+		 tbl.ticket_pay 'pay',tbl.ticket_person 'person',tbl.ticket_type 'type',
+		 tbl.ticket_remaker 'remaker',tbl.ticket_create_admin 'createadmin',tbl.ticket_create 'create'
+		FROM table_ticket tbl INNER JOIN sys_admin sa
+		<where>
+			<if test=" ticketTime !=null and '' != ticketTime">
+				and tbl.ticket_time like  #{ticketTime,jdbcType=VARCHAR}
+			</if>
+			<if test=" ticketCreate !=null and '' != ticketCreate">
+				and tbl.ticket_create like  #{ticketCreate,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketPerson != null and '' != ticketPerson">
+				and tbl.ticket_person  =  #{ticketPerson,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketItem != null and '' != ticketItem">
+				and tbl.ticket_item  =  #{ticketItem,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketCreateAdmin != null and '' != ticketCreateAdmin">
+				and tbl.ticket_create_admin  =  #{ticketCreateAdmin,jdbcType=VARCHAR}
+			</if>
+			 and tbl.ticket_create_admin = sa.ADMIN_ID
+		</where>
+			order by tbl.ticket_time DESC, tbl.ticket_person DESC 
+		</select>
+		
+		<insert id="batchSaveTicke" parameterType="list">
+			INSERT INTO table_ticket ( ticket_id,ticket_time ,ticket_item,ticket_use,ticket_pay,ticket_person
+			,ticket_type,ticket_remaker,ticket_create,ticket_month,ticket_create_admin )
+			VALUES 
+			<foreach collection ="list" item="TableTicket" index= "index" separator =","> 
+				 (#{TableTicket.ticketId},
+				 #{TableTicket.ticketTime},#{TableTicket.ticketItem},
+				 #{TableTicket.ticketUse},#{TableTicket.ticketPay},
+				 #{TableTicket.ticketPerson},#{TableTicket.ticketType},
+				 #{TableTicket.ticketRemaker},#{TableTicket.ticketCreate},
+				 #{TableTicket.ticketMonth},#{TableTicket.ticketCreateAdmin}
+				 )
+			</foreach>    
+		</insert>
+		
+	<!-- 统计报销条数，计算总金额 -->
+	<select id="queryCountAndMoney"  resultType="Map" parameterType="Map">
+		SELECT 
+			COUNT(*) AS "count", 
+			SUM(ticket_pay) AS "moneyTotal" 
+		FROM table_ticket tbl
+		<where>
+			<if test=" ticketTime !=null and '' != ticketTime">
+				and tbl.ticket_time like #{ticketTime,jdbcType=VARCHAR}
+			</if>
+			<if test=" ticketCreate !=null and '' != ticketCreate">
+				and tbl.ticket_create like #{ticketCreate,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketPerson != null and '' != ticketPerson">
+				and tbl.ticket_person = #{ticketPerson,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketItem != null and '' != ticketItem">
+				and tbl.ticket_item = #{ticketItem,jdbcType=VARCHAR}
+			</if>
+			<if test="ticketCreateAdmin != null and '' != ticketCreateAdmin">
+				and tbl.ticket_create_admin = #{ticketCreateAdmin,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

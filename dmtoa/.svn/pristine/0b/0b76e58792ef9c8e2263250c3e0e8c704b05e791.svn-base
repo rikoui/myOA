@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>报销信息录入</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script type="text/javascript">
+	$(function() {
+		// 加载发票类型下拉框数据
+		DMTSelectData("ticketItem","INCOICES_TYPE");
+		//给表单添加自动校验机制
+		DMTForm("addForm");
+		$("#submit").click(function() {
+			var ticketMonth = $("input[name=ticketMonth]").val();
+			//发票时间
+			var ticketTime = $("input[name=ticketTime]").val();
+			//报销事项
+			var ticketItem = $("#ticketItem").val();
+			//用途
+			var ticketUse = $("input[name=ticketUse]").val();
+			//花费(元)
+			var ticketPay = $("input[name=ticketPay]").val();
+			var exp = /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/;
+			if (exp.test(ticketPay)) {
+				if (ticketPay == 0) {
+					$.messager.alert("系统提示", "金额不能为零", "info");
+					return;
+				
+				}
+			} else {
+				$.messager.alert("系统提示", "请填写正确的金额", "info");
+				return;
+			}
+			//发票请情况
+			var ticketType = $("input[name=ticketType]").val();
+			//备注
+			var ticketRemaker = $("#ticketRemaker").val();
+
+			//提交保存
+			$.ajax({
+				url : '../../ticketController/saveTicke.do',
+				dataType : 'json',
+				type : 'post',
+				//需要上传的其它参数
+				data : {
+					ticketMonth : ticketMonth,
+					ticketTime : ticketTime, //报销日期
+					ticketItem : ticketItem, //报销事项
+					ticketUse : ticketUse, //用途
+					ticketPay : ticketPay, //花费
+					ticketType : ticketType, //发票情况
+					ticketRemaker : ticketRemaker
+				//备注
+
+				},
+				//成功的回调方法
+				success : function(data) {
+					loadClose();
+					if (data.status == "0") {
+						//清除表单
+						$("#addForm").form("clear");
+						$("input[name=ticketMonth]").val(ticketMonth);
+						$.messager.alert("系统提示", "报销申请提交成功", "info");
+					} else if (data.status == "1") {
+						$.messager.alert("系统提示", data.errorMsg, "info");
+					}
+
+				}
+			});
+			//}
+		});
+	});
+
+	// function toBetch(){
+	// 	location.href = 'tickeBatchAdd.html';
+
+	// }
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<b style="margin-left: 40px;">批量导入报销信息:</b>
+	<a href="tickeBatchAdd.html">批量导入报销信息</a>
+	<!-- 	<input type="button" value="批量导入报销信息" class="dmt_td_name" onclick="toBetch()"/> -->
+	<!-- 数据添加区域开始 -->
+	<div class="dmt_form"
+		style="width: 1120px; border: solid 1px #cccccc; background-color: white; padding: 20px;">
+		<form id="addForm">
+			<table class="dmt_form_table">
+				<tr>
+					<td colspan="4" align='left'
+						style="font-size: 16px; line-height: 60px; background-color: #cccccc;">
+						<b style="margin-left: 40px;">报销信息录入</b>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name" width="120px"><span class="dmt_star">*</span>报销月份
+						：</td>
+					<td class="dmt_td_value" width="370px"><input type="datetime" placeholder="对应报销月份"
+						name="ticketMonth" style="width: 198px"
+						onClick="WdatePicker({dateFmt:'yyyy-MM'})" readonly="readonly"
+						validate="NOTNULL" /> </td>
+
+					<td class="dmt_td_name" width="120px"><span class="dmt_star">*</span>发票日期
+						：</td>
+					<td class="dmt_td_value" width="370px"><input placeholder="发票实际日期"
+						style="width: 198px" type="datetime" name="ticketTime"
+						onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly"
+						validate="NOTNULL" /></td>
+
+
+				</tr>
+
+				<tr>
+
+					<td class="dmt_td_name" width="100px"><span class="dmt_star">*</span>发票类型：</td>
+					<td class="dmt_td_value" width="370px">
+						<select name="ticketItem" id="ticketItem">
+							<option value="" selected>请选择</option>
+						</select>	
+					</td>
+					<td class="dmt_td_name" width="100px"><span class="dmt_star">*</span>实际用途：</td>
+					<td class="dmt_td_value" width="370px"><input type="text" placeholder="例如:加班、出差、请xxx吃饭等"
+						name="ticketUse" maxlength="10" validate="NOTNULL" /></td>
+				</tr>
+				<tr>
+
+
+					<td class="dmt_td_name"><span class="dmt_star">*</span>金额(元)：</td>
+					<td class="dmt_td_value"><input type="text" name="ticketPay" placeholder="对应发票实际金额"
+						validate="NOTNULL,MONEY" /></td>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>发票情况：</td>
+					<td class="dmt_td_value"><input type="text" name="ticketType" placeholder="例如：纸质发票、电子发票、替票等"
+						validate="NOTNULL" /></td>
+
+				</tr>
+				<tr>
+					<td class="dmt_td_name">备注：</td>
+					<td  class="dmt_td_value" colspan="3"><textarea
+							style="width: 770px; height: 90px;"
+							placeholder="当报销金额有特殊情况时，请在这说明" name="ticketRemaker" id ="ticketRemaker"
+							maxlength="30" /></textarea></td>
+				</tr>
+
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 添加 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据添加区域结束 -->
+
+</body>
+</html>

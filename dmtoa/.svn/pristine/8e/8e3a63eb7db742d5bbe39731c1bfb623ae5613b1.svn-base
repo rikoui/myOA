@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.LeaveManageMapper" >
+ 	<select id="queryLeavesByPage" resultType="map" parameterType="map">
+ 		select  l.levae_id as "leaveId",
+ 				l.leave_admin_id as "applyerId",
+ 				l.leave_reason as "reason",
+ 				l.leave_start_time as "startTime",
+ 				l.leave_status as "status",
+ 				l.leave_approval_desc as "desc",
+ 				l.leave_end_time as "endTime",
+ 				l.leave_approvaler as "approvalerId",
+ 				l.leave_approval_time as "approvalTime",
+ 				a.ADMIN_REALNAME as "applyerName",
+ 				b.ADMIN_REALNAME as "approvalerName",
+ 				l.leave_num as "leaveNum",
+ 				l.leave_creatime as "createtime",
+ 				l.leave_approval_res as "approvalRes"
+ 		from leave_person l
+ 		left join sys_admin a
+ 		on a.ADMIN_ID=l.leave_admin_id
+ 		left join sys_admin b
+ 		on b.ADMIN_ID=l.leave_approvaler
+ 		where 1=1
+ 		<if test="status != null and status != ''">
+ 			and l.leave_status=#{status}
+ 		</if>
+ 		<if test="applyer != null and applyer != ''">
+ 			and l.leave_admin_id=#{applyer}
+ 		</if>
+ 		<if test="approvaler != null and approvaler != ''">
+ 			and l.leave_approvaler=#{approvaler}
+ 		</if>
+ 		<if test="extension_applyer != null and extension_applyer != ''">
+ 			and l.leave_admin_id!=#{extension_applyer}
+ 		</if>
+ 		<if test="approval_res != null and approval_res != ''">
+ 			and l.leave_approval_res=#{approval_res}
+ 		</if>
+ 	</select>
+ 	
+ 	<select id="getLeaveDetail" resultType="map" parameterType="string">
+ 		select  l.levae_id as "leaveId",
+ 				l.leave_admin_id as "applyerId",
+ 				l.leave_reason as "reason",
+ 				l.leave_start_time as "startTime",
+ 				l.leave_status as "status",
+ 				l.leave_approval_desc as "desc",
+ 				l.leave_end_time as "endTime",
+ 				l.leave_approvaler as "approvalerId",
+ 				l.leave_approval_time as "approvalTime",
+ 				a.ADMIN_REALNAME as "applyerName",
+ 				b.ADMIN_REALNAME as "approvalerName",
+ 				l.leave_num as "leaveNum",
+ 				l.leave_creatime as "createtime",
+ 				l.leave_approval_res as "approvalRes"
+ 		from leave_person l
+ 		left join sys_admin a
+ 		on a.ADMIN_ID=l.leave_admin_id
+ 		left join sys_admin b
+ 		on b.ADMIN_ID=l.leave_approvaler
+ 		where l.levae_id=#{_parameter}
+ 	</select>
+</mapper>

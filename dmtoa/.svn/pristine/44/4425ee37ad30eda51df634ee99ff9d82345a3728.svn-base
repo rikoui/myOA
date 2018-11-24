@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.DailyCountScheludeMapper" >
+	<select id="dailySubmitCount" parameterType="map" resultType="integer">
+		select count(*) from table_daily,table_weekly where daily_weekly_id=weekly_id
+		and weekly_admin_id=#{adminId} and daily_time=#{dailyTime}
+	</select>	
+	<select id="leaveCountByCondition" parameterType="map" resultType="integer">
+		select count(*) from leave_person where leave_approval_res='0'
+		and leave_admin_id=#{adminId} and leave_start_time&lt;=#{preDay}
+		and leave_end_time&gt;=#{preDay}
+	</select>	
+	
+	<select id="selectLeaveByAdmin" parameterType="map" resultType="map">
+		select  levae_id as "leaveId",
+				leave_admin_id as "adminId",
+				leave_start_time as "startTime",
+				leave_end_time as "endTime"
+		from leave_person,sys_role,sys_admin 
+		where leave_admin_id=admin_id and admin_role_id=role_id
+		left(leave_approval_time,8)=#{approvalTime}
+		and leave_approval_res='0' and role_id!='88888888'
+	</select>
+	
+	<select id="queryDailys" parameterType="string" resultType="map">
+		select 	weekly_admin_id as "adminId",
+				replace(daily_time,'-','') as "dailyTime"
+		from table_daily,table_weekly where daily_weekly_id=weekly_id
+		and replace(daily_time,'-','')&lt;=#{_parameter}
+	</select>
+</mapper>

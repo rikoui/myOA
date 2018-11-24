@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>假期导入</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<style type="text/css">
+	.red{
+		color:red;
+	}
+</style>
+<script type="text/javascript">
+	$(function () {
+		DMTDatatable({
+			id:"#datagrid", //需要被填充的table
+			title:"假期列表",  //数据名称
+			url:"../../holidayAction/holidayList.do",  //数据url
+			params:{
+				holidayMonth:$("input[name=holidayMonth]").val()
+			},
+			checkbox:false,  //每条数据前是否带checkbox复选框
+			singleSelect:true,
+			//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+			columns:[[
+			    {field:'holidayId',title:'假期日期',width:fixWidth(0.5),align:'center'},
+			    {field:'_opt',title:'操作',width:fixWidth(0.5),align:'center',
+			    	formatter:function(value,rec){
+	                	return '<a href="javascript:deleteHoliday(\''+rec.holidayId+'\');">删除</a> '; ; 
+	                }
+			    } 
+			]],
+			//操作按钮
+			toolbar:[{
+		        text: '假期导入', 
+		        iconCls: 'icon-add', 
+		        handler: function() { 
+		        	$("#holidayImport").window("open");
+		        } 
+		    },
+		    {
+		        text: '模版下载', 
+		        iconCls: 'icon-help', 
+		        handler: function() { 
+		        	location.href = "../../holidayAction/downHoliday.do";
+		        } 
+		    }]
+		}); 
+		$("#submit").click(function () {
+		});
+	})
+	
+	function deleteHoliday (holidayId) {
+		DMTRequest({
+			url:'../../holidayAction/deleteHoliday.do',
+			params:{
+				holidayId: holidayId,
+			},
+			validate:true,
+			success:function(data){
+				var res = data.result;
+				$.messager.alert("提示", res, "info", function () {
+					$("#datagrid").datagrid("reload");
+				});
+			}
+		});
+	}
+	
+	//上传报销文件时候进行校验
+	function checkFile(){
+		$("#countDiv").html("");
+		//文件异步上传
+		//根据文件名做判断
+		var filename = $("#merCertZip").val();
+		console.log(filename);
+		var houzui = filename.substring(filename.lastIndexOf(".")+1);
+		if(houzui.toUpperCase()!="TXT"){
+			$.messager.alert("系统警告","上传文件必须为.txt后缀文件"+houzui,"warning",function(){
+				$("#merCertZip").val("");
+			});
+			return;
+		}
+		loadOpen();
+		$.ajaxFileUpload({  
+	        url:'../../holidayAction/checkFileSize.do',  
+	        fileElementId:"merCertZip",  
+	        dataType: 'json',
+	        type:'post',
+	        //文件上传成功的回调方法
+	        success:function(data){
+				if(data.status=="1"){
+					loadClose();
+					//不符合大小
+					$.messager.alert("系统警告",data.errorMsg,"warning",function(){
+						$("#merCertZip").val("");
+					});
+				}else{
+					loadClose();
+					$.messager.alert("提示",data.errorMsg,"info",function(){
+						var holidayList = data.result;
+						if (holidayList.length > 0) {
+							var date = "";
+							for (var i = 0; i < holidayList.length; i ++) {
+								if (i == holidayList.length - 1) {
+									date = date + holidayList[i];
+								} else {
+									date = date + holidayList[i] + "，"
+								}
+							}
+							$("#countDiv").append("<div style='float: left'>节假日：" + date + "提交成功</div>");
+						} else {
+							$("#countDiv").append("<label style='float:left;'>提交了0个日期</label>");
+						}
+						$("#merCertZip").val("");
+						$("#holidayImport").window("close");
+						$("#datagrid").datagrid("reload");
+					});
+				}
+	        },
+	        //文件上传失败的回掉方法
+	        error:function(data){
+	        	$.messager.alert("系统警告",data.errorMsg,"warning");
+	        }
+	    });
+	}
+</script>
+</head>
+<body style="padding: 0px;margin: 0px;">
+	<input id="fileId" type="hidden"/>
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_button">假期月份：</td>
+					<td class="dmt_td_value" width="370px">
+						<input type="datetime" name="holidayMonth" onClick="WdatePicker()" readonly="readonly" validate="NOTNULL"/> 
+					</td>
+					<td class="dmt_td_button">
+						<input type="button" value=" 查询 " id="submit"/>
+					</td>
+					<td class="dmt_td_button">
+						<input type="reset" value=" 清空 "/>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr"/>
+		<div id="countDiv" class="red"></div>
+	</div>
+	<!-- 查询条件区域结束 -->
+	
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<div id="holidayImport" class="easyui-dialog" title="假期上传" style="width:400px;height:200px;"   
+        data-options="resizable:true, modal:true, closed: true">
+        <div style="padding-top:60px; padding-left:25px">
+        	<span class="dmt_star">*</span>上传节假日的Txt文件：
+			<input type="file" name="merCertZip" id="merCertZip" onchange="checkFile()"/>
+			<label style="dislpay:none;line-height:36px;margin-left:10px;" id="fileName" value=""></label>
+        </div>
+	</div>
+</body>
+</html>

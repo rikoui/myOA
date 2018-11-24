@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.NextPlanManageMapper" >
+		
+		<select id="nextPlanQueryList"  resultType="Map" parameterType="String">
+            SELECT nextplan_id, nextplan_thing,nextplan_overtime,nextplan_leading,
+            nextplan_parting,nextplan_weekly_id,nextplan_starttime
+			 FROM table_nextplan
+		<where>
+			<if test=" _parameter !=null">
+				and table_nextplan.nextplan_weekly_id = #{weeklyId,jdbcType=VARCHAR}
+			</if>
+			ORDER BY table_nextplan.nextplan_overtime ASC
+		</where>
+		
+		</select>
+		
+		
+		
+</mapper>

@@ -1,0 +1,405 @@
+package com.bjdreamtech.service.impl;
+
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bjdreamtech.dmt.bean.DMTMenuBean;
+import com.bjdreamtech.dmt.bean.DMTResultBean;
+import com.bjdreamtech.dmt.bean.DMTSessionBean;
+import com.bjdreamtech.dmt.util.DMT3DESUtil;
+import com.bjdreamtech.dmt.util.DMTConfigUtil;
+import com.bjdreamtech.dmt.util.DMTDateUtil;
+import com.bjdreamtech.dmt.util.DMTMD5Util;
+import com.bjdreamtech.dmt.util.DMTPrimaryKeyUtil;
+import com.bjdreamtech.dmt.util.DMTSendMessage;
+import com.bjdreamtech.dmt.util.DMTSendMsgHttp;
+import com.bjdreamtech.entity.SysAdmin;
+import com.bjdreamtech.entity.SysAdminExample;
+import com.bjdreamtech.entity.SysControl;
+import com.bjdreamtech.entity.SysLogin;
+import com.bjdreamtech.entity.SysLoginExample;
+import com.bjdreamtech.entity.SysParam;
+import com.bjdreamtech.entity.SysParamExample;
+import com.bjdreamtech.entity.SysRole;
+import com.bjdreamtech.mapper.auto.SysAdminMapper;
+import com.bjdreamtech.mapper.auto.SysControlMapper;
+import com.bjdreamtech.mapper.auto.SysLoginMapper;
+import com.bjdreamtech.mapper.auto.SysMenuMapper;
+import com.bjdreamtech.mapper.auto.SysParamMapper;
+import com.bjdreamtech.mapper.auto.SysRoleMapper;
+import com.bjdreamtech.mapper.custom.LoginMapper;
+import com.bjdreamtech.service.ILoginService;
+
+/**
+ * 登录模块业务层实现类
+ * @author duanwu
+ *
+ */
+@Service("loginService")
+public class LoginServiceImpl extends BaseServiceImpl implements ILoginService {
+	
+	@Resource
+	private SysAdminMapper sysAdminMapper;
+	@Resource
+	private SysMenuMapper sysMenuMapper;
+	@Resource
+	private SysLoginMapper sysLoginMapper;
+	@Resource
+	private LoginMapper loginMapper;
+	@Resource
+	private SysControlMapper sysControlMapper;
+	@Resource
+	private SysRoleMapper sysRoleMapper;
+	@Autowired
+	SysParamMapper sysParamMapper;
+
+	/**
+	 * 用户登录业务
+	 */
+	public DMTResultBean login(HttpServletRequest request) {
+		//构建返回bean对象
+		DMTResultBean rb = new DMTResultBean();
+		//获取前台数据：用户名
+		String username = request.getParameter("username");
+		//获取前台数据：密码
+		String password = request.getParameter("password");
+		//获取图片校验码
+		String code = request.getParameter("code");
+		if(isNull(code)){
+			return new DMTResultBean("1","图片校验码不能为空","");
+		}
+		//获取session中的code
+		String sessionCode = (String) request.getSession().getAttribute("code");
+		if(!code.toUpperCase().equals(sessionCode)){
+			return new DMTResultBean("1","校验码错误","");
+		}
+		//校验前台数据输入规则
+		if(!validateLogin(rb,username,password)) return rb;
+		//密码MD5加密
+		password = DMTMD5Util.string2MD5(password);
+		//校验用户名是否存在
+		SysAdminExample sae = new SysAdminExample();
+		sae.createCriteria().andAdminUsernameEqualTo(username);
+		List<SysAdmin> admins = sysAdminMapper.selectByExample(sae);
+		//用户名不存在的情况下返回错误信息
+		if(admins==null||(admins!=null&&admins.size()==0)){
+			rb.setAttr("1", "用户名不存在", "");
+			return rb;
+		}
+		SysAdmin admin = admins.get(0);
+		//校验用户状态
+		if(!admin.getAdminStatus().equals("0")){
+			rb.setAttr("1", "您的账号已被冻结", "");
+			return rb;
+		}
+		//检验密码是否正确
+		if(password.equals(admin.getAdminPassword())){
+			//获取当前时间字符串
+			String time = DMTDateUtil.parseDate();
+			SysLoginExample sle = new SysLoginExample();
+			sle.createCriteria().andLoginAdminIdEqualTo(admin.getAdminId());
+			List<SysLogin> loginList = sysLoginMapper.selectByExample(sle);
+			SysLogin login = null;
+			if(loginList==null||(loginList!=null&&loginList.size()==0)){
+				//新增登陆信息
+				login = new SysLogin();
+				login.setLoginId(DMTPrimaryKeyUtil.getPrimaryKey("LOGIN"));
+				login.setLoginAdminId(admin.getAdminId());
+				login.setLoginIp(request.getRemoteHost());//设置本次登陆IP
+				login.setLoginLastTime("");//设置上次登录时间
+				login.setLoginTime(time);//设置本次登陆时间
+				sysLoginMapper.insertSelective(login);//新增登陆信息
+			}else{
+				//修改登录信息
+				login = loginList.get(0);
+				login.setLoginIp(request.getRemoteHost());//设置本次登陆IP
+				login.setLoginLastTime(login.getLoginTime());//设置上次登录时间
+				login.setLoginTime(time);//设置本次登陆时间
+				sysLoginMapper.updateByPrimaryKeySelective(login);//更新数据库
+			}
+
+			admin.setAdminErrortimes(0);//设置登陆错误次数
+			sysAdminMapper.updateByPrimaryKeySelective(admin);//更新数据
+			//记录登陆控制表
+			SysControl control = new SysControl();
+			control.setControlId(DMTPrimaryKeyUtil.getPrimaryKey("CONTROL")); //设置主键
+			control.setControlSessionid(request.getSession().getId()); //设置sessionid
+			control.setControlAdminId(admin.getAdminId()); //设置登录用户
+			control.setControlLogintime(time); //设置登录时间
+			sysControlMapper.insertSelective(control); //报错登陆控制记录
+			//查询该登录用户所属角色的ACTION权限集
+			List<Map<String,String>> actionList = loginMapper.getActions(admin.getAdminRoleId());
+			//将action权限集放到session中
+			request.getSession().setAttribute("actionList", actionList);
+			//将登陆用户信息放到session中
+			DMTSessionBean sessionBean = new DMTSessionBean();
+			sessionBean.setAdminid(admin.getAdminId());
+			sessionBean.setRoleid(admin.getAdminRoleId());
+			sessionBean.setIp(login.getLoginIp());
+			sessionBean.setLasttime(DMTDateUtil.packDate(login.getLoginLastTime()));
+			sessionBean.setMark(admin.getAdminMark());
+			sessionBean.setPhone(admin.getAdminPhone());
+			sessionBean.setRealname(admin.getAdminRealname());
+			SysRole role = sysRoleMapper.selectByPrimaryKey(admin.getAdminRoleId());
+			sessionBean.setRolename(role.getRoleName());
+			sessionBean.setTime(DMTDateUtil.packDate(login.getLoginTime()));
+			sessionBean.setUsername(admin.getAdminUsername());
+			sessionBean.setBranchid(admin.getAdminBranchId());
+			request.getSession().setAttribute("sessionBean", sessionBean);
+			//设置返回对象信息
+			rb.setAttr("0", "", "");
+			//记录登陆成功日志
+			log.logging("登陆成功", this.getClass(), admin.getAdminUsername(),request.getRemoteHost());
+		}else{
+			//密码错误的情况下判断失败次数，如果累计到达5次，那么冻结该账号
+			if(admin.getAdminErrortimes()+1==5){
+				//冻结账号的同时初始化失败次数为0
+				admin.setAdminErrortimes(0);
+				
+				//将账号的状态变为冻结状态
+				admin.setAdminStatus("1");
+			}else{
+				//将登陆失败次数+1
+				admin.setAdminErrortimes((admin.getAdminErrortimes()+1));
+			}
+			//更新数据库
+			sysAdminMapper.updateByPrimaryKeySelective(admin);
+			short num = (short) (5 - admin.getAdminErrortimes());
+			//设置返回对象信息
+			rb.setAttr("1", "用户名或者密码错误(您还有 " + num + "次输入机会!)", "");
+			//记录登陆失败日志
+			log.logging("登陆失败", this.getClass(), admin.getAdminUsername(),request.getRemoteAddr());
+		}
+		return rb;
+	}
+	
+	/**
+	 * 用户登录前台提交数据校验
+	 * @param rb
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public boolean validateLogin(DMTResultBean rb,String username,String password){
+		if(username == null || "".equals(username)||password == null || "".equals(password)){
+			rb.setAttr("1", "数据校验失败", "");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 获取菜单权限
+	 */
+	@Override
+	public DMTResultBean menu(HttpServletRequest request) {
+		DMTResultBean rb = new DMTResultBean();
+		//获取登陆用户的信息
+		DMTSessionBean sessionBean = (DMTSessionBean)request.getSession().getAttribute("sessionBean");
+		Map<String,Object> p = new HashMap<String,Object>();
+		p.put("roleId", sessionBean.getRoleid());
+		//根据登陆用户的角色ID获取相应的菜单数据
+		List<Map<String,String>> menuList = loginMapper.getMenu(p);
+		//将查询出来的菜单数据封装为菜单bean
+		DMTMenuBean menuBean = new DMTMenuBean();
+		menuBean.parseList(menuList);
+		//将封装好的bean注入到返回bean对象中
+		rb.setAttr("0", "", menuBean);
+		return rb;
+	}
+
+	/**
+	 * 校验用户session信息是否存在或者是否过期
+	 */
+	@Override
+	public DMTResultBean validateSession(HttpServletRequest request) {
+		//从session中获取登陆用户的信息
+		DMTSessionBean sessionBean = (DMTSessionBean)request.getSession().getAttribute("sessionBean");
+		if(sessionBean==null){
+			//不存在的情况下返回session校验失败
+			return new DMTResultBean("1","请登陆后操作","");
+		}else{
+			if("true".equals(DMTConfigUtil.CONFIG_SINGLESIGNON)){
+				//根据登陆用户获取最新的登录控制信息
+				String sessionid = loginMapper.getNewSessionid(sessionBean.getAdminid()).get(0).get("sessionid");
+				//判断最新的sessionid和请求的sessionid是否相同
+				if(!sessionid.equals(request.getSession().getId())){
+					//证明登陆用户已被强制登出，清除session信息
+					request.getSession().removeAttribute("sessionBean");
+					//返回校验失败
+					return new DMTResultBean("1","您的账号已在其它客户端登陆","");
+				}
+			}
+		}
+		//存在的情况下返回session校验成功
+		return new DMTResultBean("0","","");
+	}
+
+	/**
+	 * 退出系统，清除session信息
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean logout(HttpServletRequest request) {
+		//清除session中的用户信息
+		request.getSession().removeAttribute("sessionBean");
+		//清楚session中的action权限信息
+		request.getSession().removeAttribute("actionList");
+		return new DMTResultBean("0","","");
+	}
+
+	/**
+	 * 修改密码
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public DMTResultBean updatePassword(HttpServletRequest request) {
+		DMTResultBean rb = new DMTResultBean();
+		String oldpassword = request.getParameter("oldpassword");
+		String password = request.getParameter("password");
+		String repassword = request.getParameter("repassword");
+		//校验前台输入数据规则
+		if(!validateUpdatePassword(rb,oldpassword,password,repassword)) return rb;
+		//获取登陆用户信息
+		DMTSessionBean sessionBean = (DMTSessionBean)request.getSession().getAttribute("sessionBean");
+		SysAdmin admin = sysAdminMapper.selectByPrimaryKey(sessionBean.getAdminid());
+		//判断原密码是否正确
+		if(!DMTMD5Util.string2MD5(oldpassword).equals(admin.getAdminPassword())){
+			rb.setAttr("1", "原密码不正确", "");
+			log.logging("修改密码失败", this.getClass(), admin.getAdminUsername(), request.getRemoteHost());
+		}else{
+			//原密码正确的情况下修改用户密码
+			admin.setAdminPassword(DMTMD5Util.string2MD5(password));
+			admin.setAdminMark("0");
+			//更新数据库
+			sysAdminMapper.updateByPrimaryKeySelective(admin);
+			
+			//发送邮件
+			//查询邮箱参数
+			List<Map<String, Object>> emailParams = paramManageMapper.queryEmailParams();
+			String[] params=new String[3];
+			for (Map<String, Object> map : emailParams) {
+				if("服务器".equals(map.get("key"))){
+					params[0] = (String)map.get("value");
+				}
+				else if("账号".equals(map.get("key"))){
+					params[1] = (String)map.get("value");
+				}else{
+					params[2] = (String)map.get("value");
+				}
+			}
+			String emailContent = "尊敬的"+admin.getAdminRealname()+"，您好！您的追梦运营管理系统登录名为："+admin.getAdminUsername()+"，密码为："+password+"，如有需要请及时登录到系统对用户名和密码进行修改。";
+			String eres = DMTSendMessage.sendEmailMessage("运营管理员账号密码修改成功通知", emailContent, "追梦运营管理系统", 
+					params[0], params[1], params[2], DMT3DESUtil.decryptMode(admin.getAdminEmail()));
+			log.debug("邮箱发送结果："+eres, this.getClass());
+			/*
+			 * 发送短信
+			 * */
+//			boolean IsSuccess = false;
+//			String Msg = "";
+//			long QueueID = 0;
+//			SysParamExample example = new SysParamExample();
+//			//短信发送url
+//			SysParam sps1 = sysParamMapper.selectByPrimaryKey("PC4CE86E26F75470C9C384A954AD7BA83");
+//			String url = "";
+//				url = sps1.getParamValue();
+//			//短信发送密码
+//			SysParam sps2= sysParamMapper.selectByPrimaryKey("PBDF08B9B59F14D72A09A233BF8AC9C55");
+//			String MSMpassword = "";
+//				MSMpassword = sps2.getParamValue();
+//			//短信发送用户id
+//			SysParam sps3= sysParamMapper.selectByPrimaryKey("PD60F5B2A7D7B4949AD3E17FF3A1F271E");
+//			String UserId="";
+//				UserId = sps3.getParamValue();
+//			//短信发送账号
+//			SysParam sps4= sysParamMapper.selectByPrimaryKey("PF39393AC887243189BB2F6A64A116805");
+//			String account="";
+//			account = sps4.getParamValue();
+//			//发送的手机号
+//				String mobile1=DMT3DESUtil.decryptMode(admin.getAdminPhone());;
+//			//发送的内容
+//			String content="【追梦】尊敬的"+admin.getAdminRealname()
+//											+"，您好！您的追梦运营管理系统登录名为："
+//											+admin.getAdminUsername()
+//											+"，密码为："+password
+//											+"，如有需要请及时登录到系统对用户名和密码进行修改。";
+//			try{/*
+//			String str = url + "?action=send&UserId="
+//					+ URLEncoder.encode(UserId, "UTF-8")+"&account="
+//					+ URLEncoder.encode(account, "UTF-8") + "&password="
+//					+ URLEncoder.encode(MSMpassword, "UTF-8") +  "&mobile="
+//					+ URLEncoder.encode(mobile1, "UTF-8") + "&content="
+//					+ URLEncoder.encode(content, "UTF-8") +"&sendTime=&checkcontent=1";
+//			String sendsmsTestString = DMTSendMsgHttp.http(str, null);
+//			if (sendsmsTestString.startsWith("success")) {
+//				String[] str1 = sendsmsTestString.split(";");
+//				System.out.println(str1);
+//				IsSuccess = true;
+//				Msg = str1[0];
+//				QueueID = Long.parseLong(str1[1].trim());
+//				System.out.println(IsSuccess+Msg+QueueID);
+//			} else if (sendsmsTestString.startsWith("fail")) {
+//				IsSuccess = false;
+//				// 当前错误信息
+//				Msg = sendsmsTestString;
+//
+//			} else if (sendsmsTestString.startsWith("NetWorkConnectionFailed!")) {
+//
+//				IsSuccess = false;
+//				// 当前错误信息
+//				Msg = sendsmsTestString;
+//				System.out.println("当前网络已经断开！请尝试重新连接网络……");
+//			}
+//			*/}catch(Exception ex){
+//				
+//			}
+			//清除登陆用户session信息
+			rb = logout(request);
+			log.logging("修改密码成功", this.getClass(), admin.getAdminUsername(), request.getRemoteHost());
+			
+		}
+		return rb;
+	}
+	
+	/**
+	 * 修改密码数据校验
+	 * @param rb
+	 * @param oldpassword
+	 * @param password
+	 * @param repassword
+	 * @return
+	 */
+	public boolean validateUpdatePassword(DMTResultBean rb,String oldpassword,String password,String repassword){
+		if(oldpassword==null||"".equals(oldpassword)||password==null||"".equals(password)||repassword==null||"".equals(repassword)){
+			rb.setAttr("1","数据校验失败","");
+			return false;
+		}
+		if(!password.equals(repassword)){
+			rb.setAttr("1", "数据校验失败", "");
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 获取登录用户session信息
+	 */
+	@Override
+	public DMTResultBean getSession(HttpServletRequest request) {
+		DMTSessionBean sessionBean = (DMTSessionBean)request.getSession().getAttribute("sessionBean");
+		return new DMTResultBean("0","",sessionBean);
+	}
+	
+	
+
+}

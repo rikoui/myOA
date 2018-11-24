@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>报销信息查询</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<style type="text/css">
+	.red {
+		color : red;
+		margin-left : 60px
+	}
+</style>
+<script type="text/javascript">
+//点击修改按钮事件
+function editTicket(id) {
+	//打开修改用户弹出框
+	$("#edit").dialog("open");
+	DMTInitMsg();
+	//根据ID查询数据信息
+	DMTRequest({
+		url : '../../ticketController/getTicketInfo.do',
+		params : {
+			ticketId : id,
+		},
+		validate :false,
+		success : function(data) {
+			var ticketinfo = data.result;
+			$("input[name=edit_time]").val(ticketinfo.ticketTime);
+			$("#edit_item").val(ticketinfo.ticketItem);
+			$("input[name=edit_use]").val(ticketinfo.ticketUse);
+			$("input[name=edit_pay]").val(ticketinfo.ticketPay);
+			$("input[name=edit_person]").val(ticketinfo.ticketPerson);
+			$("input[name=edit_type]").val(ticketinfo.ticketType);
+			$("input[name=edit_remaker]").val(ticketinfo.ticketRemaker);
+			$("input[name=edit_id]").val(ticketinfo.ticketId);
+		}
+	});
+}
+function validateEdit() {
+	var ticketTime = $("#edit_time").val();
+	if (ticketTime == "") {
+		msgShow('系统提示', '报销时间不能为空', 'warning');
+		return false;
+	}
+	var ticketItem = $("#edit_item").val();
+	if (ticketItem == "") {
+		msgShow('系统提示', '发票类型不能为空', 'warning');
+		return false;
+	}
+	var ticketUse = $("#edit_use").val();
+	if (ticketUse == "") {
+		msgShow('系统提示', '报销用途不能为空', 'warning');
+		return false;
+	}
+	var ticketPay = $("#edit_pay").val();
+	if (ticketPay == "") {
+		msgShow('系统提示', '报销金额不能为空', 'warning');
+		return false;
+	}
+	var ticketPerson = $("#edit_person").val();
+	if (ticketPerson == "") {
+		msgShow('系统提示', '出资人不能为空', 'warning');
+		return false;
+	}
+	var ticketType = $("#edit_type").val();
+	if (ticketType == "") {
+		msgShow('系统提示', '报销类型不能为空', 'warning');
+		return false;
+	}
+	return true;
+}
+	
+$(function(){
+	DMTForm("edit");
+	DMTSelectData("mer_status", "SIMPLE_STATUS");
+	// 加载发票类型下拉框数据(编辑)
+	DMTSelectData("edit_item","INCOICES_TYPE");
+	// 加载发票类型下拉框数据
+	DMTSelectData("ticketItem","INCOICES_TYPE");
+	//定义修改报销弹出框
+	$('#edit').dialog({
+		resizable : true, //定义对话框是否可编辑大小
+		width : 600,
+		height : 400,
+		left : '200px',
+		top : '100px',
+		modal : true,
+		onClose : function() {
+			$("#editForm")[0].reset();
+		},
+		buttons : [{
+			text : '确认',
+			iconCls : 'icon-ok',
+			handler : function() {
+				if(validateEdit()){
+					DMTRequest({
+						url : '../../ticketController/ticketEdit.do',
+						params : {
+							ticketTime : $("input[name=edit_time]").val(),
+						    ticketItem : $("#edit_item").val(),
+							ticketUse : $("input[name=edit_use]").val(),
+							ticketPay : $("input[name=edit_pay]").val(),
+							ticketPerson : $("input[name=edit_person]").val(),
+							ticketType : $("input[name=edit_type]").val(),
+							ticketRemaker : $("input[name=edit_remaker]").val(),
+							ticketId : $("input[name=edit_id]").val()
+						},
+						validate : true,
+						success : function(data) {
+							$("#edit").dialog('close');
+							$("#editForm")[0].reset();
+							$("#datagrid").datagrid('reload');
+							$.messager.alert("系统提示", "修改报销成功", "info");
+						}
+					});
+				}
+			}
+		}, {
+			text : '取消',
+			iconCls : 'icon-cancel',
+			handler : function() {
+				$('#edit').dialog('close');
+				$("#editForm")[0].reset();
+			}
+		}]
+	});
+				
+	//绑定查询按钮点击事件
+	$("#submit").click(function(){
+		//查询代理商操作员数据
+		DMTDatatable({
+			id:"#datagrid", //需要被填充的table
+			title:"报销查询列表",  //数据名称
+			url:"../../ticketController/tickeQuerList.do",  //数据url
+			validate:true,
+			params:{
+				ticketTime:$("input[name=ticketTime]").val(),
+				ticketCreate:$("input[name=ticketCreate]").val(),
+				ticketPerson:$("input[name=ticketPerson]").val(),
+				ticketItem:$("#ticketItem").val()
+			},
+			checkbox:false,  //每条数据前是否带checkbox复选框
+			//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+			columns:[[
+				{field:'id',title:'报销单号',width:fixWidth(0.20),align:'center',hidden : true},
+					{field:'staffno',title:'员工编号',width:fixWidth(0.08),align:'center'},
+				{field:'time',title:'发票时间',width:fixWidth(0.1),align:'center'},
+			    {field:'itemCopy',title:'发票类型',width:fixWidth(0.1),align:'center'},
+			    {field:'use',title:'实际用途',width:fixWidth(0.15),align:'center'},
+			    {field:'pay',title:'金额(元)',width:fixWidth(0.08),align:'center',
+			    	  formatter:function(value,rec){
+			                var tpay = rec.pay;
+			                return formatNum(tpay);
+			    	  }},
+			    {field:'person',title:'出资人',width:fixWidth(0.1),align:'center'},
+			    {field:'type',title:'发票情况',width:fixWidth(0.08),align:'center'},
+			    {field:'remaker',title:'备注',width:fixWidth(0.27),align:'center'},
+			    {field:'_opt',title:'操作',width:fixWidth(0.07),align:'center',
+		    		formatter : function(value, rec) {
+						var html = '<a href="javascript:editTicket(\'' + rec.id + '\');">编辑</a> ';
+               			return html;
+			    }} 
+			]],
+			toolbar : [ {
+				text : '报销明细下载',
+				iconCls : 'icon-add',
+				handler : function() {
+					var ticketTime=$("input[name=ticketTime]").val();
+					var ticketCreate=$("input[name=ticketCreate]").val();
+					var ticketPerson=$("input[name=ticketPerson]").val();
+					var url="../../ticketController/expoartExcel.do?ticketTime="+ticketTime+"&ticketCreate="+ticketCreate+"&ticketPerson="+ticketPerson;
+					location.href = url; 
+				}},'_',{
+				text : '招行代发报销文件下载',
+				iconCls : 'icon-add',
+				handler : function() {
+					var ticketTime=$("input[name=ticketTime]").val();
+					var ticketCreate=$("input[name=ticketCreate]").val();
+					var ticketPerson=$("input[name=ticketPerson]").val();								
+					//下载
+					var url="../../ticketController/expoartExcelAccount.do?ticketTime="+ticketTime+"&ticketCreate="+ticketCreate+"&ticketPerson="+ticketPerson;
+					location.href = url;
+				}
+			}]
+		});
+		// 统计报销条数，计算总金额
+		DMTRequest({
+			url : '../../ticketController/ticketCountAndMoney.do',
+			params : {
+				ticketTime:$("input[name=ticketTime]").val(),
+				ticketCreate:$("input[name=ticketCreate]").val(),
+				ticketPerson:$("input[name=ticketPerson]").val(),
+				ticketItem:$("#ticketItem").val()
+			},
+			validate : true,
+			success : function(data) {
+				console.log(data);
+				if (data.status == "0") {
+					var resultList = data.result[0];
+					var count = resultList.count;
+					if (count > 0) {
+						var money = resultList.moneyTotal;
+						$("#totalAndMoney").html("共计：" + count + " 条；总报销金额：" + money + " 元");
+					} else {
+						$("#totalAndMoney").html("共计：0 条；总报销金额：0.00 元");
+					}
+				}
+			}
+		});
+	});
+	$("#submit").click();
+})
+
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">发票日期：</td>
+					<!-- <td class="dmt_td_value"><input type="text" name="ticketTime" /></td> -->
+					<td class="dmt_td_value" width="370px">
+					<input style="width: 198px" type="datetime" name="ticketTime" onClick="WdatePicker()" readonly="readonly" validate="NOTNULL"/>
+					</td>
+					<td class="dmt_td_name">创建日期：</td>
+					<td class="dmt_td_value" width="370px">
+					<input style="width: 198px" type="datetime" name="ticketCreate" onClick="WdatePicker()" readonly="readonly" validate="NOTNULL"/>
+					</td>
+					<td class="dmt_td_name">出资人：</td>
+					<td class="dmt_td_value"><input type="text" name="ticketPerson" /></td>
+					<td class="dmt_td_name">发票类型：</td>
+					<td class="dmt_td_value">
+						<select name="ticketItem" id="ticketItem">
+							<option value="" selected>请选择</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4">
+						<input type="button" value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " />
+					</td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid" name="form1"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+	<lable id="totalAndMoney" class="red"></lable>
+
+	<!-- 数据修改弹出框开始 -->
+	<div id="edit" class="easyui-dialog" title="修改报销" closed="true">
+		<form id="editForm">
+			<input type="hidden" name="edit_id" />
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name" width="130px"><span class="dmt_star">*</span>报销时间：</td>
+					<td class="dmt_td_value" width="350px">
+					<input type="datetime" name="edit_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly" validate="NOTNULL"/>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>发票类型：</td>
+					<td class="dmt_td_value">
+						<select name="edit_item" id="edit_item">
+							<option value=""></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>报销用途：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_use" maxlength="10" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>报销金额：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_pay" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>出资人：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_person" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>报销类型：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_type" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"></span>备注：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_remaker" maxlength="30" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据修改弹出框结束 -->
+	
+</body>
+</html>

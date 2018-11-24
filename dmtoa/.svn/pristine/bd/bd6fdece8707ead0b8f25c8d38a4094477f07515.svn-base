@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>请假申请</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript">
+
+//点击修改按钮事件
+function authLeave(id){
+	$("#approval").dialog("open");
+	DMTSelectData("detail_approval_res","LEAVE_AUTH_STATUS","0");
+	//根据ID查询数据信息
+	DMTRequest({
+		url:'../../leaveAction/getLeaveDetail.do',
+		params:{
+			id:id,
+		},
+		validate:true,
+		success:function(data){
+			var leaveinfo = data.result;
+			$("#detail_applyer").html(leaveinfo.applyerName);
+			$("#detail_startTime").html(leaveinfo.startTimeCopy);
+			$("#detail_endTime").html(leaveinfo.endTimeCopy);
+			$("#detail_num").html(leaveinfo.leaveNum);
+			$("#detail_reason").html(leaveinfo.reason);
+			$("#leaveId").val(leaveinfo.leaveId);  
+		}
+	});
+}
+
+//点击提交新增角色按钮检验方法
+function validateAdd(){
+	var startTime = $("#add_startTime").val();
+	if(startTime==""){
+		$.messager.alert('系统提示', '请选择请假开始日期', 'warning');
+		return false;
+	}
+	var endTime = $("#add_endTime").val();
+	if(endTime==""){
+		$.messager.alert('系统提示', '请选择请假结束日期', 'warning');
+		return false;
+	}
+	var reason = $("#add_reason").val();
+	if(reason==""){
+		$.messager.alert('系统提示','请输入请假原因','warning');
+		return false;
+	}
+	return true;
+}
+
+$(function(){
+	DMTRequest({
+		url:'../../leaveAction/getAllAdmin.do',
+		validate:true,
+		success:function(data){
+			var admins = data.result;
+			var html = "";
+    		for(var i=0;i<admins.length;i++){
+    			html += '<option value="'+admins[i].adminId+'">'+admins[i].adminRealname+'</option>';
+    		}
+    		$("#applyer").append(html);
+		}
+	});
+	DMTRequest({
+		url:'../../systemAction/findParamByCode.do',
+		params:{
+			code:"WEEKLY_AUTH_STATUS",
+		},
+		validate:true,
+		success:function(data){
+			var res = data.result;
+			for(var i=0;i<res.length;i++){
+				$("#approval_status").append("<option value='"+res[i].key+"'>"+res[i].value+"</option>");
+			}
+			$("#approval_status").val("01");
+			$("#submit").click();
+		}
+	});
+	//定义审阅弹出框
+	$('#approval').dialog({
+        resizable: true, //定义对话框是否可编辑大小
+        width: 600,
+        height: 400,
+        left: '200px',
+        top: '100px',
+        modal:true,
+        onClose: function () {
+        	$("#approvalForm")[0].reset();
+        },
+        buttons: [{
+            text: '确认',
+            iconCls: 'icon-ok',
+            handler: function () {
+            	if(validateAdd()){
+	                DMTRequest({
+	                	url:'../../leaveAction/leaveAuth.do',
+	                	params:{
+	                		leaveId:$("#leaveId").val(),
+	                		aprovalRes:$("#detail_approval_res").val(),
+	                		aprovalDesc:$("#detail_approval_desc").val()
+	                	},
+	                	validate:true,
+	                	success:function(data){
+	                		$("#approval").dialog('close');
+	                		$("#approvalForm")[0].reset();
+	                		$("#datagrid").datagrid('reload');
+	                		$.messager.alert("系统提示", "审阅成功", "info");
+	                	}
+	                });
+            	}
+            }
+        }, {
+            text: '取消',
+            iconCls: 'icon-cancel',
+            handler: function () {
+                $('#approval').dialog('close');
+                $("#approvalForm")[0].reset();
+            }
+        }]
+    });
+	
+	
+	//绑定查询按钮点击事件
+	$("#submit").click(function(){
+		//查询参数数据
+		DMTDatatable({
+			id:"#datagrid", //需要被填充的table
+			title:"请假单列表",  //数据名称
+			url:"../../leaveAction/leaveApplyList.do",  //数据url
+			validate:true,
+			params:{
+				status:$("#approval_status").val(),
+				type:"2",
+				applyer:$("#applyer").val()
+			},
+			checkbox:false,  //每条数据前是否带checkbox复选框
+			//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+			columns:[[
+			    {field:'applyerName',title:'请假人',width:fixWidth(0.09),align:'center'},
+			    {field:'startTimeCopy',title:'请假开始时间',width:fixWidth(0.12),align:'center'},
+			    {field:'endTimeCopy',title:'请假结束时间',width:fixWidth(0.12),align:'center'},
+			    {field:'reason',title:'请假原因',width:fixWidth(0.3),align:'center'},
+			    {field:'leaveNum',title:'请假天数',width:fixWidth(0.07),align:'center'},
+			    {field:'statusCopy',title:'审阅状态',width:fixWidth(0.07)},
+			    {field:'approvalerName',title:'审阅人',width:fixWidth(0.08),align:'center'},
+			    {field:'approvalResCopy',title:'审阅结果',width:fixWidth(0.06),align:'center'},
+			    {field:'desc',title:'审阅意见',width:fixWidth(0.16),align:'center'},
+			    {field:'_opt',title:'操作',width:fixWidth(0.1),align:'center',
+			    	formatter:function(value,rec){
+			    		var html = "";
+			    		if(rec.status=="01"){
+			    			html = '<a href="javascript:authLeave(\''+rec.leaveId+'\');">审阅</a> '; 
+			    		}
+	                	return html; 
+	                }
+			    } 
+			]]
+		});
+	});
+	
+});
+	
+</script>
+
+</head>
+<body style="padding: 0px;margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+		<table class="dmt_condition_table">
+			<tr>
+				<td class="dmt_td_name">申请人：</td>
+				<td class="dmt_td_value">
+					<select name="applyer" id="applyer">
+						<option value="">全部</option>
+					</select>
+				</td>
+				<td class="dmt_td_name">审阅状态：</td>
+				<td class="dmt_td_value">
+					<select name="approval_status" id="approval_status">
+						<option value="">全部</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_button" colspan="4">
+					<input type="button" value=" 查询 " id="submit"/>
+					<input type="reset" value=" 清空 "/>
+				</td>
+			</tr>
+		</table>
+		</form>
+		<hr class="dmt_hr"/>
+	</div>
+	<!-- 查询条件区域结束 -->
+	
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+	
+	<!-- 审阅弹出框开始 -->
+	<div id="approval" class="easyui-dialog" title="请假申请" closed="true">
+		<form id="approvalForm">
+		<input type="hidden" id="leaveId"/>
+        <table style="width: 350px;margin-left: auto;margin-right: auto;margin-top: 20px;">
+        	<tr>
+        		<td class="dmt_td_name">请假人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_applyer"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假开始日期：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_startTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假结束日期：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_endTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_num"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假原因：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_reason"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<select id="detail_approval_res"></select>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<textarea id="detail_approval_desc" maxlength="50"></textarea>
+        		</td>
+        	</tr>
+        </table>
+        </form>
+    </div>
+    <!-- 审阅弹出框结束 -->
+    
+</body>
+</html>

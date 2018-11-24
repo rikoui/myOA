@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.TableTicketMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.TableTicket" >
+    <id column="ticket_id" property="ticketId" jdbcType="VARCHAR" />
+    <result column="ticket_time" property="ticketTime" jdbcType="VARCHAR" />
+    <result column="ticket_item" property="ticketItem" jdbcType="VARCHAR" />
+    <result column="ticket_use" property="ticketUse" jdbcType="VARCHAR" />
+    <result column="ticket_pay" property="ticketPay" jdbcType="DOUBLE" />
+    <result column="ticket_person" property="ticketPerson" jdbcType="VARCHAR" />
+    <result column="ticket_type" property="ticketType" jdbcType="VARCHAR" />
+    <result column="ticket_remaker" property="ticketRemaker" jdbcType="VARCHAR" />
+    <result column="ticket_create" property="ticketCreate" jdbcType="VARCHAR" />
+    <result column="ticket_month" property="ticketMonth" jdbcType="VARCHAR" />
+    <result column="ticket_create_admin" property="ticketCreateAdmin" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ticket_id, ticket_time, ticket_item, ticket_use, ticket_pay, ticket_person, ticket_type, 
+    ticket_remaker, ticket_create, ticket_month, ticket_create_admin
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.TableTicketExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from table_ticket
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from table_ticket
+    where ticket_id = #{ticketId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from table_ticket
+    where ticket_id = #{ticketId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.TableTicketExample" >
+    delete from table_ticket
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.TableTicket" >
+    insert into table_ticket (ticket_id, ticket_time, ticket_item, 
+      ticket_use, ticket_pay, ticket_person, 
+      ticket_type, ticket_remaker, ticket_create, 
+      ticket_month, ticket_create_admin)
+    values (#{ticketId,jdbcType=VARCHAR}, #{ticketTime,jdbcType=VARCHAR}, #{ticketItem,jdbcType=VARCHAR}, 
+      #{ticketUse,jdbcType=VARCHAR}, #{ticketPay,jdbcType=DOUBLE}, #{ticketPerson,jdbcType=VARCHAR}, 
+      #{ticketType,jdbcType=VARCHAR}, #{ticketRemaker,jdbcType=VARCHAR}, #{ticketCreate,jdbcType=VARCHAR}, 
+      #{ticketMonth,jdbcType=VARCHAR}, #{ticketCreateAdmin,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.TableTicket" >
+    insert into table_ticket
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ticketId != null" >
+        ticket_id,
+      </if>
+      <if test="ticketTime != null" >
+        ticket_time,
+      </if>
+      <if test="ticketItem != null" >
+        ticket_item,
+      </if>
+      <if test="ticketUse != null" >
+        ticket_use,
+      </if>
+      <if test="ticketPay != null" >
+        ticket_pay,
+      </if>
+      <if test="ticketPerson != null" >
+        ticket_person,
+      </if>
+      <if test="ticketType != null" >
+        ticket_type,
+      </if>
+      <if test="ticketRemaker != null" >
+        ticket_remaker,
+      </if>
+      <if test="ticketCreate != null" >
+        ticket_create,
+      </if>
+      <if test="ticketMonth != null" >
+        ticket_month,
+      </if>
+      <if test="ticketCreateAdmin != null" >
+        ticket_create_admin,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ticketId != null" >
+        #{ticketId,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketTime != null" >
+        #{ticketTime,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketItem != null" >
+        #{ticketItem,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketUse != null" >
+        #{ticketUse,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketPay != null" >
+        #{ticketPay,jdbcType=DOUBLE},
+      </if>
+      <if test="ticketPerson != null" >
+        #{ticketPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketType != null" >
+        #{ticketType,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketRemaker != null" >
+        #{ticketRemaker,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketCreate != null" >
+        #{ticketCreate,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketMonth != null" >
+        #{ticketMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketCreateAdmin != null" >
+        #{ticketCreateAdmin,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.TableTicketExample" resultType="java.lang.Integer" >
+    select count(*) from table_ticket
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update table_ticket
+    <set >
+      <if test="record.ticketId != null" >
+        ticket_id = #{record.ticketId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketTime != null" >
+        ticket_time = #{record.ticketTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketItem != null" >
+        ticket_item = #{record.ticketItem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketUse != null" >
+        ticket_use = #{record.ticketUse,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketPay != null" >
+        ticket_pay = #{record.ticketPay,jdbcType=DOUBLE},
+      </if>
+      <if test="record.ticketPerson != null" >
+        ticket_person = #{record.ticketPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketType != null" >
+        ticket_type = #{record.ticketType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketRemaker != null" >
+        ticket_remaker = #{record.ticketRemaker,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketCreate != null" >
+        ticket_create = #{record.ticketCreate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketMonth != null" >
+        ticket_month = #{record.ticketMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ticketCreateAdmin != null" >
+        ticket_create_admin = #{record.ticketCreateAdmin,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update table_ticket
+    set ticket_id = #{record.ticketId,jdbcType=VARCHAR},
+      ticket_time = #{record.ticketTime,jdbcType=VARCHAR},
+      ticket_item = #{record.ticketItem,jdbcType=VARCHAR},
+      ticket_use = #{record.ticketUse,jdbcType=VARCHAR},
+      ticket_pay = #{record.ticketPay,jdbcType=DOUBLE},
+      ticket_person = #{record.ticketPerson,jdbcType=VARCHAR},
+      ticket_type = #{record.ticketType,jdbcType=VARCHAR},
+      ticket_remaker = #{record.ticketRemaker,jdbcType=VARCHAR},
+      ticket_create = #{record.ticketCreate,jdbcType=VARCHAR},
+      ticket_month = #{record.ticketMonth,jdbcType=VARCHAR},
+      ticket_create_admin = #{record.ticketCreateAdmin,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.TableTicket" >
+    update table_ticket
+    <set >
+      <if test="ticketTime != null" >
+        ticket_time = #{ticketTime,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketItem != null" >
+        ticket_item = #{ticketItem,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketUse != null" >
+        ticket_use = #{ticketUse,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketPay != null" >
+        ticket_pay = #{ticketPay,jdbcType=DOUBLE},
+      </if>
+      <if test="ticketPerson != null" >
+        ticket_person = #{ticketPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketType != null" >
+        ticket_type = #{ticketType,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketRemaker != null" >
+        ticket_remaker = #{ticketRemaker,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketCreate != null" >
+        ticket_create = #{ticketCreate,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketMonth != null" >
+        ticket_month = #{ticketMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketCreateAdmin != null" >
+        ticket_create_admin = #{ticketCreateAdmin,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ticket_id = #{ticketId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.TableTicket" >
+    update table_ticket
+    set ticket_time = #{ticketTime,jdbcType=VARCHAR},
+      ticket_item = #{ticketItem,jdbcType=VARCHAR},
+      ticket_use = #{ticketUse,jdbcType=VARCHAR},
+      ticket_pay = #{ticketPay,jdbcType=DOUBLE},
+      ticket_person = #{ticketPerson,jdbcType=VARCHAR},
+      ticket_type = #{ticketType,jdbcType=VARCHAR},
+      ticket_remaker = #{ticketRemaker,jdbcType=VARCHAR},
+      ticket_create = #{ticketCreate,jdbcType=VARCHAR},
+      ticket_month = #{ticketMonth,jdbcType=VARCHAR},
+      ticket_create_admin = #{ticketCreateAdmin,jdbcType=VARCHAR}
+    where ticket_id = #{ticketId,jdbcType=VARCHAR}
+  </update>
+</mapper>

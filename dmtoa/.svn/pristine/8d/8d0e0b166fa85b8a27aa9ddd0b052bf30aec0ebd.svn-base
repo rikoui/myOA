@@ -1,0 +1,10 @@
+package com.bjdreamtech.mapper.custom;
+
+import java.util.List;
+import java.util.Map;
+
+import com.bjdreamtech.entity.TableDaily;
+
+public interface DailyManageMapper {
+List<Map<String,Object>> dailyQueryList(String weeklyId)throws Exception;
+}

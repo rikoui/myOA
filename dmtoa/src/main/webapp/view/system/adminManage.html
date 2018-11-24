@@ -1,0 +1,673 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>用户管理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+	//点击新增按钮事件
+	function addAdmin() {
+		//打开新增用户弹出框
+		$("#add").dialog("open");
+		DMTInitMsg();
+		//加载角色下拉框数据
+		DMTRequest({
+			url : '../../roleAction/findRoleSelect.do',
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("#add_roleid").empty();
+				for (var i = 0; i < res.length; i++) {
+					$("#add_roleid").append(
+							"<option value='"+res[i].roleid+"'>"
+									+ res[i].rolename + "</option>");
+				}
+			}
+		});
+// 		//加载当前用户所属机构
+// 		DMTRequest({
+// 			url : '../../adminAction/queryBranch.do',
+// 			validate : true,
+// 			success : function(data) {
+// 				var res = data.result;
+// 				$("span[name=add_branch_name]").html(res.branchName);
+// 			}
+// 		});
+
+	}
+
+	//点击修改按钮事件
+	function editAdmin(id) {
+		//打开修改用户弹出框
+		$("#edit").dialog("open");
+		DMTInitMsg();
+		//加载角色下拉框数据
+		DMTRequest({
+			url : '../../roleAction/findRoleSelect.do',
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("#edit_roleid").empty();
+				for (var i = 0; i < res.length; i++) {
+					$("#edit_roleid").append(
+							"<option value='"+res[i].roleid+"'>"
+									+ res[i].rolename + "</option>");
+				}
+			}
+		});
+		
+		//根据ID查询数据信息
+		DMTRequest({
+			url : '../../adminAction/getAdminInfo.do',
+			params : {
+				adminid : id,
+			},
+			validate : true,
+			success : function(data) {
+				$("#edit_status").empty();
+				var admininfo = data.result;
+				//加载角色状态下拉框数据
+				DMTSelectData("edit_status", "ADMIN_STATUS",admininfo.adminStatus);
+				$("input[name=edit_staffno]").val(admininfo.adminStaffNo);
+				$("input[name=edit_username]").val(admininfo.adminUsername);
+				$("input[name=edit_realname]").val(admininfo.adminRealname);
+				$("select[name=edit_roleid]").val(admininfo.adminRoleId);
+				$("input[name=edit_phone]").val(admininfo.adminPhone);
+				$("input[name=edit_email]").val(admininfo.adminEmail);
+				$("input[name=edit_id]").val(admininfo.adminId);
+			}
+		});
+	}
+
+	//点击删除按钮事件
+	function deleteRole(id) {
+		$.messager.confirm('系统提示', '确认删除吗?', function(res) {
+			if (res) {
+				DMTRequest({
+					url : '../../roleAction/roleDelete.do',
+					params : {
+						id : id,
+					},
+					validate : true,
+					success : function(data) {
+						$("#datagrid").datagrid("reload");
+						$.messager.alert("系统提示", "删除成功", "info");
+					}
+				});
+			}
+		});
+	}
+
+	//点击启用或者禁用事件
+	function statusAdmin(id, status) {
+		DMTRequest({
+			url : '../../adminAction/adminStatus.do',
+			params : {
+				id : id,
+				status : status,
+			},
+			validate : true,
+			success : function(data) {
+				$("#datagrid").datagrid("reload");
+				$.messager.alert("系统提示", data.result, "info");
+			}
+		});
+	}
+
+	//点击提交新增角色按钮检验方法
+	function validateAdd() {
+		var  staffno = $("input[name=add_staffno]").val();
+		if (staffno == "") {
+			$.messager.alert('系统提示', '员工编号不能为空', 'warning');
+			return false;
+		}
+		var username = $("input[name=add_username]").val();
+		if (username == "") {
+			$.messager.alert('系统提示', '用户名不能为空', 'warning');
+			return false;
+		}
+		var realname = $("input[name=add_realname]").val();
+		if (realname == "") {
+			$.messager.alert('系统提示', '真实姓名不能为空', 'warning');
+			return false;
+		}
+		var roleid = $("select[name=add_roleid]").val();
+		if (roleid == "") {
+			$.messager.alert('系统提示', '用户角色不能为空', 'warning');
+			return false;
+		}
+		var phone = $("input[name=add_phone]").val();
+		if (phone == "") {
+			$.messager.alert('系统提示', '手机号不能为空', 'warning');
+			return false;
+		}
+		var email = $("input[name=add_email]").val();
+		if (email == "") {
+			$.messager.alert('系统提示', '邮箱不能为空', 'warning');
+			return false;
+		}
+		return true;
+	}
+
+	//点击提交修改角色按钮检验方法
+	function validateEdit() {
+		var name = $("#edit_name").val();
+		if (name == "") {
+			msgShow('系统提示', '角色名称不能为空', 'warning');
+			return false;
+		}
+		var description = $("#edit_description").val();
+		if (description == "") {
+			msgShow('系统提示', '角色描述不能为空', 'warning');
+			return false;
+		}
+		return true;
+	}
+
+	$(function() {
+		DMTForm("add")
+		DMTForm("edit")
+		//加载角色下拉框数据
+		DMTRequest({
+			url : '../../roleAction/findRoleSelect.do',
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				for (var i = 0; i < res.length; i++) {
+					$("#condition_roleid").append(
+							"<option value='"+res[i].roleid+"'>"
+									+ res[i].rolename + "</option>");
+				}
+			}
+		});
+
+		//加载用户状态下拉框
+		DMTSelectData("condition_status", "ADMIN_STATUS");
+
+		//定义新增角色弹出框
+		$('#add').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#addForm")[0].reset();
+			},
+			buttons : [ {
+				text : '确认',
+				iconCls : 'icon-ok',
+				handler : function() {
+					if (DMTValidate("addForm")) {
+						DMTRequest({
+							url : '../../adminAction/adminAdd.do',
+							params : {
+								staffno : $( "input[name=add_staffno]").val(),
+								username : $("input[name=add_username]").val(),
+								realname : $("input[name=add_realname]").val(),
+								roleid : $("select[name=add_roleid]").val(),
+								phone : $("input[name=add_phone]").val(),
+								email : $("input[name=add_email]").val(),
+							},
+							validate : true,
+							success : function(data) {
+								$("#add").dialog('close');
+								$("#addForm")[0].reset();
+								$("#datagrid").datagrid('reload');
+								$.messager.alert("系统提示", "新增用户成功", "info");
+							}
+						});
+					}
+				}
+			}, {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#add').dialog('close');
+					$("#addForm")[0].reset();
+				}
+			} ]
+		});
+
+		//定义修改角色弹出框
+		$('#edit')
+				.dialog(
+						{
+							resizable : true, //定义对话框是否可编辑大小
+							width : 600,
+							height : 400,
+							left : '200px',
+							top : '100px',
+							modal : true,
+							onClose : function() {
+								$("#editForm")[0].reset();
+							},
+							buttons : [
+									{
+										text : '确认',
+										iconCls : 'icon-ok',
+										handler : function() {
+											if (validateEdit()) {
+												DMTRequest({
+													url : '../../adminAction/adminEdit.do',
+													params : {
+														
+														 staffno : $(
+														        "input[name=edit_staffno]")
+																.val(),
+														
+														username : $(
+																"input[name=edit_username]")
+																.val(),
+														realname : $(
+																"input[name=edit_realname]")
+																.val(),
+														roleid : $(
+																"select[name=edit_roleid]")
+																.val(),
+														status : $(
+																"select[name=edit_status]")
+																.val(),
+														phone : $(
+																"input[name=edit_phone]")
+																.val(),
+														email : $(
+																"input[name=edit_email]")
+																.val(),
+														id : $(
+																"input[name=edit_id]")
+																.val(),
+													},
+													validate : true,
+													success : function(data) {
+														$("#edit").dialog(
+																'close');
+														$("#editForm")[0]
+																.reset();
+														$("#datagrid")
+																.datagrid(
+																		'reload');
+														$.messager.alert(
+																"系统提示",
+																"修改用户成功",
+																"info");
+													}
+												});
+											}
+										}
+									}, {
+										text : '取消',
+										iconCls : 'icon-cancel',
+										handler : function() {
+											$('#edit').dialog('close');
+											$("#editForm")[0].reset();
+										}
+									} ]
+						});
+
+		//绑定查询按钮点击事件
+		$("#submit")
+				.click(
+						function() {
+							//查询用户数据
+							DMTDatatable({
+								id : "#datagrid", //需要被填充的table
+								title : "用户列表", //数据名称
+								url : "../../adminAction/adminList.do", //数据url
+								params : {
+									username : $(
+											"input[name=condition_username]")
+											.val(),
+									realname : $(
+											"input[name=condition_realname]")
+											.val(),
+									roleid : $("select[name=condition_roleid]")
+											.val(),
+									status : $("select[name=condition_status]")
+											.val(),
+									phone : $("input[name=condition_phone]")
+											.val()
+								},
+								checkbox : false, //每条数据前是否带checkbox复选框
+								//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+								columns : [ [
+                                        {
+                                            field : 'staffno',
+                                            title : '员工编号',
+                                            width : fixWidth(0.10),
+                                            align : 'center'
+                                        },
+										{
+											field : 'username',
+											title : '用户名',
+											width : fixWidth(0.1),
+											align : 'center'
+										},
+										{
+											field : 'realname',
+											title : '真实姓名',
+											width : fixWidth(0.1),
+											align : 'center'
+										},
+										{
+											field : 'rolename',
+											title : '角色',
+											width : fixWidth(0.13),
+											align : 'center'
+										},
+										{
+											field : 'phone',
+											title : '手机号',
+											width : fixWidth(0.15),
+											align : 'center'
+										},
+										{
+											field : 'createtimecopy',
+											title : '创建时间',
+											width : fixWidth(0.15),
+											align : 'center'
+										},
+										{
+											field : 'statuscopy',
+											title : '状态',
+											width : fixWidth(0.1),
+											align : 'center'
+										},
+										{
+											field : '_opt',
+											title : '操作',
+											width : fixWidth(0.2),
+											align : 'center',
+											formatter : function(value, rec) {
+												if (rec.id != "1") {
+													var html = '<a href="javascript:editAdmin(\''
+															+ rec.id+ '\');">编辑</a> ';
+													if (rec.status == '0') {
+														html += '|<a href="javascript:statusAdmin(\''
+																+ rec.id+ '\',\'1\');">禁用</a>';
+													} else if (rec.status == "1") {
+														html += '|<a href="javascript:statusAdmin(\''
+																+ rec.id+ '\',\'0\');">启用</a>'
+													} else if (rec.status == "2") {
+														html += '|<a href="javascript:statusAdmin(\''
+																+ rec.id+ '\',\'0\');">解冻</a>'
+													}
+													html += '|<a href="javascript:queryDetail(\''+rec.id+ '\');">详情</a> |<a href="javascript:initRole(\''+ rec.id+'\',\''+rec.status+'\');">密码重置</a>'
+															  
+													return html;
+												}
+												
+											}
+										} ] ],
+								//操作按钮
+								toolbar : [ {
+									text : '添加',
+									iconCls : 'icon-add',
+									handler : function() {
+										addAdmin();
+									}
+								} ]
+							});
+						});
+		
+		//定义机构详情弹出框
+		$('#detail').dialog({
+			resizable : true, //定义对话框是否可编辑大小
+			width : 600,
+			height : 400,
+			left : '200px',
+			top : '100px',
+			modal : true,
+			onClose : function() {
+				$("#detailForm")[0].reset();
+			},
+			buttons : [ {
+				text : '取消',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					$('#detail').dialog('close');
+					$("#detailForm")[0].reset();
+				}
+			} ]
+		});
+
+		$("#submit").click();
+	});
+	
+	//初始化密码
+	function initRole(id,status){
+			DMTRequest({
+				url:'../../adminAction/initRole.do',
+				params:{
+					id:id,
+					status:status
+				},
+				validate:true,
+				success:function(data){
+					$("#datagrid").datagrid('reload');
+					$.messager.alert("系统提示", "初始化密码成功", "info");
+				}
+			});
+		
+	}
+	
+	<!--详情页面跳转！！！方法——开始-->
+	function queryDetail(obj){
+		var id=obj;
+		DMTRequest({
+			url : '../../adminAction/queryAdmin.do',
+			params : {
+				adminid : id,
+			},
+			validate : true,
+			success : function(data) {
+				var res = data.result;
+				$("span[name=detail_admin_id]").html(res.id);
+				$("span[name=detail_staffno]").html(res.staffno);
+				$("span[name=detail_username]").html(res.username);
+				$("span[name=detail_realname]").html(res.realname);
+				$("span[name=detail_status]").html(res.copyStatus);
+				$("span[name=detail_roleid]").html(res.rolename);
+				$("span[name=detail_email]").html(res.email);
+				$("span[name=detail_phone]").html(res.phone);
+				$("span[name=detail_createtime]").html(res.createtimecopy);
+				$("span[name=detail_createuser]").html(res.createuser);
+			}
+		});
+		$("#detail").dialog("open");
+	}
+	<!--详情页面跳转！！！方法——结束-->
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">用户名：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="condition_username" validate="NOTNULL"/></td>
+					<td class="dmt_td_name">真实姓名：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="condition_realname" /></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">角色：</td>
+					<td class="dmt_td_value"><select name="condition_roleid"
+						id="condition_roleid">
+							<option value="">全部</option>
+					</select></td>
+					<td class="dmt_td_name">状态：</td>
+					<td class="dmt_td_value"><select name="condition_status"
+						id="condition_status">
+							<option value="">全部</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">手机号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="condition_phone" /></td>
+					<td class="dmt_td_name"></td>
+					<td class="dmt_td_value"></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+
+	<!-- 数据新增弹出框开始 -->
+	<div id="add" class="easyui-dialog" title="新增用户" closed="true">
+		<form id="addForm">
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>员工编号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="add_staffno" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>用户名：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="add_username" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>真实姓名：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="add_realname" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>用户角色：</td>
+					<td class="dmt_td_value"><select name="add_roleid"
+						id="add_roleid"></select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>手机号码：</td>
+					<td class="dmt_td_value"><input type="text" name="add_phone"
+						maxlength="11" validate="NOTNULL,PHONE"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>邮箱：</td>
+					<td class="dmt_td_value"><input type="text" name="add_email"
+						maxlength="30" validate="NOTNULL,EMAIL"/></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据新增弹出框结束 -->
+
+	<!-- 数据修改弹出框开始 -->
+	<div id="edit" class="easyui-dialog" title="修改用户" closed="true">
+		<form id="editForm">
+			<input type="hidden" name="edit_id" />
+			<table
+				style="width: 550px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>员工编号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_staffno" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				
+				<tr>
+					<td class="dmt_td_name" width="130px"><span class="dmt_star">*</span>用户名：</td>
+					<td class="dmt_td_value" width="350px"><input type="text"
+						name="edit_username" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>真实姓名：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="edit_realname" maxlength="20" validate="NOTNULL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>用户角色：</td>
+					<td class="dmt_td_value"><select name="edit_roleid"
+						id="edit_roleid"></select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>手机号码：</td>
+					<td class="dmt_td_value"><input type="text" name="edit_phone"
+						maxlength="11" validate="NOTNULL,PHONE"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>邮箱：</td>
+					<td class="dmt_td_value"><input type="text" name="edit_email"
+						maxlength="30" validate="NOTNULL,EMAIL"/></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><span class="dmt_star">*</span>用户状态：</td>
+					<td class="dmt_td_value"><select name="edit_status"
+						id="edit_status"></select></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据修改弹出框结束 -->
+	
+	<!-- 数据详情弹出框开始 -->
+	<div id="detail" class="easyui-dialog" title="用户详情" closed="true">
+		<form id="detailForm">
+			<table
+				style="width: 350px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+				<tr>
+					<td class="dmt_td_name" width="130px">操作员编号：</td>
+					<td class="dmt_td_value" width="200px"><span name="detail_admin_id"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">员工编号：</td>
+					<td class="dmt_td_value"><span name="detail_staffno"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">用户名：</td>
+					<td class="dmt_td_value"><span name="detail_username"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">真实姓名：</td>
+					<td class="dmt_td_value"><span name="detail_realname"></span></td>
+				</tr>
+				
+				<tr>
+					<td class="dmt_td_name">操作员状态：</td>
+					<td class="dmt_td_value"><span name="detail_status"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">用户角色：</td>
+					<td class="dmt_td_value"><span name="detail_roleid"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">邮箱：</td>
+					<td class="dmt_td_value"><span name="detail_email"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">手机号码：</td>
+					<td class="dmt_td_value"><span name="detail_phone"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">创建时间：</td>
+					<td class="dmt_td_value"><span name="detail_createtime"></span></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">创建人：</td>
+					<td class="dmt_td_value"><span name="detail_createuser"></span></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 数据详情弹出框结束 -->
+</body>
+</html>

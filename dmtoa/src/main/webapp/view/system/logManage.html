@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>日志管理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+
+<script type="text/javascript">
+
+$(function(){
+	//绑定查询按钮点击事件
+	$("#submit").click(function(){
+		var startTime = $("input[name=condition_startTime]").val().replace(/-/g, "");
+		var endTime = $("input[name=condition_endTime]").val().replace(/-/g, "");
+		if(startTime>endTime){
+			$.messager.alert("系统提示","开始时间不能大于结束时间","info");
+		}else{
+			//查询日志数据
+			DMTDatatable({
+				id:"#datagrid", //需要被填充的table
+				title:"日志列表",  //数据名称
+				url:"../../logAction/logList.do",  //数据url
+				params:{
+					username:$("input[name=condition_username]").val(),
+					content:$("input[name=condition_content]").val(),
+					startTime:$("input[name=condition_startTime]").val(),
+					endTime:$("input[name=condition_endTime]").val(),
+					ip:$("input[name=condition_ip]").val()
+				},
+				checkbox:false,  //每条数据前是否带checkbox复选框
+				//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+				columns:[[
+				    {field:'system',title:'日志系统',width:fixWidth(0.18),align:'center'},
+				    {field:'user',title:'操作用户',width:fixWidth(0.15),align:'center'},
+				    {field:'timecopy',title:'操作时间',width:fixWidth(0.17),align:'center'},
+				    {field:'content',title:'操作内容',width:fixWidth(0.35),align:'left'},
+				    {field:'ip',title:'操作IP',width:fixWidth(0.17),align:'center'}
+//	 			    {field:'_opt',title:'操作',width:fixWidth(0.15),align:'center',
+//	 			    	formatter:function(value,rec){
+//	 			    	var html = '<a href="javascript:roleInfo(\''+rec.id+'\');">详情</a>';
+//	 	                return html; 
+//	 	               }
+//				    }
+				]]
+			});
+		}
+	});
+	
+	$("#submit").click();
+});
+	
+</script>
+
+</head>
+<body style="padding: 0px;margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+		<table class="dmt_condition_table">
+			<tr>
+				<td class="dmt_td_name">操作用户：</td>
+				<td class="dmt_td_value">
+					<input type="text" name="condition_username"/>
+				</td>
+				<td class="dmt_td_name">操作内容：</td>
+				<td class="dmt_td_value"><input name="condition_content" type="text"/></td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">操作时间：</td>
+				<td class="dmt_td_value">
+					<input type="datetime" name="condition_startTime" onClick="WdatePicker()" readonly="readonly"/> - <input type="datetime" name="condition_endTime" onClick="WdatePicker()" readonly="readonly"/>
+				</td>
+				<td class="dmt_td_name">操作IP：</td>
+				<td class="dmt_td_value"><input name="condition_ip" type="text"/></td>
+			</tr>
+			<tr>
+				<td class="dmt_td_button" colspan="4">
+					<input type="button" value=" 查询 " id="submit"/>
+					<input type="reset" value=" 清空 "/>
+				</td>
+			</tr>
+		</table>
+		</form>
+		<hr class="dmt_hr"/>
+	</div>
+	<!-- 查询条件区域结束 -->
+	
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+
+</body>
+</html>

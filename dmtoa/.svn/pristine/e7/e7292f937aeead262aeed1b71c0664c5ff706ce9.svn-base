@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>周报审阅</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<style type="text/css">
+.title_model{
+	width:100%;
+	text-align:left;
+	background-color:#eeeeee;
+	font-size:16px;
+	font-weight:bold;
+	padding:15px 0px;
+	margin:5px 0px;
+	margin-top:10px;
+}
+.table_div{
+	border:1px solid #ccc;
+	margin-bottom: 10px;
+}
+.red{
+	color:red;
+}
+.form_input{
+	height:20px;
+	border:1px solid #9FCAF4;
+}
+</style>
+<script type="text/javascript">
+$(function() {
+	$("#submit").click(
+		function() {
+			//查询用户数据
+			DMTDatatable({
+				id : "#datagrid", //需要被填充的table
+				title : "用户列表", //数据名称
+				url : "../../weeklyController/weeklyList.do", //数据url
+				params : {
+					// 周报时间
+					weeklytime : $("#condition_weeklytime").val(),
+					// 审阅状态
+					weeklystatus : $("#condition_status").val()
+				},
+				checkbox : false, //每条数据前是否带checkbox复选框
+				//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+				columns : [ [
+					{
+						field : 'staffno',
+						title : '员工编号',
+						width : fixWidth(0.10),
+						align : 'center'
+					},
+					{
+						field : 'weeklyadmin',
+						title : '提交人',
+						width : fixWidth(0.10),
+						align : 'center'
+					},
+					{
+						field : 'authadmin',
+						title : '审阅人',
+						width : fixWidth(0.135),
+						align : 'center'
+					},
+					{
+						field : 'weeklystart',
+						title : '开始时间',
+						width : fixWidth(0.15),
+						align : 'center'
+					},
+					{
+						field : 'weeklyend',
+						title : '结束时间',
+						width : fixWidth(0.15),
+						align : 'center'
+					},
+					{
+						field : 'weeklystatus',
+						title : '审核状态',
+						width : fixWidth(0.20),
+						align : 'center'
+					},
+					{
+						field : '_opt',
+						title : '操作',
+						width : fixWidth(0.2),
+						align : 'center',
+						formatter : function(value, rec) {
+							var html ='<a href="javascript:void(0); onclick=details(\'' + rec.weeklystart + '\',\'' + rec.weeklyadminid + '\');">【详情】</a>'
+							return html;
+						}
+					}
+				]],
+			});
+		});
+	
+	var id = "condition_status";
+	var code = "WEEKLY_AUTH_STATUS";
+	var value = "01";
+	DMTRequest({
+		url:'../../systemAction/findParamByCode.do',
+		params:{
+			code:code,
+		},
+		validate:true,
+		success:function(data){
+			var res = data.result;
+			
+			for(var i=0;i<res.length;i++){
+				$("#"+id).append("<option value='"+res[i].key+"'>"+res[i].value+"</option>");
+			}
+			$("#"+id).val(value);
+			$("#submit").click();
+		}
+	});
+});
+
+function details (weeklystart, weeklyadminid) {
+	location.href="../weekly/details.html?weeklystart=" + weeklystart + "&weeklyadminid=" + weeklyadminid;
+}
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">周报时间：</td>
+					<td class="dmt_td_value" width="370px">
+						<input style="width: 198px" type="datetime" id="condition_weeklytime" name="condition_weeklytime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly" validate="NOTNULL" />
+					</td>
+					<td class="dmt_td_name">审阅状态：</td>
+					<td class="dmt_td_value">
+						<select name="condition_weeklystatus" id="condition_status">
+							<option value="">全部</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4">
+						<input type="button" value=" 查询 " id="submit" />
+						<input type="reset" value=" 清空 " />
+					</td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid" name="form1"></table>
+	</div>
+</body>
+</html>

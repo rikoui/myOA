@@ -1,0 +1,59 @@
+package com.bjdreamtech.service;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.bjdreamtech.dmt.bean.DMTDataTableBean;
+import com.bjdreamtech.dmt.bean.DMTResultBean;
+
+public interface ILeaveService {
+	
+	/**
+	 * 请假单列表查询
+	 * @param request
+	 * @return
+	 */
+	DMTDataTableBean queryLeaves(HttpServletRequest request);
+
+	/**
+	 * 请假申请
+	 * @param request
+	 * @return
+	 */
+	DMTResultBean leaveAdd(HttpServletRequest request);
+
+	/**
+	 * 请假申请信息查询
+	 * @param request
+	 * @return
+	 */
+	DMTResultBean getLeaveInfo(HttpServletRequest request);
+
+	/**
+	 * 请假申请修改
+	 * @param request
+	 * @return
+	 */
+	DMTResultBean leaveEdit(HttpServletRequest request);
+
+	/**
+	 * 获取所有操作员
+	 * @param request
+	 * @return
+	 */
+	DMTResultBean getAllAdmin(HttpServletRequest request);
+
+	/**
+	 * 获取请假申请详细信息
+	 * @param request
+	 * @return
+	 */
+	DMTResultBean getLeaveDetail(HttpServletRequest request);
+
+	/**
+	 * 请假申请审阅
+	 * @param request
+	 * @return
+	 */
+	DMTResultBean leaveAuth(HttpServletRequest request);
+
+}

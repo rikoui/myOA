@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.TableNextplanMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.TableNextplan" >
+    <id column="nextplan_id" property="nextplanId" jdbcType="VARCHAR" />
+    <result column="nextplan_thing" property="nextplanThing" jdbcType="VARCHAR" />
+    <result column="nextplan_overtime" property="nextplanOvertime" jdbcType="VARCHAR" />
+    <result column="nextplan_leading" property="nextplanLeading" jdbcType="VARCHAR" />
+    <result column="nextplan_parting" property="nextplanParting" jdbcType="VARCHAR" />
+    <result column="nextplan_weekly_id" property="nextplanWeeklyId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    nextplan_id, nextplan_thing, nextplan_overtime, nextplan_leading, nextplan_parting, 
+    nextplan_weekly_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.TableNextplanExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from table_nextplan
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from table_nextplan
+    where nextplan_id = #{nextplanId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from table_nextplan
+    where nextplan_id = #{nextplanId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.TableNextplanExample" >
+    delete from table_nextplan
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.TableNextplan" >
+    insert into table_nextplan (nextplan_id, nextplan_thing, nextplan_overtime, 
+      nextplan_leading, nextplan_parting, nextplan_weekly_id
+      )
+    values (#{nextplanId,jdbcType=VARCHAR}, #{nextplanThing,jdbcType=VARCHAR}, #{nextplanOvertime,jdbcType=VARCHAR}, 
+      #{nextplanLeading,jdbcType=VARCHAR}, #{nextplanParting,jdbcType=VARCHAR}, #{nextplanWeeklyId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.TableNextplan" >
+    insert into table_nextplan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="nextplanId != null" >
+        nextplan_id,
+      </if>
+      <if test="nextplanThing != null" >
+        nextplan_thing,
+      </if>
+      <if test="nextplanOvertime != null" >
+        nextplan_overtime,
+      </if>
+      <if test="nextplanLeading != null" >
+        nextplan_leading,
+      </if>
+      <if test="nextplanParting != null" >
+        nextplan_parting,
+      </if>
+      <if test="nextplanWeeklyId != null" >
+        nextplan_weekly_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="nextplanId != null" >
+        #{nextplanId,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanThing != null" >
+        #{nextplanThing,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanOvertime != null" >
+        #{nextplanOvertime,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanLeading != null" >
+        #{nextplanLeading,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanParting != null" >
+        #{nextplanParting,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanWeeklyId != null" >
+        #{nextplanWeeklyId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.TableNextplanExample" resultType="java.lang.Integer" >
+    select count(*) from table_nextplan
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update table_nextplan
+    <set >
+      <if test="record.nextplanId != null" >
+        nextplan_id = #{record.nextplanId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nextplanThing != null" >
+        nextplan_thing = #{record.nextplanThing,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nextplanOvertime != null" >
+        nextplan_overtime = #{record.nextplanOvertime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nextplanLeading != null" >
+        nextplan_leading = #{record.nextplanLeading,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nextplanParting != null" >
+        nextplan_parting = #{record.nextplanParting,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nextplanWeeklyId != null" >
+        nextplan_weekly_id = #{record.nextplanWeeklyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update table_nextplan
+    set nextplan_id = #{record.nextplanId,jdbcType=VARCHAR},
+      nextplan_thing = #{record.nextplanThing,jdbcType=VARCHAR},
+      nextplan_overtime = #{record.nextplanOvertime,jdbcType=VARCHAR},
+      nextplan_leading = #{record.nextplanLeading,jdbcType=VARCHAR},
+      nextplan_parting = #{record.nextplanParting,jdbcType=VARCHAR},
+      nextplan_weekly_id = #{record.nextplanWeeklyId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.TableNextplan" >
+    update table_nextplan
+    <set >
+      <if test="nextplanThing != null" >
+        nextplan_thing = #{nextplanThing,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanOvertime != null" >
+        nextplan_overtime = #{nextplanOvertime,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanLeading != null" >
+        nextplan_leading = #{nextplanLeading,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanParting != null" >
+        nextplan_parting = #{nextplanParting,jdbcType=VARCHAR},
+      </if>
+      <if test="nextplanWeeklyId != null" >
+        nextplan_weekly_id = #{nextplanWeeklyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where nextplan_id = #{nextplanId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.TableNextplan" >
+    update table_nextplan
+    set nextplan_thing = #{nextplanThing,jdbcType=VARCHAR},
+      nextplan_overtime = #{nextplanOvertime,jdbcType=VARCHAR},
+      nextplan_leading = #{nextplanLeading,jdbcType=VARCHAR},
+      nextplan_parting = #{nextplanParting,jdbcType=VARCHAR},
+      nextplan_weekly_id = #{nextplanWeeklyId,jdbcType=VARCHAR}
+    where nextplan_id = #{nextplanId,jdbcType=VARCHAR}
+  </update>
+</mapper>

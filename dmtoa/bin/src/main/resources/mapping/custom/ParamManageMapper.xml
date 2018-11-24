@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.ParamManageMapper" >
+  
+  <select id="queryParamListByPage" resultType="Map" parameterType="Map">
+  	SELECT
+	PARAM_ID AS "id",
+	PARAM_CODE AS "code",
+	PARAM_NAME AS "name",
+	PARAM_KEY AS "key",
+	PARAM_VALUE AS "value",
+	PARAM_STATUS AS "status",
+	PARAM_DESCRIPTION AS "description",
+	PARAM_CREATETIME AS "createtime"
+	FROM sys_param
+	WHERE 1=1 
+	<if test="code != null">
+	AND PARAM_CODE LIKE #{code,jdbcType=VARCHAR}
+	</if>
+	<if test="key != null">
+	AND PARAM_KEY LIKE #{key,jdbcType=VARCHAR}
+	</if>
+	<if test="value != null">
+	AND PARAM_VALUE LIKE #{value,jdbcType=VARCHAR}
+	</if>
+	<if test="status != null">
+	AND PARAM_STATUS = #{status,jdbcType=VARCHAR}
+	</if>
+	ORDER BY PARAM_CREATETIME desc 
+  </select>
+  
+  <select id="getParamByCode" resultType="Map" parameterType="String">
+  	SELECT
+	PARAM_KEY AS "key",
+	PARAM_VALUE AS "value"
+	FROM sys_param
+	WHERE PARAM_STATUS = '0'
+	AND PARAM_CODE = #{code,jdbcType=VARCHAR} 
+	ORDER BY PARAM_KEY
+  </select>
+  
+  <select id="getCompanyByCode" resultType="Map" parameterType="String">
+  	SELECT
+	COMPANY_ID AS "key",
+	COMPANY_NAME AS "value"
+	FROM company
+	WHERE COMPANY_STATUS = '0'
+	ORDER BY COMPANY_ID
+  </select>
+  
+  <select id="getCapitalByCode" resultType="Map" parameterType="String">
+  	SELECT
+	CAPITAL_ID AS "key",
+	CAPITAL_NAME AS "value"
+	FROM capital
+	WHERE CAPITAL_STATUS = '0'
+	ORDER BY CAPITAL_ID
+  </select>
+  <select id="queryEmailParams" resultType="Map">
+      select 
+      PARAM_KEY AS "key",
+      PARAM_VALUE AS "value"
+      from sys_param
+      where PARAM_STATUS='0' AND PARAM_CODE = 'EMAIL_PARAMS'
+  </select>
+</mapper>

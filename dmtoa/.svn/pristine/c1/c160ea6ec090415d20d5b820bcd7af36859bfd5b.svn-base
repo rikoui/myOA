@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>报销信息批量导入</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+
+<script type="text/javascript">
+
+
+	$(function(){
+		//给表单添加自动校验机制
+		DMTForm("addForm");
+		$("#submit").click(function(){
+			if(DMTValidate("addForm")){
+				//报销开始时间
+				var ticketMonth = $("input[name=ticketMonth]").val();
+				//出资人
+				var ticketPerson = $("input[name=ticketPerson]").val();
+				var flag = false;
+				$("input[name='merCertZip']").each(function(){
+			        if($(this).val() == ""){
+			        	flag = true;
+			        	return false;
+			        }
+				}); 
+				var fileName=$("#fileName").attr("value");
+				if(null==fileName||fileName==undefined||""==fileName){
+					$.messager.alert("系统提示","请上传报销Excel文件!","warning");
+					return false;
+				}
+				//需要上传的文件输入框id
+				var fileids = ["merCertZip"];  
+				loadOpen();
+				
+				//提交保存
+				$.ajax({  
+		            url:'../../ticketController/batchSaveTicke.do',  
+		            dataType: 'json',
+		            type:'post',
+		            //需要上传的其它参数
+		            data:{
+		            	ticketMonth:ticketMonth,
+		            	ticketPerson:ticketPerson,
+		            	fileName:$("#fileName").attr("value")
+		            	
+		            },
+		            //文件上传成功的回调方法
+		            success:function(data){
+		            	loadClose();
+		            	if(data.status=="0"){
+		            		$.messager.alert("系统提示","报销批量申请提交成功","info",function(){
+		            			window.parent.DMTMenuLink("MENU013","MENU013001");
+		            		});
+		            	}else if(data.status=="1"){
+		            		$.messager.alert("系统提示",data.errorMsg,"info");
+		            	}
+		            	
+		            }
+		        }); 
+			}
+		});	
+	});
+	
+
+	
+// function downTicketTemp(){
+// 	var url="../../ticketController/downTicketTemp.do";
+// 	location.href = url;
+	
+//}
+
+//上传报销文件时候进行校验
+function checkFile(){
+	
+	//文件异步上传
+	//根据文件名做判断
+	var filename = $("#merCertZip").val();
+	var houzui = filename.substring(filename.lastIndexOf(".")+1);
+	if(houzui.toUpperCase()!="XLSX"){
+		$.messager.alert("系统警告","上传文件必须为.xlsx后缀文件"+houzui,"warning",function(){
+			$("#merCertZip").val("");
+		});
+		return;
+	}
+	loadOpen();
+	$.ajaxFileUpload({  
+        url:'../../ticketController/checkFileSize.do',  
+        fileElementId:"merCertZip",  
+        dataType: 'json',
+        type:'post',
+        //文件上传成功的回调方法
+        success:function(data){
+				if(data.status=="1"){
+					loadClose();
+					//不符合大小
+					$.messager.alert("系统警告",data.errorMsg,"warning",function(){
+						$("#merCertZip").val("");
+					});
+				}else{
+					loadClose();
+					$("#merCertZip").val("");
+					//符合大小
+					$("#merCertZip").hide();
+					$("#fileName").html(data.result.fileName+" <a href=' ' onclick='resetFile()' style='color:blue;'>重新上传</a>");
+					$("#fileName").attr("value",data.result.fileName);
+					$("#fileName").show();
+				}
+        },
+        //文件上传失败的回掉方法
+        error:function(data){
+        	$.messager.alert("系统警告",data.errorMsg,"warning");
+        }
+    });
+	}
+
+/**
+ * 重新上传清空
+ */
+function resetFile(){
+	$("#merCertZip").show();
+	$("#fileName").hide();
+	$("#fileName").attr("value","");
+}
+</script>
+
+</head>
+<body style="padding: 0px;margin: 0px;">
+<b style="margin-left: 40px;">报销信息模板下载:</b>
+<a href ="../../ticketController/downTicketTemp.do">报销信息模板下载</a>
+<!-- 	<input type="button" value="报销信息模板下载" class="dmt_td_name" onclick="downTicketTemp()"/> -->
+	<!-- 数据导入开始 -->
+	<div class="dmt_form"  style="width: 1120px;border: solid 1px #cccccc;background-color: white;padding: 20px;">
+		<form id="addForm">
+		<table class="dmt_form_table">
+					<tr>
+						<td colspan="4" align='left' style="font-size: 16px;line-height: 60px;background-color: #cccccc;">
+							<b style="margin-left: 40px;">导入报销数据</b>
+						</td>
+					</tr>
+				<tr>
+					<td class="dmt_td_name" width="120px"><span class="dmt_star">*</span>报销月份 ：</td>
+					<td class="dmt_td_value" width="370px">
+						<input type="datetime" style="width: 198px" name="ticketMonth" onClick="WdatePicker()" readonly="readonly" validate="NOTNULL"/>
+					</td>
+		
+						
+					<td class="dmt_td_name" width="100px"><span class="dmt_star">*</span>报销人：</td>
+					<td class="dmt_td_value" width="370px">
+						<input type="text" name="ticketPerson"  validate="NOTNULL"/>
+					</td>
+			</tr>
+			
+			<tr>
+				<td class="dmt_td_name"><span class="dmt_star">*</span>上传报销Excel文件：</td>
+				<td class="dmt_td_value">
+					<input type="file" name="merCertZip" id="merCertZip" onchange="checkFile()"/>
+ 					<label style="dislpay:none;line-height:36px;margin-left:10px;" id="fileName" value=""></label>
+ 				</td>
+	
+			</tr>
+			<tr>
+				<td class="dmt_td_button" colspan="4">
+					<input type="button" value="保存" id="submit"/>
+					<input type="reset" value=" 清空 "/>
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	<!-- 数据添加区域结束 -->
+
+</body>
+</html>

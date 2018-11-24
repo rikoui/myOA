@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>追梦内部管理系统</title>
+<link href="res/css/template.css"  rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css"
+	href="res/js/easyui/js/themes/default/easyui.css" />
+<link rel="stylesheet" type="text/css"
+	href="res/js/easyui/js/themes/icon.css" />
+<script type="text/javascript" src="res/js/jquery/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="res/js/easyui/js/jquery.easyui.js"></script>
+<script type="text/javascript" src="res/js/jquery.shop.base.js"></script>
+<script type="text/javascript" src='res/js/easyui/js/outlook2.js'></script>
+<script type="text/javascript" src="res/js/dmt.js"></script>
+<script type="text/javascript" src="res/js/json2.js"></script>
+<script>
+jQuery(document).ready(function(){
+	pagestyle();
+	jQuery(".webmap a").click(function(){
+	    jQuery(".webmap_box").fadeIn('normal');
+	 });
+	jQuery(".close_map").click(function(){
+	    jQuery(".webmap_box").fadeOut('normal');
+	});
+	jQuery("a[id^=complex_]").click(function(){
+	  var suffix=jQuery(this).attr("suffix");
+	  if(jQuery("#"+suffix+"info").css("display")=="block"){
+	      jQuery("#"+suffix+"info").hide();
+		  jQuery("#"+suffix+"img").attr("src","res/image/spread.jpg");
+	   }else{
+	      jQuery("#"+suffix+"info").show();
+		  jQuery("#"+suffix+"img").attr("src","res/image/contract.jpg");	  
+	   }
+	});
+});	
+function logout(){
+	//$.messager.defaults = { ok: "是", cancel: "否" };  
+	$.messager.confirm("操作提示","您确认退出？",function(data){
+		if(data){
+			DMTRequest({
+				url:'systemAction/logout.do',
+				validate:true,
+				success:function(data){
+					var state = data.status;
+					if(state=="0"){
+						window.open("index.html","_self");
+					}
+				}
+			});
+		}
+	});
+}
+$(function(){
+	//获取登陆用户信息
+	DMTRequest({
+		url:'systemAction/getSession.do',
+		validate:true,
+		success:function(data){
+			var user = data.result;
+			$("#rolename").html(user.rolename);
+			$("#roleId").val(user.roleid);
+		}
+	});
+});
+
+/**
+ * 通过方法跳转菜单
+ * @param model 一级菜单ID
+ * @param menu 二级菜单ID
+ * 调用方式
+ * window.parent.DMTMenuLink("MENU001","MENU001002");
+ */
+function DMTMenuLink(model,menu){
+	$("#first_menu").find("a[id="+model+"_menu]").click();
+	$("#"+model).find("a[id="+menu+"_op]").click();
+}
+</script>
+</head>
+<body scroll="yes">
+<div class="main">
+  <div class="top">
+    <div class="login">您登录的身份是：<label id="rolename"></label> &nbsp;&nbsp;| <a href="javascript:logout();" target="_self">安全退出</a>|<a href="view/system/updatePassword.html" target="main_workspace">修改密码</a></div>
+    <div class="logo" style="width:12%">内部管理系统</div>
+    <input type="hidden" id="roleId"/>
+    <!-- 一级菜单 -->
+    <div class="nav">
+      <ul id="first_menu">
+        <li><a href="javascript:void(0);" class="home" id="common_operation_menu" onclick="openURL('show','common_operation')">系统主页</a></li>
+      </ul>
+    </div>
+    <!-- 一级菜单结束 -->
+    
+  </div>
+  <div class="index" id="workspace">
+    <div class="left">
+      <div class="lefttop"> </div>
+      <div class="left_ul" id="sub_menu">
+        <ul class="ulleft" id="common_operation">
+          <div class="leftone">系统主页</div>
+          <li><a class="this" id="welcome_op" href="javascript:void(0);" onclick="openURL('url','view/system/welcome.html','main_workspace','welcome_op')">欢迎页面</a></li>         
+          <li><a href="javascript:void(0);" id="set_site_op_q" onclick="openURL('url','view/system/updatePassword.html','main_workspace','set_site_op_q')">密码修改</a></li> 
+        </ul>
+      </div> 
+    </div>
+    <div class="content">
+    <div class="navbar"><span class="webmap"></span>
+      <span class="webskin">
+      </span>
+      <div style="line-height:36px;">您的位置：控制台&gt;<span id="top_nav_info">欢迎页面</span></div>
+      </div>
+      <iframe id="main_workspace" name="main_workspace" src="view/system/welcome.html" style="overflow:auto;height:550px" frameborder="0" width="100%" height="100%" scrolling="yes" ></iframe>
+    </div>
+  </div>
+</div>
+</body>
+</html>

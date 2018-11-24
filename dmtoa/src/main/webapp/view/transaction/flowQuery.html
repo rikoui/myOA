@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>流水查询</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+
+<script type="text/javascript">
+
+	function addzero(v) {
+		if (v < 10) 
+			return '0' + v;
+		return v.toString();
+	}
+	$(function(){
+		
+		var currentTime = new Date();
+		var start = currentTime.getFullYear().toString()+"-"+addzero(currentTime.getMonth()+1)+"-"+addzero(currentTime.getDate())+" 00:00:00";
+		var end = currentTime.getFullYear().toString()+"-"+addzero(currentTime.getMonth()+1)+"-"+addzero(currentTime.getDate())+" 23:59:59";
+		$("input[name=startTime]").val(start);
+		$("input[name=endTime]").val(end);
+		
+		DMTSelectData("flow_status", "ORDER_STATUS");
+		DMTSelectData("flow_transtype", "FLOW_TRANSTYPE");
+		DMTSelectData("flow_returnstatus", "FLOW_RETURNSTATUS");
+		
+		//绑定查询按钮点击事件
+		$("#submit").click(function(){
+			//验证查询区域时间区间的正确性
+			var startTime = $("input[name=startTime]").val().replace(/-/g, "");
+			var endTime = $("input[name=endTime]").val().replace(/-/g, "");
+			if(startTime>endTime){
+				$.messager.alert("系统提示","开始时间不能大于结束时间","info");
+			}else{
+				//查询调账单数据
+				DMTDatatable({
+					id:"#datagrid", //需要被填充的table
+					title:"流水列表",  //数据名称
+					url:"../../transactionAction/flowQueryList.do",  //数据url
+					validate:true,
+					params:{
+						flowNo:$("input[name=flow_no]").val(),
+						orderNo:$("input[name=order_no]").val(),
+						merName:$("input[name=mer_name]").val(),
+						merId:$("input[name=mer_id]").val(),
+						flowStatus:$("select[name=flow_status]").val(),
+						flowTranstype:$("select[name=flow_transtype]").val(),
+						returnStatus:$("select[name=flow_returnstatus]").val(),
+						startTime:$("input[name=startTime]").val(),
+						endTime:$("input[name=endTime]").val()
+					},
+					checkbox:false,  //每条数据前是否带checkbox复选框
+					showFooter:true, //显示行脚
+					//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+					columns:[[
+					    {field:'flowNo',title:'平台流水号',width:fixWidth(0.19),align:'center'},
+					    {field:'orderNo',title:'平台订单号',width:fixWidth(0.1),align:'center'},
+					    {field:'merName',title:'商户名称',width:fixWidth(0.13),align:'center'},
+					    {field:'merId',title:'商户编号',width:fixWidth(0.15),align:'center'},
+					    {field:'flowAmountCopy',title:'支付金额（元）',width:fixWidth(0.06),align:'center'},
+					    {field:'flowStatusCopy',title:'支付状态',width:fixWidth(0.07),align:'center'},
+					    {field:'flowTranstypeCopy',title:'交易类型',width:fixWidth(0.06),align:'center'},
+					   // {field:'returnStatusCopy',title:'退款状态',width:fixWidth(0.07),align:'center'},
+					    {field:'createtimeCopy',title:'支付时间',width:fixWidth(0.15),align:'center'},
+					    {field:'_opt',title:'操作',width:fixWidth(0.06),align:'center',
+					    	formatter:function(value,rec){
+					    		var html = "";
+					    		if(rec._opt!="1"){
+					                var html = '<a href="javascript:flowQueryDetail(\''+rec.flowNo+'\');">详情</a> '; 
+					    		}
+					    		return html; 
+			               }
+					    }
+					]]
+				});
+			}
+			
+		});
+		
+		$("#submit").click();
+	})
+	
+	//调账单详情
+	function flowQueryDetail(id){
+		location.href="flowQueryDetail.html?id="+id;
+	}
+</script>
+
+</head>
+<body style="padding: 0px; margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+			<table class="dmt_condition_table">
+				<tr>
+					<td class="dmt_td_name">平台流水号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="flow_no" /></td>
+					<td class="dmt_td_name">平台订单号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="order_no" /></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">商户名称：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="mer_name" /></td>
+					<td class="dmt_td_name">商户编号：</td>
+					<td class="dmt_td_value"><input type="text"
+						name="mer_id" /></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name">支付状态：</td>
+					<td class="dmt_td_value"><select name="flow_status"
+						id="flow_status">
+							<option value="">全部</option>
+					</select></td>
+					<td class="dmt_td_name">交易类型：</td>
+					<td class="dmt_td_value"><select name="flow_transtype"
+						id="flow_transtype">
+							<option value="">全部</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="dmt_td_name"><!-- 退款状态： --></td>
+					<td class="dmt_td_value"><!-- <select name="flow_returnstatus"
+						id="flow_returnstatus">
+							<option value="">全部</option>
+					</select> --></td>
+					<td class="dmt_td_name">支付时间：</td>
+					<td class="dmt_td_value">
+						<input type="datetime" name="startTime" style="width:120px;" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly"/> 至 <input type="datetime" name="endTime" style="width:120px;" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="dmt_td_button" colspan="4"><input type="button"
+						value=" 查询 " id="submit" /> <input type="reset" value=" 清空 " /></td>
+				</tr>
+			</table>
+		</form>
+		<hr class="dmt_hr" />
+	</div>
+	<!-- 查询条件区域结束 -->
+
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+
+</body>
+</html>

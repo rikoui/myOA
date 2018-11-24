@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>追梦内部管理系统</title>
+
+<link href="../../res/css/template.css"  rel="stylesheet" type="text/css"/>
+<style type="text/css">
+	ul li{
+		font-size:16px;
+		font-weight: bold;
+	}
+	label{
+		font-size: 16px;
+		font-family: 微软雅黑;
+		color:#06F;
+	}
+	.line{
+		line-height: 50px;
+	}
+</style>
+<script src="../../res/js/dmt-loader.js"></script>
+<script>
+	$(function(){
+		//获取用户登录信息
+		DMTRequest({
+			url:'../../systemAction/getSession.do',
+			success:function(data){
+				//获取数据
+				var user = data.result;
+				$("#username").html(user.realname);
+				$("#lasttime").html(user.lasttime);
+				$("#lastip").html(user.ip);
+			}
+		});
+		
+	});
+</script>
+</head>
+<body style="background-color: #ffffff;">
+      <div class="cont">
+        <h1 class="seth1">欢迎页面</h1>
+        <div class="welcome line"><strong style="font-size: 16px;color: #666666;font-family: 微软雅黑;">您好，<label id="username">段武</label>， 欢迎使用追梦内部管理系统！<br/> 
+        您上次登录的时间：<label id="lasttime"></label> <br/>登录IP：<label id="lastip"></label></strong></div>
+
+          <!-- <div class="wela">
+            <h2>代办事项</h2>
+            <ul>
+              <li>待开发</li>
+            </ul>
+          </div>
+              <div class="wela">
+            <h2>数据统计</h2>
+            <ul>
+              <li>待开发</li>
+            </ul>
+          </div> -->
+
+      </div>
+
+</body>
+</html>

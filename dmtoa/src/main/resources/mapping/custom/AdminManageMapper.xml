@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.AdminManageMapper" >
+  
+  <select id="queryAdminListByPage" resultType="Map" parameterType="Map">
+  	SELECT 
+	ADMIN_ID AS "id",ADMIN_STAFF_NO AS "staffno",
+	(SELECT ROLE_NAME FROM sys_role WHERE ROLE_ID = ADMIN_ROLE_ID) AS "rolename",
+	ADMIN_USERNAME AS "username",
+	ADMIN_REALNAME AS "realname",
+	ADMIN_STATUS AS "status",
+	ADMIN_PHONE AS "phone",
+	ADMIN_EMAIL AS "email",
+	ADMIN_CREATETIME AS "createtime",
+	ADMIN_COUNTDAY AS "countday"
+	FROM sys_admin WHERE 1=1
+	<if test="username != null">
+	AND ADMIN_USERNAME LIKE #{username,jdbcType=VARCHAR}
+	</if>
+	<if test="realname != null">
+	AND ADMIN_REALNAME LIKE #{realname,jdbcType=VARCHAR}
+	</if>
+	<if test="roleid != null">
+	AND ADMIN_ROLE_ID = #{roleid,jdbcType=VARCHAR}
+	</if>
+	<if test="status != null">
+	AND ADMIN_STATUS = #{status,jdbcType=VARCHAR}
+	</if>
+	<if test="phone != null">
+	AND ADMIN_PHONE = #{phone,jdbcType=VARCHAR}
+	</if>
+	ORDER BY ADMIN_STAFF_NO ASC
+  </select>
+  
+   <!-- 初始化密码 -->
+  <update id="initRole" parameterType="map">
+  	UPDATE sys_admin SET ADMIN_PASSWORD= #{password, jdbcType=VARCHAR} WHERE ADMIN_ID= #{id, jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAdmin" resultType="Map" parameterType="Map">
+  SELECT 
+	sp.ADMIN_ID AS "id",sp.ADMIN_STAFF_NO AS "staffno",
+	(SELECT ROLE_NAME FROM sys_role WHERE ROLE_ID = sp.ADMIN_ROLE_ID) AS "rolename",
+	sp.ADMIN_USERNAME AS "username",
+	sp.ADMIN_REALNAME AS "realname",
+	sp.ADMIN_STATUS AS "status",
+	sp.ADMIN_PHONE AS "phone",
+	sp.ADMIN_EMAIL AS "email",
+	sp.ADMIN_CREATETIME AS "createtime",
+	(SELECT ADMIN_REALNAME from sys_admin sf WHERE sf.ADMIN_ID=sp.ADMIN_CREATEUSER) AS "createuser"
+	FROM sys_admin sp
+	WHERE sp.ADMIN_ID=  #{adminId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryAdminLeiuDayListByPage" resultType="Map" parameterType="Map">
+  	select  ADMIN_ID as "adminId",
+  			ADMIN_STAFF_NO as "staffNo",
+  			ADMIN_REALNAME as "realName",
+  			admin_lieu_day as "lieuDay"
+  	from sys_admin
+  	where ADMIN_STATUS='0'
+  	and ADMIN_ROLE_ID!='88888888'
+  	<if test="amdinId != null and amdinId != ''">
+  		and ADMIN_ID=#{amdinId}
+  	</if>
+  </select>
+</mapper>

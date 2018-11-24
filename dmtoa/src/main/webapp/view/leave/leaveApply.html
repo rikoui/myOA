@@ -1,0 +1,719 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>请假申请</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript">
+
+//点击修改按钮事件
+function editLeave(id){
+	$("#edit").dialog("open");
+	//根据ID查询数据信息
+	DMTRequest({
+		url:'../../leaveAction/getLeaveInfo.do',
+		params:{
+			id:id,
+		},
+		validate:true,
+		success:function(data){
+			var leaveinfo = data.result;
+			$("#edit_startTime").val(decode(leaveinfo.leaveStartTime));
+			$("#edit_endTime").val(decode(leaveinfo.leaveEndTime));
+			$("#edit_reason").val(decode(leaveinfo.leaveReason));
+			$("#edit_id").val(leaveinfo.levaeId);  
+			getAllAdmin(function(admins){
+				$("#edit_approvaler").empty();
+        		var html = "";
+        		for(var i=0;i<admins.length;i++){
+        			html += '<option value="'+admins[i].adminId+'">'+admins[i].adminRealname+'</option>';
+        		}
+        		$("#edit_approvaler").append(html);
+        		$("#edit_approvaler").val(leaveinfo.leaveFirstApprovaler);
+        	});
+			DMTRequest({
+				url:'../../systemAction/findParamByCode.do',
+				params:{
+					code:"LEAVE_TYPE",
+				},
+				validate:true,
+				success:function(data){
+					$("#edit_leave_type").empty();
+					var res = data.result;
+					for(var i=0;i<res.length;i++){
+						$("#edit_leave_type").append("<option value='"+res[i].key+"'>"+res[i].value+"</option>");
+					}
+					$("#edit_leave_type").val(leaveinfo.leaveType);
+					selectType ("editTrId", document.getElementById("edit_leave_type"));
+				}
+			});
+		}
+	});
+}
+
+function leaveDetail(id){
+	$("#detail").dialog("open");
+	DMTRequest({
+		url:'../../leaveAction/getLeaveDetail.do',
+		params:{
+			id:id,
+		},
+		validate:true,
+		success:function(data){
+			var leaveinfo = data.result;
+			$("#detail_applyer").html(leaveinfo.applyerName);
+			$("#detail_startTime").html(leaveinfo.startTimeCopy);
+			$("#detail_endTime").html(leaveinfo.endTimeCopy);
+			$("#detail_num").html(leaveinfo.leaveNum);
+			$("#detail_reason").html(leaveinfo.reason);
+			$("#detail_leave_type").html(leaveinfo.leaveTypeCopy);  
+			if(leaveinfo.leaveType=="01"||leaveinfo.leaveType=="06"){
+				$("#fileTr").show();
+				$("#detail_file").attr("src","../../leaveAction/fileDownload.do?fileId="+leaveinfo.fileId); 
+			}
+			$("#detail_num_desc").html(leaveinfo.leaveNumDesc);  
+			$("#detail_first_approvaler").html(leaveinfo.firstApprovalerName);
+			$("#detail_first_approval_res").html(leaveinfo.firstApprovalResCopy);
+			$("#detail_first_approval_desc").html(leaveinfo.firstApprovalDesc);
+			if(leaveinfo.firstApprovalerId=="PT20171206225730"){
+				//第一审阅人为默认的第二审阅人
+				if(leaveinfo.leaveNum>3){
+					$("#secPerTr").show();
+					$("#secResTr").show();
+					$("#secDescTr").show();
+					$("#detail_second_approvaler").html(leaveinfo.secondApprovalerName);
+					$("#detail_second_approval_res").html(leaveinfo.secondApprovalResCopy);
+					$("#detail_second_approval_desc").html(leaveinfo.secondApprovalDesc);
+				}
+			}else{
+				$("#secPerTr").show();
+				$("#secResTr").show();
+				$("#secDescTr").show();
+				$("#detail_second_approvaler").html(leaveinfo.secondApprovalerName);
+				$("#detail_second_approval_res").html(leaveinfo.secondApprovalResCopy);
+				$("#detail_second_approval_desc").html(leaveinfo.secondApprovalDesc);
+				if(leaveinfo.leaveNum>3){
+					$("#thirdPersonTr").show();
+					$("#thirdResTr").show();
+					$("#thirdDescTr").show();
+					$("#detail_third_approvaler").html(leaveinfo.thirdApprovalerName);
+					$("#detail_third_approval_res").html(leaveinfo.thirdApprovalResCopy);
+					$("#detail_third_approval_desc").html(leaveinfo.thirdApprovalDesc);
+				}
+			}
+			$("#detail_last_approval_res").html(leaveinfo.leavePassCopy);
+			$("#detail_last_approval_time").html(leaveinfo.approvalTimeCopy);
+		}
+	});
+}
+
+//点击提交新增角色按钮检验方法
+function validateAdd(){
+	var startTime = $("#add_startTime").val();
+	if(startTime==""){
+		$.messager.alert('系统提示', '请选择请假开始时间', 'warning');
+		return false;
+	}
+	var endTime = $("#add_endTime").val();
+	if(endTime==""){
+		$.messager.alert('系统提示', '请选择请假结束时间', 'warning');
+		return false;
+	}
+	var reason = $("#add_reason").val();
+	if(reason==""){
+		$.messager.alert('系统提示','请输入请假原因','warning');
+		return false;
+	}
+	return true;
+}
+
+function validateEdit(){
+	var startTime = $("#edit_startTime").val();
+	if(startTime==""){
+		$.messager.alert('系统提示', '请选择请假开始时间', 'warning');
+		return false;
+	}
+	var endTime = $("#edit_endTime").val();
+	if(endTime==""){
+		$.messager.alert('系统提示', '请选择请假结束时间', 'warning');
+		return false;
+	}
+	var reason = $("#edit_reason").val();
+	if(reason==""){
+		$.messager.alert('系统提示','请输入请假原因','warning');
+		return false;
+	}
+	return true;
+}
+
+function getAllAdmin(callBack){
+	DMTRequest({
+		url:'../../leaveAction/getAllAdmin.do',
+		validate:true,
+		success:function(data){
+			var admins = data.result;
+			callBack(admins);
+		}
+	});
+}
+
+/**
+ * 上传附件时的校验
+ */
+function checkFile(){
+	//文件异步上传
+	//根据文件名做判断
+	var filename = $("#merCertZip").val();
+	var houzui = filename.substring(filename.lastIndexOf(".")+1);
+	if(houzui.toUpperCase() != "JPG" && houzui.toUpperCase() != "PNG"){
+		$.messager.alert("系统警告","上传文件必须为.jpg或者.png后缀的图片"+houzui,"warning",function(){
+			$("#merCertZip").val("");
+		});
+		return;
+	}
+	loadOpen();
+	$.ajaxFileUpload({  
+        url:'../../leaveAction/checkFileSize.do',  
+        fileElementId:"merCertZip",  
+        dataType: 'json',
+        type:'post',
+        //文件上传成功的回调方法
+        success:function(data){
+				if(data.status=="1"){
+					loadClose();
+					//不符合大小
+					$.messager.alert("系统警告",data.errorMsg,"warning",function(){
+						$("#merCertZip").val("");
+					});
+				}else{
+					loadClose();
+					$("#merCertZip").val("");
+					//符合大小
+					$("#merCertZip").hide();
+					$("#fileName").html(data.result.fileName+" <a href=' ' onclick='resetFile()' style='color:blue;'>重新上传</a>");
+					$("#fileName").attr("value",data.result.fileName);
+					$("#fileName").show();
+					$("#fileId").val(data.result.fileId);
+				}
+        },
+        //文件上传失败的回掉方法
+        error:function(data){
+        	$.messager.alert("系统警告",data.errorMsg,"warning");
+        }
+    });
+}
+
+function editcheckFile(){
+	//文件异步上传
+	//根据文件名做判断
+	var filename = $("#edit_merCertZip").val();
+	var houzui = filename.substring(filename.lastIndexOf(".")+1);
+	if(houzui.toUpperCase() != "JPG" && houzui.toUpperCase() != "PNG"){
+		$.messager.alert("系统警告","上传文件必须为.jpg或者.png后缀的图片"+houzui,"warning",function(){
+			$("#merCertZip").val("");
+		});
+		return;
+	}
+	loadOpen();
+	$.ajaxFileUpload({  
+        url:'../../leaveAction/editcheckFileSize.do',  
+        fileElementId:"edit_merCertZip",  
+        dataType: 'json',
+        type:'post',
+        //文件上传成功的回调方法
+        success:function(data){
+				if(data.status=="1"){
+					loadClose();
+					//不符合大小
+					$.messager.alert("系统警告",data.errorMsg,"warning",function(){
+						$("#edit_merCertZip").val("");
+					});
+				}else{
+					loadClose();
+					$("#edit_merCertZip").val("");
+					//符合大小
+					$("#edit_merCertZip").hide();
+					$("#edit_fileName").html(data.result.fileName+" <a href=' ' onclick='editresetFile()' style='color:blue;'>重新上传</a>");
+					$("#edit_fileName").attr("value",data.result.fileName);
+					$("#edit_fileName").show();
+					$("#fileId").val(data.result.fileId);
+				}
+        },
+        //文件上传失败的回掉方法
+        error:function(data){
+        	$.messager.alert("系统警告",data.errorMsg,"warning");
+        }
+    });
+}
+
+function selectType (id, row) {
+	if (row.value == "01" || row.value == "06") {
+		$("#"+id).show();
+	} else {
+		$("#"+id).hide();
+	}
+}
+
+/**
+ * 重新上传清空
+ */
+function resetFile(){
+	$("#merCertZip").show();
+	$("#fileName").hide();
+	$("#fileName").attr("value","");
+}
+
+function editresetFile(){
+	$("#edit_merCertZip").show();
+	$("#edit_fileName").hide();
+	$("#edit_fileName").attr("value","");
+}
+
+$(function(){
+	DMTSelectData("approval_res","LEAVE_PASS_STATUS");
+	DMTSelectData("applyLeaveType","LEAVE_TYPE");
+	DMTForm("addForm");
+	DMTForm("editForm");
+	//定义请假申请弹出框
+	$('#add').dialog({
+        resizable: true, //定义对话框是否可编辑大小
+        width: 600,
+        height: 400,
+        left: '200px',
+        top: '100px',
+        modal:true,
+        onClose: function () {
+        	$("#addForm")[0].reset();
+        },
+        buttons: [{
+            text: '确认',
+            iconCls: 'icon-ok',
+            handler: function () {
+            	if(validateAdd()){
+	                DMTRequest({
+	                	url:'../../leaveAction/leaveAdd.do',
+	                	params:{
+	                		startTime:$("#add_startTime").val(),
+	                		endTime:$("#add_endTime").val(),
+	                		reason:$("#add_reason").val(),
+	                		approvaler:$("#add_approvaler").val(),
+	                		leavetype: $("#leave_type").val(),
+	                		fileId:$("#fileId").val()
+	                	},
+	                	validate:true,
+	                	success:function(data){
+	                		$("#add").dialog('close');
+	                		$("#addForm")[0].reset();
+	                		$("#datagrid").datagrid('reload');
+	                		$("#fileId").val("");
+	                		$.messager.alert("系统提示", "请假申请成功", "info");
+	                	}
+	                });
+            	}
+            }
+        }, {
+            text: '取消',
+            iconCls: 'icon-cancel',
+            handler: function () {
+                $('#add').dialog('close');
+                $("#addForm")[0].reset();
+            }
+        }]
+    });
+	
+	
+	//定义修改角色弹出框
+	$('#edit').dialog({
+        resizable: true, //定义对话框是否可编辑大小
+        width: 600,
+        height: 400,
+        left: '200px',
+        top: '100px',
+        modal:true,
+        onClose: function () {
+        	$("#editForm")[0].reset();
+        },
+        buttons: [{
+            text: '确认',
+            iconCls: 'icon-ok',
+            handler: function () {
+            	if(validateEdit()){
+	                DMTRequest({
+	                	url:'../../leaveAction/leaveEdit.do',
+	                	params:{
+	                		id:$("#edit_id").val(),
+	                		startTime:$("#edit_startTime").val(),
+	                		endTime:$("#edit_endTime").val(),
+	                		reason:$("#edit_reason").val(),
+	                		leavetype: $("#edit_leave_type").val(),
+	                		approvaler:$("#edit_approvaler").val(),
+	                		fileId:$("#fileId").val()
+	                	},
+	                	validate:true,
+	                	success:function(data){
+	                		$("#edit").dialog('close');
+	                		$("#editForm")[0].reset();
+	                		$("#datagrid").datagrid('reload');
+	                		$("#fileId").val("");
+	                		$.messager.alert("系统提示", "请假申请修改成功", "info");
+	                	}
+	                });
+            	}
+            }
+        }, {
+            text: '取消',
+            iconCls: 'icon-cancel',
+            handler: function () {
+                $('#edit').dialog('close');
+                $("#editForm")[0].reset();
+            }
+        }]
+    });
+	
+	//定义详情弹出框
+	$('#detail').dialog({
+        resizable: true, //定义对话框是否可编辑大小
+        width: 600,
+        height: 400,
+        left: '200px',
+        top: '100px',
+        modal:true,
+        onClose: function () {
+        	$("#fileTr").hide();
+			$("#thirdPersonTr").hide();
+			$("#thirdResTr").hide();
+			$("#thirdDescTr").hide();
+			$("#secPerTr").hide();
+			$("#secResTr").hide();
+			$("#secDescTr").hide();
+			$("#detail").find("span").html("");
+        },
+        buttons: [{
+            text: '确认',
+            iconCls: 'icon-ok',
+            handler: function () {
+            	$('#detail').dialog("close");
+            	$("#fileTr").hide();
+				$("#thirdPersonTr").hide();
+				$("#thirdResTr").hide();
+				$("#thirdDescTr").hide();
+				$("#secPerTr").hide();
+				$("#secResTr").hide();
+				$("#secDescTr").hide();
+				$("#detail").find("span").html("");
+            }
+        }]
+    });
+	
+	//绑定查询按钮点击事件
+	$("#submit").click(function(){
+		DMTDatatable({
+			id:"#datagrid", //需要被填充的table
+			title:"请假单列表",  //数据名称
+			url:"../../leaveAction/leaveApplyList.do",  //数据url
+			validate:true,
+			params:{
+				status:$("#approval_res").val(),
+				type:"1",
+				leaveType:$("#applyLeaveType").val()
+			},
+			checkbox:false,  //每条数据前是否带checkbox复选框
+			//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+			columns:[[
+			    {field:'applyerName',title:'请假人',width:fixWidth(0.09),align:'center'},
+			    {field:'leaveTypeCopy',title:'请假类型',width:fixWidth(0.09),align:'center'},
+			    {field:'startTimeCopy',title:'请假开始时间',width:fixWidth(0.12),align:'center'},
+			    {field:'endTimeCopy',title:'请假结束时间',width:fixWidth(0.12),align:'center'},
+			    {field:'reason',title:'请假原因',width:fixWidth(0.3),align:'center'},
+			    {field:'leaveNum',title:'请假天数',width:fixWidth(0.07),align:'center'},
+			    {field:'leaveNumDesc',title:'请假天数描述',width:fixWidth(0.2),align:'center'},
+			    {field:'leavePassCopy',title:'最终审阅结果',width:fixWidth(0.1),align:'center'},
+			    {field:'approvalTimeCopy',title:'最终审阅时间',width:fixWidth(0.12),align:'center'},
+			    {field:'_opt',title:'操作',width:fixWidth(0.1),align:'center',
+			    	formatter:function(value,rec){
+			    		var html = "";
+			    		if(rec.firstApprovalStatus=="01"){
+			    			html += '<a href="javascript:editLeave(\''+rec.leaveId+'\');">编辑</a> '; 
+			    		}
+			    		html += '<a href="javascript:leaveDetail(\''+rec.leaveId+'\');">详情</a> '; 
+	                	return html; 
+	                }
+			    } 
+			]],
+			//操作按钮
+			toolbar:[{ 
+		        text: '请假申请', 
+		        iconCls: 'icon-add', 
+		        handler: function() { 
+		        	$("#add").dialog("open");
+		        	$("#leave_type").empty();
+		        	DMTSelectData("leave_type","LEAVE_TYPE","02");
+		        	getAllAdmin(function(admins){
+		        		$("#add_approvaler").empty();
+		        		var html = "";
+		        		for(var i=0;i<admins.length;i++){
+		        			html += '<option value="'+admins[i].adminId+'">'+admins[i].adminRealname+'</option>';
+		        		}
+		        		$("#add_approvaler").append(html);
+		        	});
+		        } 
+		    }]
+		});
+	});
+	
+	$("#submit").click();
+});
+	
+</script>
+
+</head>
+<body style="padding: 0px;margin: 0px;">
+	<input id="fileId" type="hidden"/>
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+		<table class="dmt_condition_table">
+			<tr>
+				<td class="dmt_td_name">请假类型：</td>
+				<td class="dmt_td_value">
+					<select name="applyLeaveType" id="applyLeaveType">
+						<option value="">全部</option>
+					</select>
+				</td>
+				<td class="dmt_td_name">最终审阅结果：</td>
+				<td class="dmt_td_value">
+					<select name="approval_res" id="approval_res">
+						<option value="">全部</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_button" colspan="4">
+					<input type="button" value=" 查询 " id="submit"/>
+					<input type="reset" value=" 清空 "/>
+				</td>
+			</tr>
+		</table>
+		</form>
+		<hr class="dmt_hr"/>
+	</div>
+	<!-- 查询条件区域结束 -->
+	
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+	
+	<!-- 数据新增弹出框开始 -->
+	<div id="add" class="easyui-dialog" title="请假申请" closed="true">
+		<form id="addForm">
+        <table style="width: 350px;margin-left: auto;margin-right: auto;margin-top: 20px;">
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假开始日期：</td>
+        		<td class="dmt_td_value"><input style="width: 198px" type="datetime" id="add_startTime" name="add_startTime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" validate="NOTNULL"/></td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假结束日期：</td>
+        		<td class="dmt_td_value"><input style="width: 198px" type="datetime" id="add_endTime" name="add_endTime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" validate="NOTNULL"/></td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假类型：</td>
+        		<td class="dmt_td_value">
+        			<select name="leave_type" id="leave_type" onchange="selectType('trId', this)">
+					</select>
+        		</td>
+        	</tr>
+        	<tr id="trId" style="display:none">
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>上传附件：</td>
+				<td class="dmt_td_value" colspan="4">
+					<input type="file" name="merCertZip" id="merCertZip" onchange="checkFile()"/>
+ 					<label style="dislpay:none;line-height:36px;margin-left:10px;" id="fileName" value=""></label>
+ 				</td>
+			</tr>
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假原因：</td>
+        		<td class="dmt_td_value"><textarea name="add_reason" id="add_reason" maxlength="255" validate="NOTNULL"></textarea></td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">审阅人：</td>
+        		<td class="dmt_td_value">
+        			<select id="add_approvaler">
+        			</select>
+        		</td>
+        	</tr>
+        </table>
+        </form>
+    </div>
+    <!-- 数据新增弹出框结束 -->
+    
+    <!-- 数据修改弹出框开始 -->
+	<div id="edit" class="easyui-dialog" title="请假申请修改" closed="true">
+		<form id="editForm">
+		<input type="hidden" name="edit_id" id="edit_id" value=""/>
+        <table style="width: 350px;margin-left: auto;margin-right: auto;margin-top: 20px;">
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假开始日期：</td>
+        		<td class="dmt_td_value"><input style="width: 198px" type="datetime" id="edit_startTime" name="edit_startTime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly"/></td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假结束日期：</td>
+        		<td class="dmt_td_value"><input style="width: 198px" type="datetime" id="edit_endTime" name="edit_endTime" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly="readonly" validate="NOTNULL"/></td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假类型：</td>
+        		<td class="dmt_td_value">
+        			<select name="edit_leave_type" id="edit_leave_type" onchange="selectType('editTrId', this)">
+					</select>
+        		</td>
+        	</tr>
+        	<tr id="editTrId" style="display:none">
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>上传附件：</td>
+				<td class="dmt_td_value" colspan="4">
+					<input type="file" name="edit_merCertZip" id="edit_merCertZip" onchange="editcheckFile()"/>
+ 					<label style="dislpay:none;line-height:36px;margin-left:10px;" id="edit_fileName" value=""></label>
+ 				</td>
+			</tr>
+        	<tr>
+        		<td class="dmt_td_name"><span class="dmt_star">*</span>请假原因：</td>
+        		<td class="dmt_td_value"><textarea name="edit_reason" id="edit_reason" maxlength="255" validate="NOTNULL"></textarea></td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">审阅人：</td>
+        		<td class="dmt_td_value">
+        			<select id="edit_approvaler">
+        			</select>
+        		</td>
+        	</tr>
+        </table>
+        </form>
+    </div>
+    <!-- 数据修改弹出框结束 -->
+    
+    
+    <!-- 详情弹出框开始 -->
+	<div id="detail" class="easyui-dialog" title="请假申请详情" closed="true">
+		<form id="detailForm">
+        <table style="margin-left: 20px;margin-top: 20px;">
+        	<tr>
+        		<td class="dmt_td_name">请假人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_applyer"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假开始时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_startTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假结束时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_endTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假类型：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_leave_type"></span>
+        		</td>
+        	</tr>
+        	<tr id="fileTr" style="display:none;">
+        		<td class="dmt_td_name">附件：</td>
+        		<td class="dmt_td_value">
+        			<img id="detail_file" src="" width="200" height="200">
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假原因：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_reason"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_num"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数描述：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_num_desc"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">第一审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_first_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">第一审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_first_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">第一审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_first_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr id="secPerTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_second_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr id="secResTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_second_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr id="secDescTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_second_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr id="thirdPersonTr" style="display:none;">
+        		<td class="dmt_td_name">第三审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_third_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr id="thirdResTr" style="display:none;">
+        		<td class="dmt_td_name">第三审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_third_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr id="thirdDescTr" style="display:none;">
+        		<td class="dmt_td_name">第三审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_third_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">最终审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_last_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">最终审阅时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_last_approval_time"></span>
+        		</td>
+        	</tr>
+        </table>
+        </form>
+    </div>
+    <!-- 详情弹出框结束 -->
+</body>
+</html>

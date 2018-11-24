@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.LeaveManageMapper" >
+ 	<select id="queryLeavesByPage" resultType="map" parameterType="map">
+ 		select  l.levae_id as "leaveId",
+ 				l.leave_admin_id as "applyerId",
+ 				l.leave_reason as "reason",
+ 				l.leave_start_time as "startTime",
+ 				l.leave_first_approval_desc as "firstApprovalDesc",
+ 				l.leave_second_approval_desc as "secondApprovalDesc",
+ 				l.leave_third_approval_desc as "thirdApprovalDesc",
+ 				l.leave_end_time as "endTime",
+ 				l.leave_first_approvaler as "firstApprovalerId",
+ 				l.leave_second_approvaler as "secondApprovalerId",
+ 				l.leave_third_approvaler as "thirdApprovalerId",
+ 				l.leave_approval_time as "approvalTime",
+ 				a.ADMIN_REALNAME as "applyerName",
+ 				b.ADMIN_REALNAME as "firstApprovalerName",
+ 				c.ADMIN_REALNAME as "secondApprovalerName",
+ 				d.ADMIN_REALNAME as "thirdApprovalerName",
+ 				l.leave_num as "leaveNum",
+ 				l.leave_num_desc as "leaveNumDesc",
+ 				l.leave_creatime as "createtime",
+ 				l.leave_first_approval_res as "firstApprovalRes",
+ 				l.leave_second_approval_res as "secondApprovalRes",
+ 				l.leave_third_approval_res as "thirdApprovalRes",
+ 				l.leave_type as "leaveType",
+ 				l.leave_pass as "leavePass",
+ 				l.leave_pic as "fileId",
+ 				l.leave_first_approvel_status as "firstApprovalStatus",
+ 				l.leave_second_approvel_status as "secondApprovalStatus",
+ 				l.leave_third_approvel_status as "thirdApprovalStatus"
+ 		from leave_person l
+ 		left join sys_admin a
+ 		on a.ADMIN_ID=l.leave_admin_id
+ 		left join sys_admin b
+ 		on b.ADMIN_ID=l.leave_first_approvaler
+ 		left join sys_admin c
+ 		on c.ADMIN_ID=l.leave_second_approvaler
+ 		left join sys_admin d
+ 		on d.ADMIN_ID=l.leave_third_approvaler
+ 		where 1=1
+ 		<if test="status != null and status != ''">
+ 			and l.leave_pass=#{status}
+ 		</if>
+ 		<if test="applyer != null and applyer != ''">
+ 			and l.leave_admin_id=#{applyer}
+ 		</if>
+ 		<if test="approvaler != null and approvaler != ''">
+ 			and l.leave_first_approvaler=#{approvaler}
+ 			and l.leave_first_approvel_status='01'
+ 		</if>
+ 		<if test="extension_applyer != null and extension_applyer != ''">
+ 			and l.leave_admin_id!=#{extension_applyer}
+ 		</if>
+ 		<if test="leavTtype != null and leavTtype != ''">
+ 			and l.leave_type=#{leavTtype}
+ 		</if>
+ 	</select>
+ 	
+ 	<select id="getLeaveDetail" resultType="map" parameterType="string">
+ 		select  l.levae_id as "leaveId",
+ 				l.leave_admin_id as "applyerId",
+ 				l.leave_reason as "reason",
+ 				l.leave_start_time as "startTime",
+ 				l.leave_first_approval_desc as "firstApprovalDesc",
+ 				l.leave_second_approval_desc as "secondApprovalDesc",
+ 				l.leave_third_approval_desc as "thirdApprovalDesc",
+ 				l.leave_end_time as "endTime",
+ 				l.leave_first_approvaler as "firstApprovalerId",
+ 				l.leave_second_approvaler as "secondApprovalerId",
+ 				l.leave_third_approvaler as "thirdApprovalerId",
+ 				l.leave_approval_time as "approvalTime",
+ 				a.ADMIN_REALNAME as "applyerName",
+ 				b.ADMIN_REALNAME as "firstApprovalerName",
+ 				c.ADMIN_REALNAME as "secondApprovalerName",
+ 				d.ADMIN_REALNAME as "thirdApprovalerName",
+ 				l.leave_num as "leaveNum",
+ 				l.leave_num_desc as "leaveNumDesc",
+ 				l.leave_creatime as "createtime",
+ 				l.leave_first_approval_res as "firstApprovalRes",
+ 				l.leave_second_approval_res as "secondApprovalRes",
+ 				l.leave_third_approval_res as "thirdApprovalRes",
+ 				l.leave_type as "leaveType",
+ 				l.leave_pass as "leavePass",
+ 				l.leave_pic as "fileId",
+ 				f.file_original_name as "fileName"
+ 		from leave_person l
+ 		left join sys_admin a
+ 		on a.ADMIN_ID=l.leave_admin_id
+ 		left join sys_admin b
+ 		on b.ADMIN_ID=l.leave_first_approvaler
+ 		left join sys_admin c
+ 		on c.ADMIN_ID=l.leave_second_approvaler
+ 		left join sys_admin d
+ 		on d.ADMIN_ID=l.leave_third_approvaler
+ 		left join sys_file f
+ 		on f.file_id=l.leave_pic
+ 		where l.levae_id=#{_parameter}
+ 	</select>
+</mapper>

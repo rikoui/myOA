@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.DailyManageMapper" >
+		
+		<select id="dailyQueryList"  resultType="Map" parameterType="String">
+            SELECT  daily_time,daily_part,daily_week, daily_content,daily_question,daily_answer
+			 FROM table_daily
+		<where>
+			<if test=" _parameter !=null">
+				and table_daily.daily_weekly_id = #{weeklyId}
+			</if>
+			
+		</where>
+		order by daily_time,daily_week
+		</select>
+
+	<select id="queryDailyReadListByPage"  resultType="Map" parameterType="Map">
+		SELECT 
+			t.DAILY_ID AS "dailyId",
+			a1.ADMIN_STAFF_NO AS "staffNo",
+			w.weekly_admin_id AS "weeklyAdminId",
+			a1.ADMIN_REALNAME AS "adminName",
+			w.weekly_auth_admin AS "authAdmin",
+			a2.ADMIN_REALNAME AS "authAdminName",
+			t.daily_realyauth AS "realyAuth",
+			a3.ADMIN_REALNAME AS "realyAuthName",
+			t.daily_time AS "dailyTime",
+			t.daily_status AS "dailyStatus"
+		FROM table_daily t
+		LEFT JOIN table_weekly w ON t.daily_weekly_id = w.weekly_id
+		LEFT JOIN sys_admin a1 ON w.weekly_admin_id = a1.ADMIN_ID
+		LEFT JOIN sys_admin a2 ON w.weekly_auth_admin = a2.ADMIN_ID
+		LEFT JOIN sys_admin a3 ON t.daily_realyauth = a3.ADMIN_ID
+		WHERE 1 = 1
+		<if test="weeklyAdmin != null and weeklyAdmin != ''">
+			AND w.weekly_admin_id = #{weeklyAdmin, jdbcType=VARCHAR}
+		</if>
+		<if test="dailyStatus != null and dailyStatus != ''">
+			AND t.daily_status = #{dailyStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="dailyTime != null and dailyTime != ''">
+			AND t.daily_time = #{dailyTime, jdbcType=VARCHAR}
+		</if>
+		<if test="adminAuthId != null and adminAuthId != '' and adminRoleId != '88888888'">
+			AND w.weekly_auth_admin = #{adminAuthId,jdbcType=VARCHAR}
+		</if>
+		ORDER BY REPLACE(t.daily_time, '-', '')
+	</select>
+	
+	<select id="queryCountDaily"  resultType="Map" parameterType="Map">
+		SELECT 
+			t1.dailyId,
+			t1.dailyWeeklyId,
+			t1.dailytime,
+			t1.dailytimeTmp,
+			t1.countDay,
+			a.ADMIN_REALNAME AS "realyName" 
+		FROM
+			(SELECT 
+				t.dailyId,
+				t.dailyWeeklyId,
+				t.dailytime,
+				t.dailytimeTmp,
+				t.countDay 
+			FROM
+				(SELECT 
+					daily_id AS "dailyId",
+					daily_weekly_id AS "dailyWeeklyId",
+					daily_time AS "dailytime",
+					DATEDIFF(SUBSTRING(NOW(), 1, 10), daily_time) AS "countDay",
+					REPLACE(daily_time, '-', '') AS "dailytimeTmp" 
+				FROM table_daily ORDER BY dailytimeTmp DESC) t 
+			GROUP BY t.dailyWeeklyId) t1 
+		LEFT JOIN table_weekly w ON t1.dailyWeeklyId = w.weekly_id 
+		LEFT JOIN sys_admin a ON a.ADMIN_ID = w.weekly_admin_id 
+		ORDER BY t1.countDay
+	</select>
+		
+		
+</mapper>

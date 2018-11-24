@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.custom.DailyManageMapper" >
+		
+		<select id="dailyQueryList"  resultType="Map" parameterType="String">
+            SELECT  daily_time,daily_part,daily_week, daily_content,daily_question,daily_answer, daily_remark
+			 FROM table_daily
+		<where>
+			<if test=" _parameter !=null">
+				and table_daily.daily_weekly_id = #{weeklyId}
+			</if>
+			
+		</where>
+		order by daily_time,daily_week
+		</select>
+
+	<select id="queryDailyReadListByPage"  resultType="Map" parameterType="Map">
+		SELECT 
+			t.DAILY_ID AS "dailyId",
+			a1.ADMIN_STAFF_NO AS "staffNo",
+			w.weekly_admin_id AS "weeklyAdminId",
+			a1.ADMIN_REALNAME AS "adminName",
+			w.weekly_auth_admin AS "authAdmin",
+			a2.ADMIN_REALNAME AS "authAdminName",
+			t.daily_realyauth AS "realyAuth",
+			a3.ADMIN_REALNAME AS "realyAuthName",
+			t.daily_time AS "dailyTime",
+			t.daily_status AS "dailyStatus",
+			r.ROLE_NAME AS "roleName"
+		FROM table_daily t
+		LEFT JOIN table_weekly w ON t.daily_weekly_id = w.weekly_id
+		LEFT JOIN sys_admin a1 ON w.weekly_admin_id = a1.ADMIN_ID
+		LEFT JOIN sys_admin a2 ON w.weekly_auth_admin = a2.ADMIN_ID
+		LEFT JOIN sys_admin a3 ON t.daily_realyauth = a3.ADMIN_ID
+		LEFT JOIN sys_role r ON r.role_id = a1.ADMIN_ROLE_ID
+		WHERE 1 = 1
+		<if test="weeklyAdmin != null and weeklyAdmin != ''">
+			AND w.weekly_admin_id = #{weeklyAdmin, jdbcType=VARCHAR}
+		</if>
+		<if test="dailyStatus != null and dailyStatus != ''">
+			AND t.daily_status = #{dailyStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="dailyTime != null and dailyTime != ''">
+			AND t.daily_time = #{dailyTime, jdbcType=VARCHAR}
+		</if>
+		<if test="adminAuthId != null and adminAuthId != '' and adminRoleId != '88888888'">
+			AND w.weekly_auth_admin = #{adminAuthId,jdbcType=VARCHAR}
+		</if>
+		ORDER BY REPLACE(t.daily_time, '-', '')
+	</select>
+	
+	<select id="queryGroupDailyList"  resultType="Map" parameterType="Map">
+		SELECT 
+			w.weekly_admin_id AS "weeklyAdminId",
+			a.ADMIN_REALNAME AS "adminRealName",
+			MAX(REPLACE(d.daily_time, '-', '')) AS "dailyTime" 
+		FROM
+			table_daily d LEFT JOIN table_weekly w ON d.daily_weekly_id = w.weekly_id 
+		LEFT JOIN sys_admin a ON w.weekly_admin_id = a.ADMIN_ID 
+		GROUP BY w.weekly_admin_id
+	</select>
+	<select id="queryDailyCount" resultType="Map">
+		SELECT 
+			a.ADMIN_ID AS "adminId",
+			a.ADMIN_REALNAME AS "adminRealName",
+			COUNT(a.ADMIN_ID) AS "dailyCount" 
+		FROM
+			table_daily d 
+		LEFT JOIN table_weekly w ON d.daily_weekly_id = w.weekly_id 
+		LEFT JOIN sys_admin a ON w.weekly_admin_id = a.ADMIN_ID 
+		WHERE d.daily_week != '星期六' AND d.daily_week != '星期日' 
+		AND d.daily_time not like DATE_FORMAT(NOW(), '%Y-%m-%d')
+		GROUP BY a.ADMIN_ID
+	</select>
+</mapper>

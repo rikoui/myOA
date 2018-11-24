@@ -1,0 +1,579 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>请假申请</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="../../res/js/m97/WdatePicker.js"></script>
+<script src="../../res/js/dmt-loader.js"></script>
+<script type="text/javascript">
+
+//当前登录人角色ID和操作员ID
+var roleId = $("#roleId",parent.document).val();
+var adminId = $("#adminId",parent.document).val();
+
+//点击修改按钮事件
+function authLeave(id){
+	$("#leaveId").val(id)
+	$("#approval").dialog("open");
+	$("#auth_approval_res").empty();
+	DMTSelectData("auth_approval_res","LEAVE_AUTH_STATUS","0");
+	//根据ID查询数据信息
+	DMTRequest({
+		url:'../../leaveAction/getLeaveDetail.do',
+		params:{
+			id:id,
+		},
+		validate:true,
+		success:function(data){
+			var leaveinfo = data.result;
+			$("#auth_applyer").html(leaveinfo.applyerName);
+			$("#auth_startTime").html(leaveinfo.startTimeCopy);
+			$("#auth_endTime").html(leaveinfo.endTimeCopy);
+			$("#auth_num").html(leaveinfo.leaveNum);
+			$("#auth_reason").html(leaveinfo.reason);
+			$("#auth_leave_type").html(leaveinfo.leaveTypeCopy);  
+			if(leaveinfo.leaveType=="01"||leaveinfo.leaveType=="06"){
+				$("#auth_fileTr").show();
+				$("#auth_file").attr("src","../../leaveAction/fileDownload.do?fileId="+leaveinfo.fileId); 
+			}
+			$("#auth_num_desc").html(leaveinfo.leaveNumDesc);
+			if(leaveinfo.firstApprovalerId=="PT20171206225730"){
+				if(roleId=="88888888"&&adminId=="PT20171206160840"){
+					$("#auth_firpersonTr").show();
+					$("#auth_firresTr").show();
+					$("#auth_firdescTr").show();
+					$("#auth_first_approvaler").html(leaveinfo.firstApprovalerName);
+					$("#auth_first_approval_res").html(leaveinfo.firstApprovalResCopy);
+					$("#auth_first_approval_desc").html(leaveinfo.firstApprovalDesc);
+				}
+			}else{
+				if(roleId=="88888888"){
+					$("#auth_firpersonTr").show();
+					$("#auth_firresTr").show();
+					$("#auth_firdescTr").show();
+					$("#auth_first_approvaler").html(leaveinfo.firstApprovalerName);
+					$("#auth_first_approval_res").html(leaveinfo.firstApprovalResCopy);
+					$("#auth_first_approval_desc").html(leaveinfo.firstApprovalDesc);
+				}
+				if(roleId=="88888888"&&adminId=="PT20171206160840"){//如果是第三审阅人审阅，显示第二审阅人审阅信息
+					$("#auth_personTr").show();
+					$("#auth_resTr").show();
+					$("#auth_descTr").show();
+					$("#auth_second_approvaler").html(leaveinfo.secondApprovalerName);
+					$("#auth_second_approval_res").html(leaveinfo.secondApprovalResCopy);
+					$("#auth_second_approval_desc").html(leaveinfo.secondApprovalDesc);
+				}
+			}
+		}
+	});
+}
+
+function leaveDetail(id){
+	$("#detail").dialog("open");
+	DMTRequest({
+		url:'../../leaveAction/getLeaveDetail.do',
+		params:{
+			id:id,
+		},
+		validate:true,
+		success:function(data){
+			var leaveinfo = data.result;
+			$("#detail_applyer").html(leaveinfo.applyerName);
+			$("#detail_startTime").html(leaveinfo.startTimeCopy);
+			$("#detail_endTime").html(leaveinfo.endTimeCopy);
+			$("#detail_num").html(leaveinfo.leaveNum);
+			$("#detail_reason").html(leaveinfo.reason);
+			$("#detail_leave_type").html(leaveinfo.leaveTypeCopy);  
+			if(leaveinfo.leaveType=="01"||leaveinfo.leaveType=="06"){
+				$("#fileTr").show();
+				$("#detail_file").attr("src","../../leaveAction/fileDownload.do?fileId="+leaveinfo.fileId); 
+			}
+			$("#detail_num_desc").html(leaveinfo.leaveNumDesc); 
+			if(leaveinfo.firstApprovalerId=="PT20171206225730"){
+				if(roleId=="88888888"&&adminId=="PT20171206160840"){
+					$("#firstPerTr").show();
+					$("#firstResTr").show();
+					$("#firstDescTr").show();
+					$("#detail_first_approvaler").html(leaveinfo.firstApprovalerName);
+					$("#detail_first_approval_res").html(leaveinfo.firstApprovalResCopy);
+					$("#detail_first_approval_desc").html(leaveinfo.firstApprovalDesc);
+				}
+			}else{
+				if(roleId=="88888888"){
+					$("#firstPerTr").show();
+					$("#firstResTr").show();
+					$("#firstDescTr").show();
+					$("#detail_first_approvaler").html(leaveinfo.firstApprovalerName);
+					$("#detail_first_approval_res").html(leaveinfo.firstApprovalResCopy);
+					$("#detail_first_approval_desc").html(leaveinfo.firstApprovalDesc);
+				}
+				if(roleId=="88888888"&&adminId=="PT20171206160840"){//如果是第三审阅人审阅，显示第二审阅人审阅信息
+					$("#secondPerTr").show();
+					$("#secondResTr").show();
+					$("#secondDescTr").show();
+					$("#detail_second_approvaler").html(leaveinfo.secondApprovalerName);
+					$("#detail_second_approval_res").html(leaveinfo.secondApprovalResCopy);
+					$("#detail_second_approval_desc").html(leaveinfo.secondApprovalDesc);
+				}
+			}
+			$("#detail_last_approval_res").html(leaveinfo.leavePassCopy);
+			$("#detail_last_approval_time").html(leaveinfo.approvalTimeCopy);
+		}
+	});
+}
+
+$(function(){
+	
+	DMTSelectData("approval_res","LEAVE_PASS_STATUS");
+	DMTSelectData("applyLeaveType","LEAVE_TYPE");
+	DMTRequest({
+		url:'../../leaveAction/getAllAdmin.do',
+		validate:true,
+		success:function(data){
+			var admins = data.result;
+			var html = "";
+    		for(var i=0;i<admins.length;i++){
+    			html += '<option value="'+admins[i].adminId+'">'+admins[i].adminRealname+'</option>';
+    		}
+    		$("#applyer").append(html);
+		}
+	});
+	DMTRequest({
+		url:'../../systemAction/findParamByCode.do',
+		params:{
+			code:"WEEKLY_AUTH_STATUS",
+		},
+		validate:true,
+		success:function(data){
+			var res = data.result;
+			for(var i=0;i<res.length;i++){
+				$("#approval_status").append("<option value='"+res[i].key+"'>"+res[i].value+"</option>");
+			}
+			$("#approval_status").val("01");
+			$("#submit").click();
+		}
+	});
+	
+	//定义详情弹出框
+	$('#detail').dialog({
+        resizable: true, //定义对话框是否可编辑大小
+        width: 600,
+        height: 400,
+        left: '200px',
+        top: '100px',
+        modal:true,
+        onClose: function () {
+        	$("#fileTr").hide();
+        	$("#secondPerTr").hide();
+			$("#secondResTr").hide();
+			$("#secondDescTr").hide();
+			$("#firstPerTr").hide();
+			$("#firstResTr").hide();
+			$("#firstDescTr").hide();
+			$("#detail").find("span").html("");
+        },
+        buttons: [{
+            text: '确认',
+            iconCls: 'icon-ok',
+            handler: function () {
+            	$('#detail').dialog("close");
+            	$("#fileTr").hide();
+            	$("#secondPerTr").hide();
+    			$("#secondResTr").hide();
+    			$("#secondDescTr").hide();
+    			$("#firstPerTr").hide();
+    			$("#firstResTr").hide();
+    			$("#firstDescTr").hide();
+				$("#detail").find("span").html("");
+            }
+        }]
+    });
+	
+	//定义审阅弹出框
+	$('#approval').dialog({
+        resizable: true, //定义对话框是否可编辑大小
+        width: 600,
+        height: 400,
+        left: '200px',
+        top: '100px',
+        modal:true,
+        onClose: function () {
+        	$("#approvalForm")[0].reset();
+        	$("#auth_fileTr").hide();
+			$("#auth_personTr").hide();
+			$("#auth_resTr").hide();
+			$("#auth_descTr").hide();
+			$("#auth_firpersonTr").hide();
+			$("#auth_firresTr").hide();
+			$("#auth_firdescTr").hide();
+			$("#approval").find("span").html("");
+        },
+        buttons: [{
+            text: '确认',
+            iconCls: 'icon-ok',
+            handler: function () {
+                DMTRequest({
+                	url:'../../leaveAction/leaveAuth.do',
+                	params:{
+                		leaveId:$("#leaveId").val(),
+                		aprovalRes:$("#auth_approval_res").val(),
+                		aprovalDesc:$("#auth_approval_desc").val()
+                	},
+                	validate:true,
+                	success:function(data){
+                		$("#approval").dialog('close');
+                		$("#approvalForm")[0].reset();
+                		$("#datagrid").datagrid('reload');
+                		$("#auth_fileTr").hide();
+        				$("#auth_personTr").hide();
+        				$("#auth_resTr").hide();
+        				$("#auth_descTr").hide();
+        				$("#auth_firpersonTr").hide();
+        				$("#auth_firresTr").hide();
+        				$("#auth_firdescTr").hide();
+                		$.messager.alert("系统提示", "审阅成功", "info");
+                		$("#approval").find("span").html("");
+                	}
+                });
+            }
+        }, {
+            text: '取消',
+            iconCls: 'icon-cancel',
+            handler: function () {
+                $('#approval').dialog('close');
+                $("#approvalForm")[0].reset();
+                $("#auth_fileTr").hide();
+				$("#auth_personTr").hide();
+				$("#auth_resTr").hide();
+				$("#auth_descTr").hide();
+				$("#auth_firpersonTr").hide();
+				$("#auth_firresTr").hide();
+				$("#auth_firdescTr").hide();
+				$("#approval").find("span").html("");
+            }
+        }]
+    });
+	
+	
+	//绑定查询按钮点击事件
+	$("#submit").click(function(){
+		//查询参数数据
+		DMTDatatable({
+			id:"#datagrid", //需要被填充的table
+			title:"请假单列表",  //数据名称
+			url:"../../leaveAction/leaveApplyList.do",  //数据url
+			validate:true,
+			params:{
+				type:"2",
+				applyer:$("#applyer").val(),
+				leaveType:$("#applyLeaveType").val(),
+				status:$("#approval_res").val()
+			},
+			checkbox:false,  //每条数据前是否带checkbox复选框
+			//表头数据，field：字段名称   title:显示名称  width:单元格长度  fixWidth(比例):返回宽度的对应比例长度，0.3代表30%
+			columns:[[
+				{field:'applyerName',title:'请假人',width:fixWidth(0.09),align:'center'},
+			    {field:'leaveTypeCopy',title:'请假类型',width:fixWidth(0.09),align:'center'},
+			    {field:'startTimeCopy',title:'请假开始时间',width:fixWidth(0.12),align:'center'},
+			    {field:'endTimeCopy',title:'请假结束时间',width:fixWidth(0.12),align:'center'},
+			    {field:'reason',title:'请假原因',width:fixWidth(0.3),align:'center'},
+			    {field:'leaveNum',title:'请假天数',width:fixWidth(0.07),align:'center'},
+			    {field:'leaveNumDesc',title:'请假天数描述',width:fixWidth(0.2),align:'center'},
+			    {field:'leavePassCopy',title:'最终审阅结果',width:fixWidth(0.1),align:'center'},
+			    {field:'approvalTimeCopy',title:'最终审阅时间',width:fixWidth(0.12),align:'center'},
+			    {field:'_opt',title:'操作',width:fixWidth(0.1),align:'center',
+			    	formatter:function(value,rec){
+			    		var html = "";
+			    		if(roleId!="88888888"){//非超级管理员直接审阅
+			    			if(rec.firstApprovalStatus=="01"){
+			    				html += '<a href="javascript:authLeave(\''+rec.leaveId+'\');">审阅</a> '; 
+			    			}
+			    		}else {
+			    			if(rec.firstApprovalerId=="PT20171206225730"){
+								if(adminId=="PT20171206225730"&&rec.firstApprovalStatus=="01"){
+									html += '<a href="javascript:authLeave(\''+rec.leaveId+'\');">审阅</a> '; 
+								}else if(adminId=="PT20171206160840"&&rec.firstApprovalRes=="0"&&rec.secondApprovalStatus=='01'&&rec.leaveNum>3){
+									html += '<a href="javascript:authLeave(\''+rec.leaveId+'\');">审阅</a> ';
+								}	    				
+			    			}else{
+			    				if(adminId=="PT20171206225730"&&rec.firstApprovalRes=="0"&&rec.secondApprovalStatus=='01'){
+					    			//如果是超级管理员且为第二审阅人且第一审阅人审核通过可审阅
+					    			html += '<a href="javascript:authLeave(\''+rec.leaveId+'\');">审阅</a> '; 
+					    		}else if(adminId=="PT20171206160840"&&rec.secondApprovalRes=="0"&&rec.thirdApprovalStatus=='01'&&rec.leaveNum>3){
+					    			//如果是超级管理员且为第三审阅人且第二审阅人审核通过可审阅
+					    			html += '<a href="javascript:authLeave(\''+rec.leaveId+'\');">审阅</a> '; 
+					    		}
+			    			}
+			    		}
+			    		html += '<a href="javascript:leaveDetail(\''+rec.leaveId+'\');">详情</a> '; 
+	                	return html; 
+	                }
+			    } 
+			]]
+		});
+	});
+	
+});
+	
+</script>
+
+</head>
+<body style="padding: 0px;margin: 0px;">
+	<!-- 查询条件区域开始 -->
+	<div class="dmt_condition">
+		<form>
+		<table class="dmt_condition_table">
+			<tr>
+				<td class="dmt_td_name">申请人：</td>
+				<td class="dmt_td_value">
+					<select name="applyer" id="applyer">
+						<option value="">全部</option>
+					</select>
+				</td>
+				<td class="dmt_td_name">请假类型：</td>
+				<td class="dmt_td_value">
+					<select name="applyLeaveType" id="applyLeaveType">
+						<option value="">全部</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_name">最终审阅结果：</td>
+				<td class="dmt_td_value">
+					<select name="approval_res" id="approval_res">
+						<option value="">全部</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="dmt_td_button" colspan="4">
+					<input type="button" value=" 查询 " id="submit"/>
+					<input type="reset" value=" 清空 "/>
+				</td>
+			</tr>
+		</table>
+		</form>
+		<hr class="dmt_hr"/>
+	</div>
+	<!-- 查询条件区域结束 -->
+	
+	<!-- 数据表格区域开始 -->
+	<div class="dmt_table">
+		<table id="datagrid"></table>
+	</div>
+	<!-- 数据表格区域结束 -->
+	
+	<!-- 审阅弹出框开始 -->
+	<div id="approval" class="easyui-dialog" title="请假审阅" closed="true">
+		<form id="approvalForm">
+		<input type="hidden" id="leaveId"/>
+        <table style="margin-left: 20px;margin-top: 20px;">
+        	<tr>
+        		<td class="dmt_td_name">请假人：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_applyer"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假开始时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_startTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假结束时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_endTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假类型：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_leave_type"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_fileTr" style="display:none;">
+        		<td class="dmt_td_name">附件：</td>
+        		<td class="dmt_td_value">
+        			<img id="auth_file" src="" width="200" height="200">
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假原因：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_reason"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_num"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数描述：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_num_desc"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_firpersonTr" style="display:none;">
+        		<td class="dmt_td_name">第一审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_first_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_firresTr" style="display:none;">
+        		<td class="dmt_td_name">第一审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_first_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_firdescTr" style="display:none;">
+        		<td class="dmt_td_name">第一审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_first_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_personTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_second_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_resTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_second_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr id="auth_descTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="auth_second_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<select id="auth_approval_res"></select>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">审阅备注：</td>
+        		<td class="dmt_td_value">
+        			<textarea rows="" cols="" id="auth_approval_desc"></textarea>
+        		</td>
+        	</tr>
+        </table>
+        </form>
+    </div>
+    <!-- 审阅弹出框结束 -->
+    
+    <!-- 详情弹出框开始 -->
+	<div id="detail" class="easyui-dialog" title="请假申请详情" closed="true">
+		<form id="detailForm">
+        <table style="margin-left: 20px;margin-top: 20px;">
+        	<tr>
+        		<td class="dmt_td_name">请假人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_applyer"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假开始时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_startTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假结束时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_endTime"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假类型：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_leave_type"></span>
+        		</td>
+        	</tr>
+        	<tr id="fileTr" style="display:none;">
+        		<td class="dmt_td_name">附件：</td>
+        		<td class="dmt_td_value">
+        			<img id="detail_file" src="" width="200" height="200">
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假原因：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_reason"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_num"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">请假天数描述：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_num_desc"></span>
+        		</td>
+        	</tr>
+        	<tr id="firstPerTr" style="display:none;">
+        		<td class="dmt_td_name">第一审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_first_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr id="firstResTr" style="display:none;">
+        		<td class="dmt_td_name">第一审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_first_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr id="firstDescTr" style="display:none;">
+        		<td class="dmt_td_name">第一审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_first_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr id="secondPerTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_second_approvaler"></span>
+        		</td>
+        	</tr>
+        	<tr id="secondResTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_second_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr id="secondDescTr" style="display:none;">
+        		<td class="dmt_td_name">第二审阅人审阅意见：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_second_approval_desc"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">最终审阅结果：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_last_approval_res"></span>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td class="dmt_td_name">最终审阅时间：</td>
+        		<td class="dmt_td_value">
+        			<span id="detail_last_approval_time"></span>
+        		</td>
+        	</tr>
+        </table>
+        </form>
+    </div>
+    <!-- 详情弹出框结束 -->
+    
+</body>
+</html>

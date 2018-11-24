@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjdreamtech.mapper.auto.SysAdminMapper" >
+  <resultMap id="BaseResultMap" type="com.bjdreamtech.entity.SysAdmin" >
+    <id column="ADMIN_ID" property="adminId" jdbcType="VARCHAR" />
+    <result column="ADMIN_STAFF_NO" property="adminStaffNo" jdbcType="VARCHAR" />
+    <result column="ADMIN_ROLE_ID" property="adminRoleId" jdbcType="VARCHAR" />
+    <result column="ADMIN_BRANCH_ID" property="adminBranchId" jdbcType="VARCHAR" />
+    <result column="ADMIN_USERNAME" property="adminUsername" jdbcType="VARCHAR" />
+    <result column="ADMIN_PASSWORD" property="adminPassword" jdbcType="VARCHAR" />
+    <result column="ADMIN_REALNAME" property="adminRealname" jdbcType="VARCHAR" />
+    <result column="ADMIN_STATUS" property="adminStatus" jdbcType="VARCHAR" />
+    <result column="ADMIN_MARK" property="adminMark" jdbcType="VARCHAR" />
+    <result column="ADMIN_PHONE" property="adminPhone" jdbcType="VARCHAR" />
+    <result column="ADMIN_EMAIL" property="adminEmail" jdbcType="VARCHAR" />
+    <result column="ADMIN_ERRORTIMES" property="adminErrortimes" jdbcType="INTEGER" />
+    <result column="ADMIN_CREATETIME" property="adminCreatetime" jdbcType="VARCHAR" />
+    <result column="ADMIN_CREATEUSER" property="adminCreateuser" jdbcType="VARCHAR" />
+    <result column="ADMIN_UPDATETIME" property="adminUpdatetime" jdbcType="VARCHAR" />
+    <result column="ADMIN_UPDATEUSER" property="adminUpdateuser" jdbcType="VARCHAR" />
+    <result column="ADMIN_COUNTDAY" property="adminCountday" jdbcType="VARCHAR" />
+    <result column="admin_lieu_day" property="adminLieuDay" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ADMIN_ID, ADMIN_STAFF_NO, ADMIN_ROLE_ID, ADMIN_BRANCH_ID, ADMIN_USERNAME, ADMIN_PASSWORD, 
+    ADMIN_REALNAME, ADMIN_STATUS, ADMIN_MARK, ADMIN_PHONE, ADMIN_EMAIL, ADMIN_ERRORTIMES, 
+    ADMIN_CREATETIME, ADMIN_CREATEUSER, ADMIN_UPDATETIME, ADMIN_UPDATEUSER, ADMIN_COUNTDAY, 
+    admin_lieu_day
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bjdreamtech.entity.SysAdminExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sys_admin
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_admin
+    where ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from sys_admin
+    where ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bjdreamtech.entity.SysAdminExample" >
+    delete from sys_admin
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bjdreamtech.entity.SysAdmin" >
+    insert into sys_admin (ADMIN_ID, ADMIN_STAFF_NO, ADMIN_ROLE_ID, 
+      ADMIN_BRANCH_ID, ADMIN_USERNAME, ADMIN_PASSWORD, 
+      ADMIN_REALNAME, ADMIN_STATUS, ADMIN_MARK, 
+      ADMIN_PHONE, ADMIN_EMAIL, ADMIN_ERRORTIMES, 
+      ADMIN_CREATETIME, ADMIN_CREATEUSER, ADMIN_UPDATETIME, 
+      ADMIN_UPDATEUSER, ADMIN_COUNTDAY, admin_lieu_day
+      )
+    values (#{adminId,jdbcType=VARCHAR}, #{adminStaffNo,jdbcType=VARCHAR}, #{adminRoleId,jdbcType=VARCHAR}, 
+      #{adminBranchId,jdbcType=VARCHAR}, #{adminUsername,jdbcType=VARCHAR}, #{adminPassword,jdbcType=VARCHAR}, 
+      #{adminRealname,jdbcType=VARCHAR}, #{adminStatus,jdbcType=VARCHAR}, #{adminMark,jdbcType=VARCHAR}, 
+      #{adminPhone,jdbcType=VARCHAR}, #{adminEmail,jdbcType=VARCHAR}, #{adminErrortimes,jdbcType=INTEGER}, 
+      #{adminCreatetime,jdbcType=VARCHAR}, #{adminCreateuser,jdbcType=VARCHAR}, #{adminUpdatetime,jdbcType=VARCHAR}, 
+      #{adminUpdateuser,jdbcType=VARCHAR}, #{adminCountday,jdbcType=VARCHAR}, #{adminLieuDay,jdbcType=REAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bjdreamtech.entity.SysAdmin" >
+    insert into sys_admin
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="adminId != null" >
+        ADMIN_ID,
+      </if>
+      <if test="adminStaffNo != null" >
+        ADMIN_STAFF_NO,
+      </if>
+      <if test="adminRoleId != null" >
+        ADMIN_ROLE_ID,
+      </if>
+      <if test="adminBranchId != null" >
+        ADMIN_BRANCH_ID,
+      </if>
+      <if test="adminUsername != null" >
+        ADMIN_USERNAME,
+      </if>
+      <if test="adminPassword != null" >
+        ADMIN_PASSWORD,
+      </if>
+      <if test="adminRealname != null" >
+        ADMIN_REALNAME,
+      </if>
+      <if test="adminStatus != null" >
+        ADMIN_STATUS,
+      </if>
+      <if test="adminMark != null" >
+        ADMIN_MARK,
+      </if>
+      <if test="adminPhone != null" >
+        ADMIN_PHONE,
+      </if>
+      <if test="adminEmail != null" >
+        ADMIN_EMAIL,
+      </if>
+      <if test="adminErrortimes != null" >
+        ADMIN_ERRORTIMES,
+      </if>
+      <if test="adminCreatetime != null" >
+        ADMIN_CREATETIME,
+      </if>
+      <if test="adminCreateuser != null" >
+        ADMIN_CREATEUSER,
+      </if>
+      <if test="adminUpdatetime != null" >
+        ADMIN_UPDATETIME,
+      </if>
+      <if test="adminUpdateuser != null" >
+        ADMIN_UPDATEUSER,
+      </if>
+      <if test="adminCountday != null" >
+        ADMIN_COUNTDAY,
+      </if>
+      <if test="adminLieuDay != null" >
+        admin_lieu_day,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="adminId != null" >
+        #{adminId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminStaffNo != null" >
+        #{adminStaffNo,jdbcType=VARCHAR},
+      </if>
+      <if test="adminRoleId != null" >
+        #{adminRoleId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminBranchId != null" >
+        #{adminBranchId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUsername != null" >
+        #{adminUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPassword != null" >
+        #{adminPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="adminRealname != null" >
+        #{adminRealname,jdbcType=VARCHAR},
+      </if>
+      <if test="adminStatus != null" >
+        #{adminStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="adminMark != null" >
+        #{adminMark,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPhone != null" >
+        #{adminPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="adminEmail != null" >
+        #{adminEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="adminErrortimes != null" >
+        #{adminErrortimes,jdbcType=INTEGER},
+      </if>
+      <if test="adminCreatetime != null" >
+        #{adminCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="adminCreateuser != null" >
+        #{adminCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUpdatetime != null" >
+        #{adminUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUpdateuser != null" >
+        #{adminUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="adminCountday != null" >
+        #{adminCountday,jdbcType=VARCHAR},
+      </if>
+      <if test="adminLieuDay != null" >
+        #{adminLieuDay,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bjdreamtech.entity.SysAdminExample" resultType="java.lang.Integer" >
+    select count(*) from sys_admin
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update sys_admin
+    <set >
+      <if test="record.adminId != null" >
+        ADMIN_ID = #{record.adminId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminStaffNo != null" >
+        ADMIN_STAFF_NO = #{record.adminStaffNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminRoleId != null" >
+        ADMIN_ROLE_ID = #{record.adminRoleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminBranchId != null" >
+        ADMIN_BRANCH_ID = #{record.adminBranchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminUsername != null" >
+        ADMIN_USERNAME = #{record.adminUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminPassword != null" >
+        ADMIN_PASSWORD = #{record.adminPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminRealname != null" >
+        ADMIN_REALNAME = #{record.adminRealname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminStatus != null" >
+        ADMIN_STATUS = #{record.adminStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminMark != null" >
+        ADMIN_MARK = #{record.adminMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminPhone != null" >
+        ADMIN_PHONE = #{record.adminPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminEmail != null" >
+        ADMIN_EMAIL = #{record.adminEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminErrortimes != null" >
+        ADMIN_ERRORTIMES = #{record.adminErrortimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.adminCreatetime != null" >
+        ADMIN_CREATETIME = #{record.adminCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminCreateuser != null" >
+        ADMIN_CREATEUSER = #{record.adminCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminUpdatetime != null" >
+        ADMIN_UPDATETIME = #{record.adminUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminUpdateuser != null" >
+        ADMIN_UPDATEUSER = #{record.adminUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminCountday != null" >
+        ADMIN_COUNTDAY = #{record.adminCountday,jdbcType=VARCHAR},
+      </if>
+      <if test="record.adminLieuDay != null" >
+        admin_lieu_day = #{record.adminLieuDay,jdbcType=REAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update sys_admin
+    set ADMIN_ID = #{record.adminId,jdbcType=VARCHAR},
+      ADMIN_STAFF_NO = #{record.adminStaffNo,jdbcType=VARCHAR},
+      ADMIN_ROLE_ID = #{record.adminRoleId,jdbcType=VARCHAR},
+      ADMIN_BRANCH_ID = #{record.adminBranchId,jdbcType=VARCHAR},
+      ADMIN_USERNAME = #{record.adminUsername,jdbcType=VARCHAR},
+      ADMIN_PASSWORD = #{record.adminPassword,jdbcType=VARCHAR},
+      ADMIN_REALNAME = #{record.adminRealname,jdbcType=VARCHAR},
+      ADMIN_STATUS = #{record.adminStatus,jdbcType=VARCHAR},
+      ADMIN_MARK = #{record.adminMark,jdbcType=VARCHAR},
+      ADMIN_PHONE = #{record.adminPhone,jdbcType=VARCHAR},
+      ADMIN_EMAIL = #{record.adminEmail,jdbcType=VARCHAR},
+      ADMIN_ERRORTIMES = #{record.adminErrortimes,jdbcType=INTEGER},
+      ADMIN_CREATETIME = #{record.adminCreatetime,jdbcType=VARCHAR},
+      ADMIN_CREATEUSER = #{record.adminCreateuser,jdbcType=VARCHAR},
+      ADMIN_UPDATETIME = #{record.adminUpdatetime,jdbcType=VARCHAR},
+      ADMIN_UPDATEUSER = #{record.adminUpdateuser,jdbcType=VARCHAR},
+      ADMIN_COUNTDAY = #{record.adminCountday,jdbcType=VARCHAR},
+      admin_lieu_day = #{record.adminLieuDay,jdbcType=REAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bjdreamtech.entity.SysAdmin" >
+    update sys_admin
+    <set >
+      <if test="adminStaffNo != null" >
+        ADMIN_STAFF_NO = #{adminStaffNo,jdbcType=VARCHAR},
+      </if>
+      <if test="adminRoleId != null" >
+        ADMIN_ROLE_ID = #{adminRoleId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminBranchId != null" >
+        ADMIN_BRANCH_ID = #{adminBranchId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUsername != null" >
+        ADMIN_USERNAME = #{adminUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPassword != null" >
+        ADMIN_PASSWORD = #{adminPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="adminRealname != null" >
+        ADMIN_REALNAME = #{adminRealname,jdbcType=VARCHAR},
+      </if>
+      <if test="adminStatus != null" >
+        ADMIN_STATUS = #{adminStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="adminMark != null" >
+        ADMIN_MARK = #{adminMark,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPhone != null" >
+        ADMIN_PHONE = #{adminPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="adminEmail != null" >
+        ADMIN_EMAIL = #{adminEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="adminErrortimes != null" >
+        ADMIN_ERRORTIMES = #{adminErrortimes,jdbcType=INTEGER},
+      </if>
+      <if test="adminCreatetime != null" >
+        ADMIN_CREATETIME = #{adminCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="adminCreateuser != null" >
+        ADMIN_CREATEUSER = #{adminCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUpdatetime != null" >
+        ADMIN_UPDATETIME = #{adminUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUpdateuser != null" >
+        ADMIN_UPDATEUSER = #{adminUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="adminCountday != null" >
+        ADMIN_COUNTDAY = #{adminCountday,jdbcType=VARCHAR},
+      </if>
+      <if test="adminLieuDay != null" >
+        admin_lieu_day = #{adminLieuDay,jdbcType=REAL},
+      </if>
+    </set>
+    where ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bjdreamtech.entity.SysAdmin" >
+    update sys_admin
+    set ADMIN_STAFF_NO = #{adminStaffNo,jdbcType=VARCHAR},
+      ADMIN_ROLE_ID = #{adminRoleId,jdbcType=VARCHAR},
+      ADMIN_BRANCH_ID = #{adminBranchId,jdbcType=VARCHAR},
+      ADMIN_USERNAME = #{adminUsername,jdbcType=VARCHAR},
+      ADMIN_PASSWORD = #{adminPassword,jdbcType=VARCHAR},
+      ADMIN_REALNAME = #{adminRealname,jdbcType=VARCHAR},
+      ADMIN_STATUS = #{adminStatus,jdbcType=VARCHAR},
+      ADMIN_MARK = #{adminMark,jdbcType=VARCHAR},
+      ADMIN_PHONE = #{adminPhone,jdbcType=VARCHAR},
+      ADMIN_EMAIL = #{adminEmail,jdbcType=VARCHAR},
+      ADMIN_ERRORTIMES = #{adminErrortimes,jdbcType=INTEGER},
+      ADMIN_CREATETIME = #{adminCreatetime,jdbcType=VARCHAR},
+      ADMIN_CREATEUSER = #{adminCreateuser,jdbcType=VARCHAR},
+      ADMIN_UPDATETIME = #{adminUpdatetime,jdbcType=VARCHAR},
+      ADMIN_UPDATEUSER = #{adminUpdateuser,jdbcType=VARCHAR},
+      ADMIN_COUNTDAY = #{adminCountday,jdbcType=VARCHAR},
+      admin_lieu_day = #{adminLieuDay,jdbcType=REAL}
+    where ADMIN_ID = #{adminId,jdbcType=VARCHAR}
+  </update>
+</mapper>
